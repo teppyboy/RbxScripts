@@ -1,10 +1,10 @@
 {
-    "version" : "unstable",
+    "version" : "unstable-2020.05.11",
     "blacklistExploits": 
     {
         "sirhurt": {
             "name": "sirhurt",
-            "methodCheck": "mouse1click",
+            "methodCheck": "is_sirhurt_closure",
             "reason": "This script isn't tested on this exploit, use other exploits or wait for the developer to fix."
         }
     }
