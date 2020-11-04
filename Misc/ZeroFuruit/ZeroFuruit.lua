@@ -489,9 +489,11 @@ local jsCFG = HttpService:JSONDecode(game:HttpGet("https://raw.githubusercontent
 print("ZeroFuruit version: "..jsCFG.version)
 -- Exploit blacklist check
 for i, v in pairs(jsCFG.blacklistExploits) do
-    print("Blacklist exploit check: "..tostring(v.name))
+    print("Blacklist exploit check: "..v.name)
     if getgenv()[v.methodCheck] ~= nil then
         lplayer:Kick(v.reason)
+    else
+        print("The exploit is not '"..v.name.."'")
     end
 end
 -- Finally, show the GUI
