@@ -1,12 +1,11 @@
 {
     "version" : "unstable",
-    "blacklistExploits":[ 
-        {
-            "sirhurt": {
-                "name": "sirhurt",
-                "methodCheck": "mouse1click",
-                "reason": "This script isn't tested on this exploit, use other exploits or wait for the developer to fix."
-            }
+    "blacklistExploits": 
+    {
+        "sirhurt": {
+            "name": "sirhurt",
+            "methodCheck": "mouse1click",
+            "reason": "This script isn't tested on this exploit, use other exploits or wait for the developer to fix."
         }
-    ]
+    }
 }
