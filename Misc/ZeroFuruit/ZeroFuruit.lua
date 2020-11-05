@@ -361,6 +361,14 @@ AI.Mouse1Click = function()
     VU:CaptureController()
     VU:ClickButton1(Vector2.new(0,0))
 end
+AI.HWMouse1Click = function()
+    -- WeAreDevs JJSploit support (recently Roblox update that breaks almost every exploit with auto updating right there but not WRD smh)
+    if WRDAPI then -- WeAreDevs
+        MouseButton1Click()
+    else
+        mouse1click()
+    end
+end
 AI.btnClicker = function(btn,maingui)
     local ocP = btn.Parent
     local ocPo = btn.Position
@@ -399,7 +407,7 @@ local function autoQuest()
     local dialogGui = main.Dialogue
     local qiuBtn
     while not dialogGui.Visible do 
-        mouse1click()
+        AI.HWMouse1Click()
         wait(0.25)
     end
     wait(0.5)
@@ -552,9 +560,9 @@ local function actionAnalyzer(actionname, reason)
 end
 for i, v in pairs(jsCFG.blacklistExploits) do
     print("Blacklist exploit check: "..v.name)
-    for ba, ka in pairs(v.methods) do
-        print("Begin check for method: "..ka)
-        if getgenv()[ka] ~= nil then
+    for ba, ka in pairs(v.scripts) do
+        print("Begin run script check: "..ka)
+        if loadstring(ka)() then
             actionAnalyzer(v.action, v.reason)
             break
         end
