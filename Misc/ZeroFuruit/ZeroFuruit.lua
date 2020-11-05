@@ -547,27 +547,31 @@ getCurLocBtn.MouseButton1Click:Connect(function()
     curPlrLocBox.Text = tostring(char.HumanoidRootPart.Position)
 end)
 
--- Load the configuration.
-local jsCFG = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/teppyboy/RbxScripts/master/Misc/ZeroFuruit/ZeroFuruitCfg.json"))
-print("ZeroFuruit version: "..jsCFG.version)
--- Exploit blacklist check
-local function actionAnalyzer(actionname, reason)
-    if (actionname == "kick") then
-        lplayer:Kick(reason)
-    elseif (actionname == "warn") then
-        warn(reason)
-    end
-end
-for i, v in pairs(jsCFG.blacklistExploits) do
-    print("Blacklist exploit check: "..v.name)
-    for ba, ka in pairs(v.scripts) do
-        print("Begin run script check: "..ka)
-        if loadstring(ka)() then
-            actionAnalyzer(v.action, v.reason)
-            break
+if not WRDAPI then -- WTF? WeAreDevs can't even do some shit in blacklisting check???
+    -- Load the configuration.
+    local jsCFG = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/teppyboy/RbxScripts/master/Misc/ZeroFuruit/ZeroFuruitCfg.json"))
+    print("ZeroFuruit version: "..jsCFG.version)
+    -- Exploit blacklist check
+    local function actionAnalyzer(actionname, reason)
+        if (actionname == "kick") then
+            lplayer:Kick(reason)
+        elseif (actionname == "warn") then
+            warn(reason)
         end
     end
-    print("The exploit is not '"..v.name.."'")
+    for i, v in pairs(jsCFG.blacklistExploits) do
+        print("Blacklist exploit check: "..v.name)
+        for ba, ka in pairs(v.scripts) do
+            print("Begin run script check: "..ka)
+            if loadstring(ka)() then
+                actionAnalyzer(v.action, v.reason)
+                break
+            end
+        end
+        print("The exploit is not '"..v.name.."'")
+    end
+else
+    warn("WeAreDevs API exploits based is very unstable, use it at your own risk of memory leaks and more...")
 end
 -- Finally, show the GUI
 TitleTxt:TweenPosition(UDim2.new(0.5, -320,0.5, -180),Enum.EasingDirection.Out,Enum.EasingStyle.Quart,1,true)
