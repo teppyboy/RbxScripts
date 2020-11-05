@@ -4,7 +4,8 @@
     {
         "sirhurt": {
             "name": "sirhurt",
-            "methodCheck": "is_sirhurt_closure",
+            "methods": ["is_sirhurt_closure"],
+            "action": "warn",
             "reason": "This script isn't tested on this exploit, use other exploits or wait for the developer to fix."
         }
     }
