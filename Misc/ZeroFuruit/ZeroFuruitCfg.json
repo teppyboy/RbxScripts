@@ -1,12 +1,18 @@
 {
-    "version" : "unstable-2020.05.11",
+    "version" : "unstable-2020.06.11",
     "blacklistExploits": 
     {
         "sirhurt": {
             "name": "sirhurt",
-            "methods": ["is_sirhurt_closure"],
+            "scripts": ["if is_sirhurt_closure then return true else return false end"],
             "action": "warn",
             "reason": "This script isn't tested on this exploit, use other exploits or wait for the developer to fix."
+        },
+        "wrd": {
+            "name": "WeAreDevs API",
+            "scripts": ["if WRDAPI then return true else return false end"],
+            "action": "warn",
+            "reason": "WeAreDevs API exploits based is very unstable, use it at your own risk of memory leaks and more..."
         }
     }
 }
