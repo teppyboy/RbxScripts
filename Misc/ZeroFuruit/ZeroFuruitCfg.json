@@ -1,12 +1,27 @@
 {
     "version" : "unstable-2020.07.11",
-    "blacklistExploits": 
+    "exploits": 
     {
         "sirhurt": {
             "name": "sirhurt",
             "functions": ["is_sirhurt_closure", "XPROTECT", "LUAPROTECT"],
+            "fakefunctions": [],
             "action": "warn",
-            "reason": "This script isn't tested on this exploit, use other exploits or wait for the developer to fix."
+            "reason": "This script isn't tested on this exploit, use other exploits or wait for the developer to fix. SirHurt support might get removed in the future."
+        },
+        "synapse": {
+            "name": "syn",
+            "functions": ["syn"],
+            "fakefunctions": ["is_sirhurt_closure"],
+            "action": "warn",
+            "reason": "This script isn't tested on Synapse X due to me being poor. It'll probably works because this is tested with Krnl but hey i need Synapse X :("
+        },
+        "krnl": {
+            "name": "krnl",
+            "functions": ["KRNL_LOADED"],
+            "fakefunctions": [],
+            "action": "print",
+            "reason": "#KrnlGang << https://docs.krnl.rocks/index.html >> #KrnlGang"
         }
     }
 }
