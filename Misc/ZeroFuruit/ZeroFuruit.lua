@@ -275,10 +275,10 @@ function sFLY()
 	end
 	FLY()
 end
-local function NoclipLoop(enable)
+local function NoclipLoop()
     for _, child in pairs(char:GetDescendants()) do
-        if child:IsA("BasePart") and child.CanCollide == enable then
-            child.CanCollide = not enable
+        if child:IsA("BasePart") and child.CanCollide == true then
+            child.CanCollide = false
         end
     end
 end
@@ -291,10 +291,16 @@ local VU = game:GetService("VirtualUser")
 local TS = game:GetService("TweenService")
 local function shamblesTo(part1, part2)
     local targetCFrame = part2.CFrame
-    local a = TweenInfo.new(math.abs((part2.Position- part1.Position).Magnitude) / char.Humanoid.WalkSpeed,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,false,0)
-    local b = TS:Create(part1 ,a ,{CFrame = targetCFrame})
-    b:Play()
-    while (part1.Position - part2.Position).Magnitude > 5 do wait(0.1) end
+    local tweeter = TS:Create(part1 ,TweenInfo.new(math.abs((part2.Position - part1.Position).Magnitude) / char.Humanoid.WalkSpeed,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,false,0) ,{CFrame = targetCFrame})
+    tweeter:Play()
+    while (part1.Position - part2.Position).Magnitude > 5 do 
+        if (part2.Position - part2.CFrame.Position).Magnitude > 5 then
+            tweeter:Stop()
+            tweeter = TS:Create(part1 ,TweenInfo.new(math.abs((part2.Position - part1.Position).Magnitude) / char.Humanoid.WalkSpeed,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,false,0) ,{CFrame = targetCFrame})
+            tweeter:Play()
+        end
+        wait(0.1) 
+    end
 end
 local function moveTo(humanoid, targetPart)
     local targetPoint = targetPart.Position
@@ -313,7 +319,7 @@ local function moveTo(humanoid, targetPart)
             -- refresh the timeout
             humanoid:MoveTo(targetPoint, targetPart)
         end
-        wait(0.01)
+        wait()
     end
     while (targetPoint - char.HumanoidRootPart.Position).Magnitude > 5 do
         if ababa() == 'break' then break end
@@ -474,24 +480,20 @@ local function autoQuest()
         wait(0.25)
     end
 end
+game:GetService('RunService').Stepped:connect(NoclipLoop)
 local function autoFarm()
     while wait() and BlxFrtVars.AutoFarm and (char:WaitForChild("Humanoid",5).Health > 0) do
-        local Noclipping = game:GetService('RunService').Stepped:connect(function()
-            NoclipLoop(true)
-        end) -- temp nc
         if BlxFrtVars.AutoQuest then
             if not BlxFrtVars.MainGUI.Quest.Visible then
                 autoQuest()
             end
         end
-        local v = nil
+        local v
         while v == nil do
             v = AI.getNPC(npcNameBox.Text,"nearest")
-            wait(0.05)
+            print(v)
+            wait()
         end
-        AI.SmartMove(v.HumanoidRootPart)
-        Noclipping:Disconnect()
-        NoclipLoop(false)
         while (v.Humanoid.Health > 0) do
             if (v.HumanoidRootPart.Position - char.HumanoidRootPart.Position).Magnitude > 5 then
                 AI.SmartMove(v.HumanoidRootPart)
