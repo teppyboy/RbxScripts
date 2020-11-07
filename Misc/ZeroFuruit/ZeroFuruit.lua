@@ -24,7 +24,7 @@ if not WRDAPI then -- WTF? WeAreDevs can't even do some shit in blacklisting che
         for ba, ka in pairs(v.functions) do
             print("Begin check for function: "..ka)
             local isExp = false
-            if getgenv()[ka] and not isStringInTable(ka, v.fakefunctions) then
+            if getgenv()[ka] and not isStringInTable(v.fakefunctions,ka) then
                 print("The exploit is '"..v.name.."'")
                 isExp = true
                 actionAnalyzer(v.action, v.reason)
