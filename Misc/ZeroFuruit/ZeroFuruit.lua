@@ -1,5 +1,34 @@
---Generated with Syntax's Converter, comet hub in the works! pastebin search coming soooon REEEEEEE.
---Counted 15 (objects this time!!!)
+-- Load the configuration.
+if not WRDAPI then -- WTF? WeAreDevs can't even do some shit in blacklisting check???
+    local jsCFG = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/teppyboy/RbxScripts/master/Misc/ZeroFuruit/ZeroFuruitCfg.json"))
+    print("ZeroFuruit version: "..jsCFG.version)
+    -- Exploit blacklist check
+    local function actionAnalyzer(actionname, reason)
+        if (actionname == "kick") then
+            lplayer:Kick(reason)
+        elseif (actionname == "warn") then
+            warn(reason)
+        end
+    end
+    for i, v in pairs(jsCFG.blacklistExploits) do
+        print("Blacklist exploit check: "..v.name)
+        for ba, ka in pairs(v.functions) do
+            print("Begin check for function: "..ka)
+            if getgenv()[ka] then
+                actionAnalyzer(v.action, v.reason)
+                break
+            end
+        end
+        print("The exploit is not '"..v.name.."'")
+    end
+else
+    lplayer:Kick([[WeAreDevs API exploits based are NOT supported due to Memory Leaks (instant Mem Leaks from 0.5GB -> 1.5GB when activate the Auto Farm)
+    
+    If you can't find any exploit then use Krnl/Oxygen X/etc... (Even Proxo and EasyExploits API exploits based too)
+    
+    NOTE: Shadow works fine but you WILL expect Memory Leaks like WRD API
+    NOTE2: Don't use Furk, Coco Z or any shady exploit in WRD.net]])
+end
 local function CreateInstance(cls,props)
     local inst = Instance.new(cls)
     for i,v in pairs(props) do
@@ -199,6 +228,9 @@ Auto2TabBtn.MouseButton1Click:Connect(function()
     tweenVisTab(tartab)
 end)
 -- Script
+local Players = game:GetService("Players")
+local lplayer = Players.LocalPlayer
+local char = lplayer.Character
 local BlxFrtVars = {}
 BlxFrtVars.WeaponHasKb = false
 BlxFrtVars.AutoQuest = false
@@ -208,14 +240,13 @@ BlxFrtVars.EquipItemOnBoot = ""
 BlxFrtVars.TeleportMode = "Auto" -- can be Auto/Unsafe/Safe (Auto = auto, Unsafe = always shamblesTo(), Safe = always moveTo())
 BlxFrtVars.AutoClick = false
 BlxFrtVars.AntiAFKBypass = false
+BlxFrtVars.MainGUI = lplayer.PlayerGui.Main
+BlxFrtVars.DialogFrame = BlxFrtVars.MainGUI.Dialogue
 antiVeloBtn.MouseButton1Click:Connect(function()
     BlxFrtVars.WeaponHasKb = not BlxFrtVars.WeaponHasKb
     antiVeloBtn.Text = "Anti Velocity By Weapons ["..tostring(BlxFrtVars.WeaponHasKb):upper().."]"
 end)
 -- IY SKID PART.
-local Players = game:GetService("Players")
-local lplayer = Players.LocalPlayer
-local char = lplayer.Character
 local FLYING = false
 function getRoot(char)
 	local rootPart = char:FindFirstChild('HumanoidRootPart') or char:FindFirstChild('Torso') or char:FindFirstChild('UpperTorso')
@@ -240,9 +271,6 @@ function sFLY()
 			until not FLYING
 			BG:destroy()
 			BV:destroy()
-			if Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid') then
-				Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid').PlatformStand = false
-			end
 		end)
 	end
 	FLY()
@@ -321,7 +349,7 @@ AI.SmartMove = function(targetPart)
     elseif BlxFrtVars.TeleportMode == "Unsafe" then
         shamblesTo(hrp, targetPart)
     else -- Your "Auto" mode.
-        if (targetPart.Position - hrp.Position).Y <= 10 then
+        if math.abs((targetPart.Position - hrp.Position).Y) <= 10 then
             moveTo(char.Humanoid, targetPart)
         else
             shamblesTo(hrp, targetPart)
@@ -362,9 +390,8 @@ AI.Mouse1Click = function()
     VU:ClickButton1(Vector2.new(0,0))
 end
 AI.HWMouse1Click = function()
-    -- WeAreDevs JJSploit support (recently Roblox update that breaks almost every exploit with auto updating right there but not WRD smh)
-    if WRDAPI then -- WeAreDevs
-        MouseButton1Click()
+    if is_sirhurt_closure then
+        leftclick()
     else
         mouse1click()
     end
@@ -382,10 +409,22 @@ AI.btnClicker = function(btn,maingui)
 end
 AI.GetVector3FromString = function(str)
     local splitedStr = stringext.split(str,",")
-    local X = tonumber(splitedStr[1])
-    local Y = tonumber(splitedStr[2])
-    local Z = tonumber(splitedStr[3])
-    return Vector3.new(X,Y,Z)
+    return Vector3.new(tonumber(splitedStr[1]),tonumber(splitedStr[2]),tonumber(splitedStr[3]))
+end
+AI.GetDialogText = function()
+    local txtFrm = BlxFrtVars.DialogFrame.TextFrame
+    local txt = ""
+    for i, v in pairs(txtFrm:GetChildren()) do
+        if v.ClassName == "Frame" then
+            for ba, ka in pairs(v.Container:GetChildren()) do
+                txt = txt..ka.Text
+            end
+            if v.Name ~= "Line001" then
+                txt = txt..string.char(10)
+            end
+        end
+    end
+    return txt
 end
 -- Auto Farm/Quest related function.
 local function autoQuest()
@@ -403,27 +442,34 @@ local function autoQuest()
         AI.SmartMove(qnpc.Head)
     end
     wait(0.5)
-    local main = lplayer.PlayerGui.Main
-    local dialogGui = main.Dialogue
     local qiuBtn
-    while not dialogGui.Visible do 
+    while not BlxFrtVars.DialogFrame.Visible do 
         AI.HWMouse1Click()
         wait(0.25)
     end
     wait(0.5)
-    for i, v in pairs(dialogGui:GetChildren()) do
+    for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
         if (v:IsA("TextButton") and v.TextLabel.Text == QNameBox.Text) then
-            while dialogGui.Option1.TextLabel.Text ~= "Confirm" do 
-                AI.btnClicker(v,main)
+            while BlxFrtVars.DialogFrame.Option1.TextLabel.Text ~= "Confirm" do 
+                AI.btnClicker(v,BlxFrtVars.MainGUI)
                 wait(0.25) 
             end
             break
         end
     end
-    wait(1)
-    AI.btnClicker(dialogGui.Option1,main)
+    wait(0.5)
+    for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
+        if (v:IsA("TextButton") and v.TextLabel.Text == "Confirm") then
+            while AI.GetDialogText() ~= "[Quest accepted.]" do 
+                setclipboard(AI.GetDialogText())
+                AI.btnClicker(v,BlxFrtVars.MainGUI)
+                wait(0.25) 
+            end
+            break
+        end
+    end
     wait(0.25)
-    while dialogGui.Visible do 
+    while BlxFrtVars.DialogFrame.Visible do 
         AI.Mouse1Click()
         wait(0.25)
     end
@@ -442,12 +488,16 @@ local function autoFarm()
         AI.SmartMove(v.HumanoidRootPart)
         Noclipping:Disconnect()
         NoclipLoop(false)
-        if (BlxFrtVars.WeaponHasKb) then sFLY() end
         while (v.Humanoid.Health > 0) do
+            if (BlxFrtVars.WeaponHasKb) then sFLY() end
             AI.Mouse1Click()
-            wait(0.1)
+            if (v.HumanoidRootPart.Position - char.HumanoidRootPart.Position).Magnitude > 5 and not BlxFrtVars.WeaponHasKb then
+                AI.SmartMove(v.HumanoidRootPart)
+            end
+            wait(0.2)
+            if (BlxFrtVars.WeaponHasKb) then NOFLY() end
+            wait(0.05)
         end
-        if (BlxFrtVars.WeaponHasKb) then NOFLY() end
     end
 end
 local function autoClick()
@@ -459,9 +509,9 @@ local antiAFKRBXScriptSignal = nil
 local function antiAFKBypass(mamapurpleheart)
     if mamapurpleheart then
         antiAFKRBXScriptSignal = lplayer.Idled:connect(function()
-            vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+            VU:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
             wait(1)
-            vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+            VU:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
         end)
     else
         antiAFKRBXScriptSignal:Disconnect()
@@ -525,9 +575,10 @@ autoQuestBtn.MouseButton1Click:Connect(function()
 end)
 lplayer.CharacterAdded:Connect(function(character)
     char = character
-    while not char:FindFirstChild("Humanoid") do wait(0.1) end
+    char:WaitForChild("Humanoid")
     if (BlxFrtVars.EquipItemOnBoot ~= "") then
-        char.Humanoid:EquipTool(lplayer.Backpack:FindFirstChild(BlxFrtVars.EquipItemOnBoot))
+        print("Z")
+        char.Humanoid:EquipTool(lplayer.Backpack:WaitForChild(BlxFrtVars.EquipItemOnBoot))
     end
     if (BlxFrtVars.AutoFarm) then
         coroutine.wrap(autoFarm)() -- coroutine threads use less memory than normal threads???
@@ -546,33 +597,6 @@ end)
 getCurLocBtn.MouseButton1Click:Connect(function()
     curPlrLocBox.Text = tostring(char.HumanoidRootPart.Position)
 end)
-
-if not WRDAPI then -- WTF? WeAreDevs can't even do some shit in blacklisting check???
-    -- Load the configuration.
-    local jsCFG = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/teppyboy/RbxScripts/master/Misc/ZeroFuruit/ZeroFuruitCfg.json"))
-    print("ZeroFuruit version: "..jsCFG.version)
-    -- Exploit blacklist check
-    local function actionAnalyzer(actionname, reason)
-        if (actionname == "kick") then
-            lplayer:Kick(reason)
-        elseif (actionname == "warn") then
-            warn(reason)
-        end
-    end
-    for i, v in pairs(jsCFG.blacklistExploits) do
-        print("Blacklist exploit check: "..v.name)
-        for ba, ka in pairs(v.scripts) do
-            print("Begin run script check: "..ka)
-            if loadstring(ka)() then
-                actionAnalyzer(v.action, v.reason)
-                break
-            end
-        end
-        print("The exploit is not '"..v.name.."'")
-    end
-else
-    warn("WeAreDevs API exploits based is very unstable, use it at your own risk of memory leaks and more...")
-end
 -- Finally, show the GUI
 TitleTxt:TweenPosition(UDim2.new(0.5, -320,0.5, -180),Enum.EasingDirection.Out,Enum.EasingStyle.Quart,1,true)
 local TMPPOS = UDim2.new(0, TitleTxt.AbsolutePosition.X, 0, TitleTxt.AbsolutePosition.Y)
