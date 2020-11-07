@@ -2,24 +2,38 @@
 if not WRDAPI then -- WTF? WeAreDevs can't even do some shit in blacklisting check???
     local jsCFG = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/teppyboy/RbxScripts/master/Misc/ZeroFuruit/ZeroFuruitCfg.json"))
     print("ZeroFuruit version: "..jsCFG.version)
-    -- Exploit blacklist check
+    local function isStringInTable(tablee, stringg)
+        for i, v in pairs(tablee) do
+            if v == stringg then
+                return true
+            end
+        end
+        return false
+    end
     local function actionAnalyzer(actionname, reason)
         if (actionname == "kick") then
             lplayer:Kick(reason)
+        elseif (actionname == "print") then
+            print(reason)
         elseif (actionname == "warn") then
             warn(reason)
         end
     end
-    for i, v in pairs(jsCFG.blacklistExploits) do
-        print("Blacklist exploit check: "..v.name)
+    for i, v in pairs(jsCFG.exploits) do
+        print("Exploit check: "..v.name)
         for ba, ka in pairs(v.functions) do
             print("Begin check for function: "..ka)
-            if getgenv()[ka] then
+            local isExp = false
+            if getgenv()[ka] and not isStringInTable(ka, v.fakefunctions) then
+                print("The exploit is '"..v.name.."'")
+                isExp = true
                 actionAnalyzer(v.action, v.reason)
                 break
             end
         end
-        print("The exploit is not '"..v.name.."'")
+        if not isExp then
+            print("The exploit is not '"..v.name.."'")
+        end
     end
 else
     lplayer:Kick([[WeAreDevs API exploits based are NOT supported due to Memory Leaks (instant Mem Leaks from 0.5GB -> 1.5GB when activate the Auto Farm)
@@ -290,13 +304,12 @@ end
 local VU = game:GetService("VirtualUser")
 local TS = game:GetService("TweenService")
 local function shamblesTo(part1, part2)
-    local targetCFrame = part2.CFrame
-    local tweeter = TS:Create(part1 ,TweenInfo.new(math.abs((part2.Position - part1.Position).Magnitude) / char.Humanoid.WalkSpeed,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,false,0) ,{CFrame = targetCFrame})
+    local tweeter = TS:Create(part1 ,TweenInfo.new(math.abs((part2.Position - part1.Position).Magnitude) / char.Humanoid.WalkSpeed,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,false,0) ,{CFrame = part2.CFrame})
     tweeter:Play()
     while (part1.Position - part2.Position).Magnitude > 5 do 
         if (part2.Position - part2.CFrame.Position).Magnitude > 5 then
             tweeter:Stop()
-            tweeter = TS:Create(part1 ,TweenInfo.new(math.abs((part2.Position - part1.Position).Magnitude) / char.Humanoid.WalkSpeed,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,false,0) ,{CFrame = targetCFrame})
+            tweeter = TS:Create(part1 ,TweenInfo.new(math.abs((part2.Position - part1.Position).Magnitude) / char.Humanoid.WalkSpeed,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,false,0) ,{CFrame = part2.CFrame})
             tweeter:Play()
         end
         wait(0.1) 
@@ -314,9 +327,8 @@ local function moveTo(humanoid, targetPart)
             -- refresh the timeout
             humanoid:MoveTo(targetPoint, targetPart)
         end
-        if targetPart.Position ~= targetPoint then
+        if (targetPart.Position - targetPoint).Magnitude > 5 then
             targetPoint = targetPart.Position
-            -- refresh the timeout
             humanoid:MoveTo(targetPoint, targetPart)
         end
         wait()
@@ -582,7 +594,6 @@ lplayer.CharacterAdded:Connect(function(character)
     char = character
     char:WaitForChild("Humanoid")
     if (BlxFrtVars.EquipItemOnBoot ~= "") then
-        print("Z")
         char.Humanoid:EquipTool(lplayer.Backpack:WaitForChild(BlxFrtVars.EquipItemOnBoot))
     end
     if (BlxFrtVars.AutoFarm) then
