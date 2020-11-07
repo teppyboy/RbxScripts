@@ -313,7 +313,7 @@ local function moveTo(humanoid, targetPart)
             -- refresh the timeout
             humanoid:MoveTo(targetPoint, targetPart)
         end
-        wait(0.1)
+        wait(0.01)
     end
     while (targetPoint - char.HumanoidRootPart.Position).Magnitude > 5 do
         if ababa() == 'break' then break end
@@ -480,23 +480,26 @@ local function autoFarm()
             NoclipLoop(true)
         end) -- temp nc
         if BlxFrtVars.AutoQuest then
-            if not lplayer.PlayerGui.Main.Quest.Visible then
+            if not BlxFrtVars.MainGUI.Quest.Visible then
                 autoQuest()
             end
         end
-        local v = AI.getNPC(npcNameBox.Text,"nearest")
+        local v = nil
+        while v == nil do
+            v = AI.getNPC(npcNameBox.Text,"nearest")
+            wait(0.05)
+        end
         AI.SmartMove(v.HumanoidRootPart)
         Noclipping:Disconnect()
         NoclipLoop(false)
         while (v.Humanoid.Health > 0) do
-            if (BlxFrtVars.WeaponHasKb) then sFLY() end
-            AI.Mouse1Click()
-            if (v.HumanoidRootPart.Position - char.HumanoidRootPart.Position).Magnitude > 5 and not BlxFrtVars.WeaponHasKb then
+            if (v.HumanoidRootPart.Position - char.HumanoidRootPart.Position).Magnitude > 5 then
                 AI.SmartMove(v.HumanoidRootPart)
             end
+            if (BlxFrtVars.WeaponHasKb) then sFLY() end
+            AI.Mouse1Click()
             wait(0.2)
             if (BlxFrtVars.WeaponHasKb) then NOFLY() end
-            wait(0.05)
         end
     end
 end
@@ -581,6 +584,7 @@ lplayer.CharacterAdded:Connect(function(character)
         char.Humanoid:EquipTool(lplayer.Backpack:WaitForChild(BlxFrtVars.EquipItemOnBoot))
     end
     if (BlxFrtVars.AutoFarm) then
+        wait(5)
         coroutine.wrap(autoFarm)() -- coroutine threads use less memory than normal threads???
     end
 end)
