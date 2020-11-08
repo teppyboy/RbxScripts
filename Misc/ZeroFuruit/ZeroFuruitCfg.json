@@ -7,8 +7,8 @@
         "+ Auto Farm [Bypass Anti-Cheat]",
         "+ Auto Quest [Bypass Anti-Cheat] (Requires mouse1click() and Roblox window is Maximized and Focused)",
         "+ Auto Click",
-        "+ Anti-AFK Bypass [Yes]",
-        "+ Respawn support (In case someone killed you)",
+        "+ Anti-AFK Bypass (As every script has)",
+        "+ Respawn support + Auto Equip (In case someone killed you)",
         "+ Crappy UI [Most Exclusive Feature]",
         "",
         "NOTE:",
@@ -19,7 +19,7 @@
         "",
         "# I hope you enjoy using this GUI as much as i creating this :D",
         "TODO:",
-        "~ Support Equip Accessory and Buso Haki on spawn",
+        "~ Improve the Auto Farm (Teleport thingy)",
         "~ Improve the script (forever)"
     ],
     "exploits": 
