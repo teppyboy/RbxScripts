@@ -1,4 +1,6 @@
 -- Load the configuration.
+local EXPLOIT = nil
+local noticeTxt = ""
 if not WRDAPI then -- WTF? WeAreDevs can't even do some shit in blacklisting check???
     local jsCFG = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/teppyboy/RbxScripts/master/Misc/ZeroFuruit/ZeroFuruitCfg.json"))
     print("ZeroFuruit version: "..jsCFG.version)
@@ -27,13 +29,24 @@ if not WRDAPI then -- WTF? WeAreDevs can't even do some shit in blacklisting che
             if getgenv()[ka] and not isStringInTable(v.fakefunctions,ka) then
                 print("The exploit is '"..v.name.."'")
                 isExp = true
+                EXPLOIT = v.name
                 actionAnalyzer(v.action, v.reason)
                 break
             end
         end
         if not isExp then
             print("The exploit is not '"..v.name.."'")
+        else
+            break
         end
+    end
+    if EXPLOIT == nil then
+        print("Unknown exploit, setting to Generic type")
+        EXPLOIT = "generic"
+    end
+    -- Fetch notice text.
+    for i, v in pairs(jsCFG.notice) do
+        noticeTxt = noticeTxt..v..string.char(10)
     end
 else
     lplayer:Kick([[WeAreDevs API exploits based are NOT supported due to Memory Leaks (instant Mem Leaks from 0.5GB -> 1.5GB when activate the Auto Farm)
@@ -51,22 +64,14 @@ local function CreateInstance(cls,props)
     return inst
 end
     
-local ZeroFuruit = CreateInstance('ScreenGui',{DisplayOrder=0,Enabled=true,ResetOnSpawn=true,Name='ZeroFuruit', Parent=game.CoreGui})
+local ZeroFuruit = CreateInstance('ScreenGui',{DisplayOrder=0,Enabled=true,ResetOnSpawn=false,Name='ZeroFuruit', Parent=game.CoreGui})
 local TitleTxt = CreateInstance('TextLabel',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='ZeroFuruit',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=false,AnchorPoint=Vector2.new(0.5, 0.5),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0.5, -320,1.5, -180),Rotation=0,Selectable=false,Size=UDim2.new(0, 640, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='TitleTxt',Parent = ZeroFuruit})
 local MainFrm = CreateInstance('Frame',{Style=Enum.FrameStyle.Custom,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.117647, 0.117647, 0.117647),BackgroundTransparency=0,BorderColor3=Color3.new(0.117647, 0.117647, 0.117647),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 0, 0, 20),Rotation=0,Selectable=false,Size=UDim2.new(0, 640, 0, 340),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name = 'MainFrm',Parent = TitleTxt})
 local MainTabBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Main',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.313726, 0.313726, 0.313726),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 0, 0, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 50, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='MainTabBtn',Parent = MainFrm})
 local MainTabBtnTF = CreateInstance('Frame',{Style=Enum.FrameStyle.Custom,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 0, 1, 0),Rotation=0,Selectable=false,Size=UDim2.new(0, 640, 0, 320),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name = 'MainTabBtnTF',Parent = MainTabBtn})
-local TextBox = CreateInstance('TextBox',{ClearTextOnFocus=false,Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,MultiLine=true,Text=[[Welcome to ZeroFuruit!
-This GUI is designed for [Blox Fruits]
-Features:
-+ Auto Farm (Walk To NPC) [Unpatched]
-+ Auto Quest (Walk To NPC) [Beta] (Requires mouse1click())
-+ Auto Click (As it intended to be)
-+ Anti-AFK Bypass (Finally)
+-- Notice Box
+local TextBox = CreateInstance('TextBox',{ClearTextOnFocus=false,Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,MultiLine=true,Text=noticeTxt,TextColor3=Color3.new(1, 1, 1), PlaceholderText='', PlaceholderColor3=Color3.new(0.7, 0.7, 0.7),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Left,TextYAlignment=Enum.TextYAlignment.Top,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0.0109374998, 0, 0.0218749996, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 626, 0, 305),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='TextBox',Parent = MainTabBtnTF})
 
-NOTE: This might be able to bypass the Anticheat but NOT other players\' eyes.
-
-## I hope you enjoy using this GUI as much as i creating this :)]],TextColor3=Color3.new(1, 1, 1), PlaceholderText='', PlaceholderColor3=Color3.new(0.7, 0.7, 0.7),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Left,TextYAlignment=Enum.TextYAlignment.Top,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0.0109374998, 0, 0.0218749996, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 626, 0, 305),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='TextBox',Parent = MainTabBtnTF})
 local AutoTabBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Auto',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.313726, 0.313726, 0.313726),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0.078125, 0, 0, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 50, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='AutoTabBtn',Parent = MainFrm})
 local AutoTabBtnTF = CreateInstance('Frame',{Style=Enum.FrameStyle.Custom,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(-1, 0, 1, 0),Rotation=0,Selectable=false,Size=UDim2.new(0, 640, 0, 320),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=false,ZIndex=1,Name = 'AutoTabBtnTF',Parent = AutoTabBtn})
 local npcListSF = CreateInstance('ScrollingFrame',{BottomImage='rbxasset://textures/ui/Scroll/scroll-bottom.png',CanvasPosition=Vector2.new(0, 0),CanvasSize=UDim2.new(0, 0, 0.5, 0),MidImage='rbxasset://textures/ui/Scroll/scroll-middle.png',ScrollBarThickness=5,ScrollingEnabled=true,TopImage='rbxasset://textures/ui/Scroll/scroll-top.png',Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0392157, 0.0392157, 0.0392157),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=true,Draggable=false,Position=UDim2.new(0, 7, 0, 62),Rotation=0,Selectable=true,Size=UDim2.new(0, 308, 0, 60),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='npcListSF',Parent = AutoTabBtnTF})
@@ -409,7 +414,7 @@ AI.Mouse1Click = function()
     VU:ClickButton1(Vector2.new(0,0))
 end
 AI.HWMouse1Click = function()
-    if is_sirhurt_closure then
+    if EXPLOIT == "sirhurt" then
         leftclick()
     else
         mouse1click()
