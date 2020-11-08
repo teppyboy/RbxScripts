@@ -1,5 +1,27 @@
 {
-    "version" : "unstable-2020.07.11",
+    "version" : "unstable-2020.08.11",
+    "notice": [
+        "Welcome to ZeroFuruit!",
+        "This GUI is designed for [a random game]",
+        "Features:",
+        "+ Auto Farm [Bypass Anti-Cheat]",
+        "+ Auto Quest [Bypass Anti-Cheat] (Requires mouse1click() and Roblox window is Maximized and Focused)",
+        "+ Auto Click",
+        "+ Anti-AFK Bypass [Yes]",
+        "+ Respawn support (In case someone killed you)",
+        "+ Crappy UI [Most Exclusive Feature]",
+        "",
+        "NOTE:",
+        "- This might be able to bypass the Anticheat but NOT other players' eyes.",
+        "- This script works best with Logia/Chop effect when Auto Farm",
+        "- Although its designed to bypass ban, i don't take any responsibility if your account get banned.",
+        "- This script partially support SirHurt because how horrible coding it is (Will get removed in the future)",
+        "",
+        "# I hope you enjoy using this GUI as much as i creating this :D",
+        "TODO:",
+        "~ Support Equip Accessory and Buso Haki on spawn",
+        "~ Improve the script (forever)"
+    ],
     "exploits": 
     {
         "sirhurt": {
@@ -10,7 +32,7 @@
             "reason": "This script isn't tested on this exploit, use other exploits or wait for the developer to fix. SirHurt support might get removed in the future."
         },
         "synapse": {
-            "name": "syn",
+            "name": "synapse",
             "functions": ["syn"],
             "fakefunctions": ["is_sirhurt_closure"],
             "action": "warn",
