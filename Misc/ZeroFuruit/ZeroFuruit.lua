@@ -493,7 +493,6 @@ local function autoQuest()
     for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
         if (v:IsA("TextButton") and v.TextLabel.Text == "Confirm") then
             while AI.GetDialogText() ~= "[Quest accepted.]" do 
-                setclipboard(AI.GetDialogText())
                 AI.btnClicker(v,BlxFrtVars.MainGUI)
                 wait(0.25) 
             end
@@ -528,7 +527,7 @@ local function autoFarm()
             wait()
         end
         print("L4")
-        while (v.Humanoid.Health > 0) do
+        while (v.Humanoid.Health > 0) and v:FindFirstChild("HumanoidRootPart") ~= nil do
             print("LH1")
             if (v.HumanoidRootPart.Position - char.HumanoidRootPart.Position).Magnitude > 5 then
                 print("LHS1")
