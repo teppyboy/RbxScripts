@@ -304,12 +304,14 @@ end
 local VU = game:GetService("VirtualUser")
 local TS = game:GetService("TweenService")
 local function shamblesTo(part1, part2)
-    local tweeter = TS:Create(part1 ,TweenInfo.new(math.abs((part2.Position - part1.Position).Magnitude) / char.Humanoid.WalkSpeed,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,false,0) ,{CFrame = part2.CFrame})
+    local CFreme = part2.CFrame
+    local tweeter = TS:Create(part1 ,TweenInfo.new(math.abs((part2.Position - part1.Position).Magnitude) / char.Humanoid.WalkSpeed,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,false,0) ,{CFrame = CFreme})
     tweeter:Play()
     while (part1.Position - part2.Position).Magnitude > 5 do 
-        if (part2.Position - part2.CFrame.Position).Magnitude > 5 then
-            tweeter:Stop()
-            tweeter = TS:Create(part1 ,TweenInfo.new(math.abs((part2.Position - part1.Position).Magnitude) / char.Humanoid.WalkSpeed,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,false,0) ,{CFrame = part2.CFrame})
+        if (part2.Position - CFreme.Position).Magnitude > 5 then
+            tweeter:Cancel()
+            CFreme = part2.CFrame
+            tweeter = TS:Create(part1 ,TweenInfo.new(math.abs((part2.Position - part1.Position).Magnitude) / char.Humanoid.WalkSpeed,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,false,0) ,{CFrame = CFreme})
             tweeter:Play()
         end
         wait(0.1) 
@@ -324,14 +326,13 @@ local function moveTo(humanoid, targetPart)
             if not (humanoid and humanoid.Parent) then
                 return 'break'
             end
+            if (targetPart.Position - targetPoint).Magnitude > 5 then
+                targetPoint = targetPart.Position
+            end
             -- refresh the timeout
             humanoid:MoveTo(targetPoint, targetPart)
         end
-        if (targetPart.Position - targetPoint).Magnitude > 5 then
-            targetPoint = targetPart.Position
-            humanoid:MoveTo(targetPoint, targetPart)
-        end
-        wait()
+        wait(0.1)
     end
     while (targetPoint - char.HumanoidRootPart.Position).Magnitude > 5 do
         if ababa() == 'break' then break end
@@ -495,21 +496,32 @@ end
 game:GetService('RunService').Stepped:connect(NoclipLoop)
 local function autoFarm()
     while wait() and BlxFrtVars.AutoFarm and (char:WaitForChild("Humanoid",5).Health > 0) do
+        print("L1")
         if BlxFrtVars.AutoQuest then
+            print("AQ1")
             if not BlxFrtVars.MainGUI.Quest.Visible then
+                print("AQA1")
                 autoQuest()
             end
         end
+        print("L2")
         local v
+        print("L3")
         while v == nil do
+            print("LL1")
             v = AI.getNPC(npcNameBox.Text,"nearest")
+            print("LL2")
             print(v)
             wait()
         end
+        print("L4")
         while (v.Humanoid.Health > 0) do
+            print("LH1")
             if (v.HumanoidRootPart.Position - char.HumanoidRootPart.Position).Magnitude > 5 then
+                print("LHS1")
                 AI.SmartMove(v.HumanoidRootPart)
             end
+            print("LH2")
             if (BlxFrtVars.WeaponHasKb) then sFLY() end
             AI.Mouse1Click()
             wait(0.2)
