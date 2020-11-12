@@ -1,12 +1,13 @@
 {
-    "version" : "unstable-2020.08.11.2252",
+    "version" : "unstable-2020.12.11.2056",
     "notice": [
         "Welcome to ZeroFuruit!",
         "This GUI is designed for [a random game]",
         "Features:",
         "+ Auto Farm [Bypass Anti-Cheat]",
-        "+ Auto Quest [Bypass Anti-Cheat] (Requires mouse1click() and Roblox window is Maximized and Focused)",
+        "+ Auto Quest [Bypass Anti-Cheat] (Requires mouse1click() + Roblox window is Maximized and Focused)",
         "+ Auto Click",
+        "+ Auto Use Skills",
         "+ Anti-AFK Bypass (As every script has)",
         "+ Respawn support + Auto Equip (In case someone killed you or Lava)",
         "+ Crappy UI [Most Exclusive Feature]",
@@ -16,10 +17,11 @@
         "- This script works best with Logia/Chop effect when Auto Farm",
         "- Although its designed to bypass the Anti-Cheat, i don't take any responsibility if your account get banned.",
         "- This script partially support SirHurt because how horrible coding it is (Will get removed in the future)",
+        "- Lastly, this does NOT rely on any Remotes/Bindables",
         "",
         "# I hope you enjoy using this GUI as much as i creating this :D",
         "TODO:",
-        "~ Improve the Auto Farm (Teleport thingy)",
+        "~ Simple Ken Auto Farm mode",
         "~ Improve the script (forever)"
     ],
     "exploits": 
@@ -44,6 +46,13 @@
             "fakefunctions": [],
             "action": "print",
             "reason": "#KrnlGang << https://docs.krnl.rocks/index.html >> #KrnlGang"
+        },
+        "aqua": {
+            "name": "aqua",
+            "functions": ["AQUA_IS_THE_BEST_GODESS"],
+            "fakefunctions": [],
+            "action": "print",
+            "reason": "Hey, looks like you're using my skidded Axon exploit called Aqua, thanks for using :)"
         }
     }
 }
