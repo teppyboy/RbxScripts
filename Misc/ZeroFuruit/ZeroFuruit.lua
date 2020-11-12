@@ -1,4 +1,6 @@
 -- Load the configuration.
+local Players = game:GetService("Players")
+local lplayer = Players.LocalPlayer
 local EXPLOIT = nil
 local noticeTxt = ""
 if not WRDAPI then -- WTF? WeAreDevs can't even do some shit in blacklisting check???
@@ -295,8 +297,6 @@ coroutine.wrap(function()
     until ZeroFuruit == nil
 end)()
 -- Script
-local Players = game:GetService("Players")
-local lplayer = Players.LocalPlayer
 local char = lplayer.Character
 local BlxFrtVars = {}
 BlxFrtVars.WeaponHasKb = false
