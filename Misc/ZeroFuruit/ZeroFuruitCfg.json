@@ -1,5 +1,5 @@
 {
-    "version" : "unstable-2020.12.11.2056",
+    "version" : "unstable-2020.15.11.2251",
     "notice": [
         "Welcome to ZeroFuruit!",
         "This GUI is designed for [a random game]",
@@ -7,8 +7,9 @@
         "+ Auto Farm [Bypass Anti-Cheat]",
         "+ Auto Quest [Bypass Anti-Cheat] (Requires mouse1click() + Roblox window is Maximized and Focused)",
         "+ Auto Click",
-        "+ Auto Use Skills",
+        "+ Auto Use Skills [BANNABLE!]",
         "+ Anti-AFK Bypass (As every script has)",
+        "+ Auto Noob Sword Farm (Semi-Tested)",
         "+ Respawn support + Auto Equip (In case someone killed you or Lava)",
         "+ Crappy UI [Most Exclusive Feature]",
         "",
@@ -16,14 +17,15 @@
         "[IMPORTANT] - Auto Skill Spammer when activated for a long time will get you a Warning for first ",
         "attempt for trying to 'lag' the server and second time they'll ban you",
         "- This might be able to bypass the Anticheat but NOT other players' eyes.",
-        "- This script works best with Logia/Chop effect when Auto Farm",
         "- Although its designed to bypass the Anti-Cheat, i don't take any responsibility if your account get banned.",
         "- This script partially support SirHurt because how horrible coding it is (Will get removed in the future)",
         "- Lastly, this does NOT rely on any Remotes/Bindables",
         "",
         "# I hope you enjoy using this GUI as much as i creating this :D",
+        "## Please don't post this script in V3rm or any website, thanks :)",
         "TODO:",
         "~ Simple Ken Auto Farm mode",
+        "~ Complete the Noob Sword test (because it takes so long to test)",
         "~ Improve the script (forever)"
     ],
     "exploits": 
@@ -49,9 +51,16 @@
             "action": "print",
             "reason": "#KrnlGang << https://docs.krnl.rocks/index.html >> #KrnlGang"
         },
+        "wrdapi":{
+            "name": "WeAreDevs API",
+            "functions": ["WRDAPI"],
+            "fakefunctions": [],
+            "action": "kick",
+            "reason": "Don't try to trick me fools, real WRDAPI can't even do this shit."
+        },
         "aqua": {
             "name": "aqua",
-            "functions": ["AQUA_IS_THE_BEST_GODESS"],
+            "functions": ["AQUA_SAMA"],
             "fakefunctions": [],
             "action": "print",
             "reason": "Hey, looks like you're using my skidded Axon exploit called Aqua, thanks for using :)"
