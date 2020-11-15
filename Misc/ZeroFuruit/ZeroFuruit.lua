@@ -1,6 +1,38 @@
+-- Variables
+local VU = game:GetService("VirtualUser")
+local TS = game:GetService("TweenService")
+local RS = game:GetService('RunService')
+local BlxFrtVars = {}
+BlxFrtVars.Players = game:GetService("Players")
+BlxFrtVars.LocalPlayer = BlxFrtVars.Players.LocalPlayer
+BlxFrtVars.Character = BlxFrtVars.LocalPlayer.Character
+BlxFrtVars.Humanoid = BlxFrtVars.Character.Humanoid
+BlxFrtVars.WeaponHasKb = false
+BlxFrtVars.AutoQuest = false
+BlxFrtVars.AutoFarm = false
+BlxFrtVars.AutoQuest = false
+BlxFrtVars.EquipItemOnBoot = ""
+BlxFrtVars.TeleportMode = "Auto" -- can be Auto/Unsafe/Safe (Auto = auto, Unsafe = always shamblesTo(), Safe = always moveTo())
+BlxFrtVars.AutoClick = false
+BlxFrtVars.HWAutoClick = false
+BlxFrtVars.ACInterval = 0.1
+BlxFrtVars.AntiAFKBypass = false
+BlxFrtVars.EquipAccesoryOnBoot = ""
+BlxFrtVars.EquipBusoOnBoot = false
+BlxFrtVars.AutoSprintOnBoot = false
+BlxFrtVars.MainGUI = BlxFrtVars.LocalPlayer.PlayerGui.Main
+BlxFrtVars.DialogFrame = BlxFrtVars.MainGUI.Dialogue
+BlxFrtVars.Buttons = {}
+BlxFrtVars.Buttons.Z = false
+BlxFrtVars.Buttons.X = false
+BlxFrtVars.Buttons.C = false
+BlxFrtVars.Buttons.V = false
+BlxFrtVars.Buttons.F = false
+BlxFrtVars.Buttons.T = false
+-- Unstable features variables
+BlxFrtVars.UAutoLSD = false
+BlxFrtVars.UBuddhaFix = false -- Not used by anything atm
 -- Load the configuration.
-local Players = game:GetService("Players")
-local lplayer = Players.LocalPlayer
 local EXPLOIT = nil
 local noticeTxt = ""
 if not WRDAPI then -- WTF? WeAreDevs can't even do some shit in blacklisting check???
@@ -16,7 +48,7 @@ if not WRDAPI then -- WTF? WeAreDevs can't even do some shit in blacklisting che
     end
     local function actionAnalyzer(actionname, reason)
         if (actionname == "kick") then
-            lplayer:Kick(reason)
+            BlxFrtVars.LocalPlayer:Kick(reason)
         elseif (actionname == "print") then
             print(reason)
         elseif (actionname == "warn") then
@@ -51,9 +83,11 @@ if not WRDAPI then -- WTF? WeAreDevs can't even do some shit in blacklisting che
         noticeTxt = noticeTxt..v..string.char(10)
     end
 else
-    lplayer:Kick([[WeAreDevs API exploits based are NOT supported due to Memory Leaks (instant Mem Leaks from 0.5GB -> 1.5GB when activate the Auto Farm)
+    BlxFrtVars.LocalPlayer:Kick([[WeAreDevs API exploits based are NOT supported due to Memory Leaks 
+    (instant Mem Leaks from 0.5GB -> 1.5GB when activate the Auto Farm)
     
-    If you can't find any exploit then use Krnl/Oxygen X/etc... (Even Proxo and EasyExploits API exploits based too)
+    If you can't find any exploit then use Krnl/Oxygen X/etc... (Even Proxo and EasyExploits API exploits based too
+    because EEAPI's dev is Electron's dev (Co) so it dosen't trash like your thought)
     
     NOTE: Shadow works fine but you WILL expect Memory Leaks like WRD API
     NOTE2: Don't use Furk, Coco Z or any shady exploit in WRD.net]])
@@ -71,9 +105,9 @@ local TitleTxt = CreateInstance('TextLabel',{Font=Enum.Font.Ubuntu,FontSize=Enum
 local MainFrm = CreateInstance('Frame',{Style=Enum.FrameStyle.Custom,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.117647, 0.117647, 0.117647),BackgroundTransparency=0,BorderColor3=Color3.new(0.117647, 0.117647, 0.117647),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 0, 0, 20),Rotation=0,Selectable=false,Size=UDim2.new(0, 640, 0, 340),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name = 'MainFrm',Parent = TitleTxt})
 local MainTabBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Main',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.313726, 0.313726, 0.313726),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 0, 0, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 70, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='MainTabBtn',Parent = MainFrm})
 local MainTabBtnTF = CreateInstance('Frame',{Style=Enum.FrameStyle.Custom,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 0, 1, 0),Rotation=0,Selectable=false,Size=UDim2.new(0, 640, 0, 320),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name = 'MainTabBtnTF',Parent = MainTabBtn})
-local ScrollingFrame = CreateInstance('ScrollingFrame',{BottomImage='rbxasset://textures/ui/Scroll/scroll-bottom.png',CanvasPosition=Vector2.new(0, 0),CanvasSize=UDim2.new(0, 0, 1.25, 0),MidImage='rbxasset://textures/ui/Scroll/scroll-middle.png',ScrollBarThickness=12,ScrollingEnabled=true,TopImage='rbxasset://textures/ui/Scroll/scroll-top.png',Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=true,Draggable=false,Position=UDim2.new(0.015625, 0, 0.0281249993, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 620, 0, 300),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='ScrollingFrame',Parent = MainTabBtnTF})
+local ScrollingFrame = CreateInstance('ScrollingFrame',{BottomImage='rbxasset://textures/ui/Scroll/scroll-bottom.png',CanvasPosition=Vector2.new(0, 0),CanvasSize=UDim2.new(1.25, 0, 1.25, 0),MidImage='rbxasset://textures/ui/Scroll/scroll-middle.png',ScrollBarThickness=12,ScrollingEnabled=true,TopImage='rbxasset://textures/ui/Scroll/scroll-top.png',Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=true,Draggable=false,Position=UDim2.new(0.015625, 0, 0.0281249993, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 620, 0, 300),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='ScrollingFrame',Parent = MainTabBtnTF})
 
-local TextBox = CreateInstance('TextBox',{ClearTextOnFocus=false,Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,MultiLine=true,Text=noticeTxt,TextColor3=Color3.new(1, 1, 1), PlaceholderText='', PlaceholderColor3=Color3.new(0.7, 0.7, 0.7),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Left,TextYAlignment=Enum.TextYAlignment.Top,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(-0.000352822593, 0, 0, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 620, 0, 300),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='TextBox',Parent = ScrollingFrame})
+local TextBox = CreateInstance('TextBox',{ClearTextOnFocus=false,Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,MultiLine=true,Text=noticeTxt,TextColor3=Color3.new(1, 1, 1), PlaceholderText='', PlaceholderColor3=Color3.new(0.7, 0.7, 0.7),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Left,TextYAlignment=Enum.TextYAlignment.Top,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(-0.000352822593, 0, 0, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 730, 0, 300),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='TextBox',Parent = ScrollingFrame})
 
 local AutoTabBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Auto',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.313726, 0.313726, 0.313726),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0.218750015, 0, 0, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 70, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='AutoTabBtn',Parent = MainFrm})
 local AutoTabBtnTF = CreateInstance('Frame',{Style=Enum.FrameStyle.Custom,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(-2, 0, 1, 0),Rotation=0,Selectable=false,Size=UDim2.new(0, 640, 0, 320),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=false,ZIndex=1,Name = 'AutoTabBtnTF',Parent = AutoTabBtn})
@@ -98,6 +132,9 @@ local curPlrLocBox = CreateInstance('TextBox',{ClearTextOnFocus=false,Font=Enum.
 local autoClickBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Auto Click [FALSE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 329, 0, 202),Rotation=0,Selectable=true,Size=UDim2.new(0, 304, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='autoClickBtn',Parent = AutoTabBtnTF})
 local antiAFKBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Anti-AFK Bypass [FALSE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 202),Rotation=0,Selectable=true,Size=UDim2.new(0, 308, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='antiAFKBtn',Parent = AutoTabBtnTF})
 local HWautoClickBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Hardware Auto Click [FALSE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 329, 0, 228),Rotation=0,Selectable=true,Size=UDim2.new(0, 304, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='HWautoClickBtn',Parent = AutoTabBtnTF})
+local LGSfarmBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Auto Noob Sword Farm [FALSE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 228),Rotation=0,Selectable=true,Size=UDim2.new(0, 308, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='LGSfarmBtn',Parent = AutoTabBtnTF})
+local intervalTxt = CreateInstance('TextLabel',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Interval (ms):',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 329, 0, 255),Rotation=0,Selectable=false,Size=UDim2.new(0, 81, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='intervalTxt',Parent = AutoTabBtnTF})
+local intervalBox = CreateInstance('TextBox',{ClearTextOnFocus=false,Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,MultiLine=false,Text='',TextColor3=Color3.new(1, 1, 1), PlaceholderText='002016', PlaceholderColor3=Color3.new(0.7, 0.7, 0.7),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0392157, 0.0392157, 0.0392157),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 417, 0, 255),Rotation=0,Selectable=true,Size=UDim2.new(0, 216, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='intervalBox',Parent = AutoTabBtnTF})
 local Auto2TabBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Auto (2)',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.313726, 0.313726, 0.313726),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0.328125, 0, 0, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 70, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='Auto2TabBtn',Parent = MainFrm})
 local Auto2TabBtnTF = CreateInstance('Frame',{Style=Enum.FrameStyle.Custom,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(-3, 0, 0.949999988, 0),Rotation=0,Selectable=false,Size=UDim2.new(0, 640, 0, 320),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=false,ZIndex=1,Name = 'Auto2TabBtnTF',Parent = Auto2TabBtn})
 local tpModeBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Teleport Bypass Mode: [AUTO]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 7),Rotation=0,Selectable=true,Size=UDim2.new(0, 308, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='tpModeBtn',Parent = Auto2TabBtnTF})
@@ -135,9 +172,9 @@ local MinMaxBtn = CreateInstance('ImageButton',{Image='',ImageColor3=Color3.new(
 
 -- Drag
 local dragger = {}; do
-    local mouse        = game:GetService("Players").LocalPlayer:GetMouse();
+    local mouse        = BlxFrtVars.LocalPlayer:GetMouse();
     local inputService = game:GetService('UserInputService');
-    local heartbeat    = game:GetService("RunService").Heartbeat;
+    local heartbeat    = RS.Heartbeat;
     -- // credits to Ririchi / Inori for this cute drag function :)
     function dragger.new(frame)
         local s, event = pcall(function()
@@ -146,7 +183,6 @@ local dragger = {}; do
 
         if s then
             frame.Active = true;
-            
             event:connect(function()
                 local input = frame.InputBegan:connect(function(key)
                     if key.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -246,9 +282,8 @@ local function tweenVisTab(tab)
         wait()
     end
 end
-local tmptabs = {MainTabBtn, AutoTabBtn, Auto2TabBtn, StatusTabBtn}
 -- Auto Tab create
-for i, v in pairs(tmptabs) do
+for i, v in pairs({MainTabBtn, AutoTabBtn, Auto2TabBtn, StatusTabBtn}) do
     v.MouseButton1Click:Connect(function()
         local tartab = v[v.Name.."TF"]
         if tartab.Visible or isSwitchingTab then return end
@@ -258,19 +293,19 @@ for i, v in pairs(tmptabs) do
 end
 gameIdTxt.Text = "Game ID: "..game.GameId
 gameIdCopyBtn.MouseButton1Click:Connect(function()
-    setclipboard(game.GameId)
+    setclipboard(tostring(game.GameId))
 end)
 placeIdTxt.Text = "Place ID: "..game.PlaceId
 placeIdCopyBtn.MouseButton1Click:Connect(function()
-    setclipboard(game.PlaceId)
+    setclipboard(tostring(game.PlaceId))
 end)
 jobIdTxt.Text = "Job ID: "..game.JobId
 jobIdCopyBtn.MouseButton1Click:Connect(function()
-    setclipboard(game.JobId)
+    setclipboard(tostring(game.JobId))
 end)
 placeVerTxt.Text = "Place Version: "..game.PlaceVersion
 placeVerCopyBtn.MouseButton1Click:Connect(function()
-    setclipboard(game.PlaceVersion)
+    setclipboard(tostring(game.PlaceVersion))
 end)
 coroutine.wrap(function()
     repeat
@@ -297,29 +332,6 @@ coroutine.wrap(function()
     until ZeroFuruit == nil
 end)()
 -- Script
-local char = lplayer.Character
-local BlxFrtVars = {}
-BlxFrtVars.WeaponHasKb = false
-BlxFrtVars.AutoQuest = false
-BlxFrtVars.AutoFarm = false
-BlxFrtVars.AutoQuest = false
-BlxFrtVars.EquipItemOnBoot = ""
-BlxFrtVars.TeleportMode = "Auto" -- can be Auto/Unsafe/Safe (Auto = auto, Unsafe = always shamblesTo(), Safe = always moveTo())
-BlxFrtVars.AutoClick = false
-BlxFrtVars.HWAutoClick = false
-BlxFrtVars.AntiAFKBypass = false
-BlxFrtVars.EquipAccesoryOnBoot = ""
-BlxFrtVars.EquipBusoOnBoot = false
-BlxFrtVars.AutoSprintOnBoot = false
-BlxFrtVars.MainGUI = lplayer.PlayerGui.Main
-BlxFrtVars.DialogFrame = BlxFrtVars.MainGUI.Dialogue
-BlxFrtVars.Buttons = {}
-BlxFrtVars.Buttons.Z = false
-BlxFrtVars.Buttons.X = false
-BlxFrtVars.Buttons.C = false
-BlxFrtVars.Buttons.V = false
-BlxFrtVars.Buttons.F = false
-BlxFrtVars.Buttons.T = false
 antiVeloBtn.MouseButton1Click:Connect(function()
     BlxFrtVars.WeaponHasKb = not BlxFrtVars.WeaponHasKb
     antiVeloBtn.Text = "Anti Velocity By Weapons ["..tostring(BlxFrtVars.WeaponHasKb):upper().."]"
@@ -331,8 +343,8 @@ function getRoot(char)
 	return rootPart
 end
 function sFLY()
-	repeat wait() until Players.LocalPlayer and Players.LocalPlayer.Character and getRoot(Players.LocalPlayer.Character) and Players.LocalPlayer.Character:FindFirstChild('Humanoid')
-	local T = getRoot(Players.LocalPlayer.Character)
+	repeat wait() until BlxFrtVars.LocalPlayer and BlxFrtVars.Character and getRoot(BlxFrtVars.Character) and BlxFrtVars.Character:FindFirstChild('Humanoid')
+	local T = getRoot(BlxFrtVars.Character)
 	local function FLY()
 		FLYING = true
 		local BG = Instance.new('BodyGyro', T)
@@ -354,7 +366,7 @@ function sFLY()
 	FLY()
 end
 local function NoclipLoop()
-    for _, child in pairs(char:GetDescendants()) do
+    for _, child in pairs(BlxFrtVars.Character:GetDescendants()) do
         if child:IsA("BasePart") and child.CanCollide == true then
             child.CanCollide = false
         end
@@ -362,20 +374,25 @@ local function NoclipLoop()
 end
 function NOFLY()
 	FLYING = false
-	Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid').PlatformStand = false
+	BlxFrtVars.Character:FindFirstChildOfClass('Humanoid').PlatformStand = false
 end
 -- END
-local VU = game:GetService("VirtualUser")
-local TS = game:GetService("TweenService")
+-- Teleport functions
+local function unsafeTP(X, Y, Z) -- THIS SHOULD NOT BE USED TO TELEPORT DIRECTLY TO NPCS/ENEMIES BECAUSE ITS 100% BANNABLE
+    BlxFrtVars.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(X,Y,Z))
+end
+local function unsafeTPVector3(vector) -- THIS SHOULD NOT BE USED TO TELEPORT DIRECTLY TO NPCS/ENEMIES BECAUSE ITS 100% BANNABLE
+    BlxFrtVars.Character.HumanoidRootPart.CFrame = CFrame.new(vector)
+end
 local function shamblesTo(part1, part2)
     local CFreme = part2.CFrame
-    local tweeter = TS:Create(part1 ,TweenInfo.new(math.abs((part2.Position - part1.Position).Magnitude) / char.Humanoid.WalkSpeed,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,false,0) ,{CFrame = CFreme})
+    local tweeter = TS:Create(part1 ,TweenInfo.new(math.abs((part2.Position - part1.Position).Magnitude) / BlxFrtVars.Humanoid.WalkSpeed,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,false,0) ,{CFrame = CFreme})
     tweeter:Play()
     while (part1.Position - part2.Position).Magnitude > 5 do 
         if (part2.Position - CFreme.Position).Magnitude > 5 then
             tweeter:Cancel()
             CFreme = part2.CFrame
-            tweeter = TS:Create(part1 ,TweenInfo.new(math.abs((part2.Position - part1.Position).Magnitude) / char.Humanoid.WalkSpeed,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,false,0) ,{CFrame = CFreme})
+            tweeter = TS:Create(part1 ,TweenInfo.new(math.abs((part2.Position - part1.Position).Magnitude) / BlxFrtVars.Humanoid.WalkSpeed,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,false,0) ,{CFrame = CFreme})
             tweeter:Play()
         end
         wait(0.1) 
@@ -398,7 +415,7 @@ local function moveTo(humanoid, targetPart)
         end
         wait(0.1)
     end
-    while (targetPoint - char.HumanoidRootPart.Position).Magnitude > 5 do
+    while (targetPoint - BlxFrtVars.Character.HumanoidRootPart.Position).Magnitude > 5 do
         if ababa() == 'break' then break end
     end
 end
@@ -425,14 +442,14 @@ stringext.split = function(str, pat)
 -- AI table.
 local AI = {}
 AI.SmartMove = function(targetPart)
-    local hrp = char.HumanoidRootPart
+    local hrp = BlxFrtVars.Character.HumanoidRootPart
     if BlxFrtVars.TeleportMode == "Safe" then
-        moveTo(char.Humanoid, targetPart)
+        moveTo(BlxFrtVars.Humanoid, targetPart)
     elseif BlxFrtVars.TeleportMode == "Unsafe" then
         shamblesTo(hrp, targetPart)
     else -- Your "Auto" mode.
         if math.abs((targetPart.Position - hrp.Position).Y) <= 10 then
-            moveTo(char.Humanoid, targetPart)
+            moveTo(BlxFrtVars.Humanoid, targetPart)
         else
             shamblesTo(hrp, targetPart)
         end
@@ -451,7 +468,7 @@ AI.getNPC = function(name, mode)
         local nearestnpc
         local nearestnpcmag = math.huge
         for i, v in pairs(newcctable) do 
-            local abctmp = (v.HumanoidRootPart.Position - char.HumanoidRootPart.Position).Magnitude
+            local abctmp = (v.HumanoidRootPart.Position - BlxFrtVars.Character.HumanoidRootPart.Position).Magnitude
             if abctmp < nearestnpcmag then
                 nearestnpcmag = abctmp
                 nearestnpc = v
@@ -485,11 +502,11 @@ AI.KeyPress = function(keycode) -- https://developer.roblox.com/en-us/api-refere
     wait()
     VU:SetKeyUp(keycode)
     -- Workaround
-    local item = char:FindFirstChildWhichIsA("Tool")
+    local item = BlxFrtVars.Character:FindFirstChildWhichIsA("Tool")
     if item ~= nil then
-        char.Humanoid:UnequipTools()
+        BlxFrtVars.Humanoid:UnequipTools()
         wait()
-        char.Humanoid:EquipTool(item)
+        BlxFrtVars.Humanoid:EquipTool(item)
     end
 end
 AI.btnClicker = function(btn,maingui)
@@ -569,9 +586,10 @@ local function autoQuest()
         wait(0.25)
     end
 end
-game:GetService('RunService').Stepped:connect(NoclipLoop)
 local function autoFarm()
-    while wait() and BlxFrtVars.AutoFarm and (char:WaitForChild("Humanoid",5).Health > 0) do
+    while wait() and BlxFrtVars.AutoFarm and (BlxFrtVars.Character:WaitForChild("Humanoid",5).Health > 0) do
+        print("L0")
+        local zeroClip = RS.Stepped:connect(NoclipLoop)
         print("L1")
         if BlxFrtVars.AutoQuest then
             print("AQ1")
@@ -593,7 +611,7 @@ local function autoFarm()
         print("L4")
         while (v.Humanoid.Health > 0) and v:FindFirstChild("HumanoidRootPart") ~= nil do
             print("LH1")
-            if (v.HumanoidRootPart.Position - char.HumanoidRootPart.Position).Magnitude > 5 then
+            if (v.HumanoidRootPart.Position - BlxFrtVars.Character.HumanoidRootPart.Position).Magnitude > 5 then
                 print("LHS1")
                 AI.SmartMove(v.HumanoidRootPart)
             end
@@ -603,12 +621,110 @@ local function autoFarm()
             wait(0.2)
             if (BlxFrtVars.WeaponHasKb) then NOFLY() end
         end
+        print("L5")
+        zeroClip:Disconnect()
+        for _, child in pairs(BlxFrtVars.Character:GetDescendants()) do
+            if child:IsA("BasePart") and child.CanCollide == false then
+                child.CanCollide = false
+            end
+        end
+    end
+end
+local function autoLSD()
+    while wait() and BlxFrtVars.UAutoLSD do
+        print("State 1")
+        local managerNPC = AI.getQuestNPC("Manager")
+        while (managerNPC == nil) do
+            unsafeTP(-356.424713, 16.4147243, 362.088989)
+            managerNPC = AI.getQuestNPC("Manager")
+            wait(0.1)
+        end
+        print("State 2")
+        AI.SmartMove(managerNPC.Head)
+        print("State 3")
+        while not BlxFrtVars.DialogFrame.Visible do 
+            AI.HWMouse1Click()
+            wait(0.25)
+        end
+        wait(0.5)
+        for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
+            if (v:IsA("TextButton") and v.TextLabel.Text == "Talk") then
+                AI.btnClicker(v,BlxFrtVars.MainGUI)
+                break
+            end
+        end
+        wait(0.5)
+        if string.match(AI.GetDialogText(),"It's still too early") then
+            print("Case 1-0")
+            AI.Mouse1Click()
+        else
+            print("Case 1-1")
+            AI.Mouse1Click()
+            wait(0.5)
+            for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
+                if (v:IsA("TextButton") and v.TextLabel.Text == "Yeah") then
+                    AI.btnClicker(v,BlxFrtVars.MainGUI)
+                    break
+                end
+            end
+            wait(0.5)
+            if string.match(AI.GetDialogText(),"Some pirates") then
+                print("Case 2-2")
+                AI.Mouse1Click()
+            elseif string.match(AI.GetDialogText(),"Meh") then
+                print("Case 2-1")
+                AI.Mouse1Click()
+            elseif string.match(AI.GetDialogText(),"A man") then
+                print("Case 2-3")
+                AI.Mouse1Click()
+            elseif string.match(AI.GetDialogText(),"I think") then
+                print("Case 2-4")
+                AI.Mouse1Click()
+            elseif string.match(AI.GetDialogText(),"Good luck!") then
+                print("Case 2-5 [LSD came]")
+                AI.Mouse1Click()
+                wait(1)
+                local colosseumPos = Vector3.new(-2155.83813, 242.02298, 1090.67944)
+                local waterwayPos = Vector3.new(-736.809814, 13.985116, -349.90213)
+                local petalPos = Vector3.new(-1989.86694, 729.011963, -3619.8894)
+                local rockNearFujitoraLoc = Vector3.new(-2221.78491, 73.3607635, -3840.81885)
+                local graveyardHillLoc = Vector3.new(-5604.18311, 297.050812, -848.647705)
+                local usoppIslandLoc = Vector3.new(4719.04395, 8.54533291, 2877.00635)
+                local facLoc = Vector3.new(1254.21545, 73.3538513, 91.5183334)
+                for i, v in pairs({colosseumPos,waterwayPos,petalPos,rockNearFujitoraLoc,graveyardHillLoc,usoppIslandLoc,facLoc}) do
+                    unsafeTPVector3(v)
+                    wait(3)
+                    local LGS = AI.getQuestNPC("Legendary Sword Dealer ") -- Gamer Robot, very well for make it with a " " so i have to debug that shit.
+                    if LGS ~= nil then
+                        while AI.getQuestNPC("Legendary Sword Dealer ") ~= nil do
+                            AI.SmartMove(LGS.Head)
+                            AI.HWMouse1Click()
+                            wait(0.5)
+                            AI.Mouse1Click()
+                            wait(1)
+                            for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
+                                if (v:IsA("TextButton") and v.TextLabel.Text == "Purchase") then
+                                    AI.btnClicker(v,BlxFrtVars.MainGUI)
+                                    break
+                                end
+                            end
+                            wait(0.5)
+                            AI.Mouse1Click()
+                        end
+                        break
+                    end
+                end
+            else
+                print("Unknown case")
+                AI.Mouse1Click()
+            end
+        end
     end
 end
 local antiAFKRBXScriptSignal = nil
 local function antiAFKBypass(mamapurpleheart)
     if mamapurpleheart then
-        antiAFKRBXScriptSignal = lplayer.Idled:connect(function()
+        antiAFKRBXScriptSignal = BlxFrtVars.LocalPlayer.Idled:connect(function()
             VU:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
             wait(1)
             VU:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
@@ -633,8 +749,8 @@ getNPCsBtn.MouseButton1Click:Connect(function()
 end)
 getItemsBtn.MouseButton1Click:Connect(function()
     itemListRtb.Text = ""
-    char.Humanoid:UnequipTools()
-    for i,v in pairs(lplayer.Backpack:GetChildren()) do
+    BlxFrtVars.Humanoid:UnequipTools()
+    for i,v in pairs(BlxFrtVars.LocalPlayer.Backpack:GetChildren()) do
         if v:IsA("Tool") then
             itemListRtb.Text = itemListRtb.Text..v.Name..string.char(10)
         end
@@ -670,16 +786,25 @@ autoFrmBtn.MouseButton1Click:Connect(function()
     BlxFrtVars.AutoFarm = not BlxFrtVars.AutoFarm
     autoFrmBtn.Text = "Auto Farm ["..tostring(BlxFrtVars.AutoFarm):upper().."]"
     if (BlxFrtVars.AutoFarm) then
-        char = lplayer.Character
+        BlxFrtVars.Character = BlxFrtVars.LocalPlayer.Character
         coroutine.wrap(autoFarm)() -- coroutine threads use less memory than normal threads???
+    end
+end)
+LGSfarmBtn.MouseButton1Click:Connect(function()
+    BlxFrtVars.UAutoLSD = not BlxFrtVars.UAutoLSD
+    LGSfarmBtn.Text = "Auto Noob Sword Farm ["..tostring(BlxFrtVars.UAutoLSD):upper().."]"
+    if (BlxFrtVars.UAutoLSD) then
+        BlxFrtVars.Character = BlxFrtVars.LocalPlayer.Character
+        coroutine.wrap(autoLSD)() -- coroutine threads use less memory than normal threads???
     end
 end)
 autoClickBtn.MouseButton1Click:Connect(function()
     BlxFrtVars.AutoClick = not BlxFrtVars.AutoClick
     autoClickBtn.Text = "Auto Click ["..tostring(BlxFrtVars.AutoClick):upper().."]"
     if (BlxFrtVars.AutoClick) then
+        BlxFrtVars.ACInterval = (tonumber(intervalBox.Text) / 1000)
         coroutine.wrap(function()
-            while wait(0.1) and BlxFrtVars.AutoClick do
+            while wait(BlxFrtVars.ACInterval) and BlxFrtVars.AutoClick do
                 AI.Mouse1Click()
             end
         end)() -- coroutine threads use less memory than normal threads???
@@ -687,10 +812,11 @@ autoClickBtn.MouseButton1Click:Connect(function()
 end)
 HWautoClickBtn.MouseButton1Click:Connect(function()
     BlxFrtVars.HWAutoClick = not BlxFrtVars.HWAutoClick
-    autoClickBtn.Text = "Hardware Auto Click ["..tostring(BlxFrtVars.AutoClick):upper().."]"
+    HWautoClickBtn.Text = "Hardware Auto Click ["..tostring(BlxFrtVars.HWAutoClick):upper().."]"
     if (BlxFrtVars.HWAutoClick) then
+        BlxFrtVars.ACInterval = (tonumber(intervalBox.Text) / 1000)
         coroutine.wrap(function()
-            while wait(0.1) and BlxFrtVars.HWAutoClick do
+            while wait(BlxFrtVars.ACInterval) and BlxFrtVars.HWAutoClick do
                 AI.HWMouse1Click()
             end
         end)() -- coroutine threads use less memory than normal threads???
@@ -716,7 +842,7 @@ tpModeBtn.MouseButton1Click:Connect(function()
     tpModeBtn.Text = "Teleport Bypass Mode: ["..BlxFrtVars.TeleportMode:upper().."]"
 end)
 getCurLocBtn.MouseButton1Click:Connect(function()
-    curPlrLocBox.Text = tostring(char.HumanoidRootPart.Position)
+    curPlrLocBox.Text = tostring(BlxFrtVars.Character.HumanoidRootPart.Position)
 end)
 CloseBtn.MouseButton1Click:Connect(function()
     if MainFrm.Size ~= UDim2.new(0,640,0,0) then
@@ -764,16 +890,16 @@ for i, v in pairs({zBtnBtn, xBtnBtn, cBtnBtn, vBtnBtn, fBtnBtn, tBtnBtn}) do
     end)
 end
 -- Events
-lplayer.CharacterAdded:Connect(function(character)
-    char = character
-    char:WaitForChild("Humanoid")
+BlxFrtVars.LocalPlayer.CharacterAdded:Connect(function(character)
+    BlxFrtVars.Character = character
+    BlxFrtVars.Humanoid = BlxFrtVars.Character:WaitForChild("Humanoid")
     if (BlxFrtVars.EquipAccesoryOnBoot ~= "") then
-        char.Humanoid:EquipTool(lplayer.Backpack:WaitForChild(BlxFrtVars.EquipAccesoryOnBoot))
+        BlxFrtVars.Humanoid:EquipTool(BlxFrtVars.LocalPlayer.Backpack:WaitForChild(BlxFrtVars.EquipAccesoryOnBoot))
         AI.Mouse1Click()
     end
     wait()
     if (BlxFrtVars.EquipItemOnBoot ~= "") then
-        char.Humanoid:EquipTool(lplayer.Backpack:WaitForChild(BlxFrtVars.EquipItemOnBoot))
+        BlxFrtVars.Humanoid:EquipTool(BlxFrtVars.LocalPlayer.Backpack:WaitForChild(BlxFrtVars.EquipItemOnBoot))
     end
     wait(3)
     if (BlxFrtVars.EquipBusoOnBoot) then
