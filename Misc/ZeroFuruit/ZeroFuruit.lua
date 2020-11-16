@@ -243,13 +243,21 @@ local function devisAllTab()
         end
     end
     local baksize = taget.Size
-    for i, v in pairs(taget:GetChildren()) do
-        v.Visible = false
+    for i, v in pairs(taget:GetDescendants()) do
+        if v.ClassName == "TextButton" or v.ClassName == "TextBox" or v.ClassName == "TextLabel" then
+            spawn(function()
+                for color=255,taget.BackgroundColor3.R,-25 do
+                    v.TextColor3 = Color3.fromRGB(color,color,color)
+                    wait(0.001)
+                end
+                v.Visible = false
+            end)
+        end
     end
     taget:TweenSize(UDim2.new(0,0,0,320),Enum.EasingDirection.Out,Enum.EasingStyle.Quart,0.5,true, function() 
         taget.Visible = false
         taget.Size = baksize
-        for i, v in pairs(taget:GetChildren()) do
+        for i, v in pairs(taget:GetDescendants()) do
             v.Visible = true
         end
         barbaraidol = true 
@@ -267,6 +275,9 @@ local function tweenVisTab(tab)
     end
     for i, v in pairs(tab:GetDescendants()) do
         v.Visible = false
+        if v.ClassName == "TextButton" or v.ClassName == "TextBox" or v.ClassName == "TextLabel" then
+            v.TextColor3 = tab.BackgroundColor3
+        end
     end
     tab.Size = UDim2.new(0,0,0,320)
     tab.Visible = true
@@ -274,6 +285,14 @@ local function tweenVisTab(tab)
     tab:TweenSize(UDim2.new(0,640,0,320),Enum.EasingDirection.Out,Enum.EasingStyle.Quart,0.35,true, function() 
         for i, v in pairs(tab:GetDescendants()) do
             v.Visible = true
+            if v.ClassName == "TextButton" or v.ClassName == "TextBox" or v.ClassName == "TextLabel" then
+                spawn(function()
+                    for color=tab.BackgroundColor3.R,255,25 do
+                        v.TextColor3 = Color3.fromRGB(color,color,color)
+                        wait(0.001)
+                    end
+                end)
+            end
         end
         isSwitchingTab = false
         barbaraidol = true 
