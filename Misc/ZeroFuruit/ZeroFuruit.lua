@@ -682,6 +682,10 @@ local function autoLSD()
                 AI.Mouse1Click()
             elseif string.match(AI.GetDialogText(),"Good luck!") then
                 print("Case 2-5 [LSD came]")
+                while BlxFrtVars.DialogFrame.Visible do 
+                    AI.Mouse1Click()
+                    wait(0.25)
+                end
                 AI.Mouse1Click()
                 wait(1)
                 local colosseumPos = Vector3.new(-2155.83813, 242.02298, 1090.67944)
@@ -698,9 +702,17 @@ local function autoLSD()
                     if LGS ~= nil then
                         while AI.getQuestNPC("Legendary Sword Dealer ") ~= nil do
                             AI.SmartMove(LGS.Head)
-                            AI.HWMouse1Click()
+                            while not BlxFrtVars.DialogFrame.Visible do 
+                                AI.HWMouse1Click()
+                                wait(0.25)
+                            end
                             wait(0.5)
-                            AI.Mouse1Click()
+                            for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
+                                if (v:IsA("TextButton") and v.TextLabel.Text == "Talk") then
+                                    AI.btnClicker(v,BlxFrtVars.MainGUI)
+                                    break
+                                end
+                            end
                             wait(1)
                             for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
                                 if (v:IsA("TextButton") and v.TextLabel.Text == "Purchase") then
@@ -709,7 +721,10 @@ local function autoLSD()
                                 end
                             end
                             wait(0.5)
-                            AI.Mouse1Click()
+                            while BlxFrtVars.DialogFrame.Visible do 
+                                AI.Mouse1Click()
+                                wait(0.25)
+                            end
                         end
                         break
                     end
