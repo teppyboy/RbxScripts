@@ -384,10 +384,21 @@ function sFLY()
 	end
 	FLY()
 end
+local zeroClip = nil
 local function NoclipLoop()
     for _, child in pairs(BlxFrtVars.Character:GetDescendants()) do
         if child:IsA("BasePart") and child.CanCollide == true then
             child.CanCollide = false
+        end
+    end
+end
+local function deClip()
+    if zeroClip ~= nil then
+        zeroClip:Disconnect()
+        for _, child in pairs(BlxFrtVars.Character:GetDescendants()) do
+            if child:IsA("BasePart") and child.CanCollide == false then
+                child.CanCollide = false
+            end
         end
     end
 end
@@ -404,6 +415,11 @@ local function unsafeTPVector3(vector) -- THIS SHOULD NOT BE USED TO TELEPORT DI
     BlxFrtVars.Character.HumanoidRootPart.CFrame = CFrame.new(vector)
 end
 local function shamblesTo(part1, part2)
+    local selfTriggerNC = false
+    if zeroClip == nil then 
+        zeroClip = RS.Stepped:connect(NoclipLoop) 
+        selfTriggerNC = true
+    end
     local CFreme = part2.CFrame
     local tweeter = TS:Create(part1 ,TweenInfo.new(math.abs((part2.Position - part1.Position).Magnitude) / BlxFrtVars.Humanoid.WalkSpeed,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,false,0) ,{CFrame = CFreme})
     tweeter:Play()
@@ -416,8 +432,14 @@ local function shamblesTo(part1, part2)
         end
         wait(0.1) 
     end
+    if selfTriggerNC then deClip() end
 end
 local function moveTo(humanoid, targetPart)
+    local selfTriggerNC = false
+    if zeroClip == nil then 
+        zeroClip = RS.Stepped:connect(NoclipLoop) 
+        selfTriggerNC = true
+    end
     local targetPoint = targetPart.Position
     humanoid:MoveTo(targetPoint, targetPart)
     local function ababa()
@@ -437,6 +459,7 @@ local function moveTo(humanoid, targetPart)
     while (targetPoint - BlxFrtVars.Character.HumanoidRootPart.Position).Magnitude > 5 do
         if ababa() == 'break' then break end
     end
+    if selfTriggerNC then deClip() end
 end
 -- string extended table
 local stringext = {}
@@ -607,45 +630,31 @@ local function autoQuest()
 end
 local function autoFarm()
     while wait() and BlxFrtVars.AutoFarm and (BlxFrtVars.Character:WaitForChild("Humanoid",5).Health > 0) do
-        print("L0")
-        local zeroClip = RS.Stepped:connect(NoclipLoop)
-        print("L1")
         if BlxFrtVars.AutoQuest then
-            print("AQ1")
             if not BlxFrtVars.MainGUI.Quest.Visible then
-                print("AQA1")
                 autoQuest()
             end
         end
-        print("L2")
-        local v
-        print("L3")
+        local v = nil
         while v == nil do
-            print("LL1")
             v = AI.getNPC(npcNameBox.Text,"nearest")
-            print("LL2")
-            print(v)
             wait()
         end
-        print("L4")
-        while (v.Humanoid.Health > 0) and v:FindFirstChild("HumanoidRootPart") ~= nil do
-            print("LH1")
+        while v ~= nil and (v.Humanoid.Health > 0) and v:FindFirstChild("HumanoidRootPart") ~= nil and v.Parent ~= nil do
+            print(v.Name)
+            print(v.Parent.Name)
+            print((v.HumanoidRootPart.Position - BlxFrtVars.Character.HumanoidRootPart.Position).Magnitude)
+            print(v.Head.Transparency)
+            if v.Parent ~= game.Workspace.Enemies then  
+                break  
+            end
             if (v.HumanoidRootPart.Position - BlxFrtVars.Character.HumanoidRootPart.Position).Magnitude > 5 then
-                print("LHS1")
                 AI.SmartMove(v.HumanoidRootPart)
             end
-            print("LH2")
             if (BlxFrtVars.WeaponHasKb) then sFLY() end
             AI.Mouse1Click()
             wait(0.2)
             if (BlxFrtVars.WeaponHasKb) then NOFLY() end
-        end
-        print("L5")
-        zeroClip:Disconnect()
-        for _, child in pairs(BlxFrtVars.Character:GetDescendants()) do
-            if child:IsA("BasePart") and child.CanCollide == false then
-                child.CanCollide = false
-            end
         end
     end
 end
