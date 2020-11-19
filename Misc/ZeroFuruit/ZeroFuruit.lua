@@ -395,6 +395,7 @@ end
 local function deClip()
     if zeroClip ~= nil then
         zeroClip:Disconnect()
+        zeroClip = nil
         for _, child in pairs(BlxFrtVars.Character:GetDescendants()) do
             if child:IsA("BasePart") and child.CanCollide == false then
                 child.CanCollide = false
@@ -459,6 +460,8 @@ local function moveTo(humanoid, targetPart)
     while (targetPoint - BlxFrtVars.Character.HumanoidRootPart.Position).Magnitude > 5 do
         if ababa() == 'break' then break end
     end
+    -- Temporary workaround..
+    shamblesTo(BlxFrtVars.Character.HumanoidRootPart, targetPart)
     if selfTriggerNC then deClip() end
 end
 -- string extended table
@@ -598,63 +601,67 @@ local function autoQuest()
     end
     wait(0.5)
     local qiuBtn
-    while not BlxFrtVars.DialogFrame.Visible do 
-        AI.HWMouse1Click()
-        wait(0.25)
-    end
-    wait(0.5)
-    for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
-        if (v:IsA("TextButton") and v.TextLabel.Text == QNameBox.Text) then
-            while BlxFrtVars.DialogFrame.Option1.TextLabel.Text ~= "Confirm" do 
-                AI.btnClicker(v,BlxFrtVars.MainGUI)
-                wait(0.25) 
-            end
-            break
+    while not BlxFrtVars.MainGUI.Quest.Visible do
+        while not BlxFrtVars.DialogFrame.Visible do 
+            AI.HWMouse1Click()
+            wait(0.25)
         end
-    end
-    wait(0.5)
-    for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
-        if (v:IsA("TextButton") and v.TextLabel.Text == "Confirm") then
-            while AI.GetDialogText() ~= "[Quest accepted.]" do 
-                AI.btnClicker(v,BlxFrtVars.MainGUI)
-                wait(0.25) 
-            end
-            break
-        end
-    end
-    wait(0.25)
-    while BlxFrtVars.DialogFrame.Visible do 
-        AI.Mouse1Click()
         wait(0.25)
+        for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
+            if (v:IsA("TextButton") and v.TextLabel.Text == QNameBox.Text) then
+                while BlxFrtVars.DialogFrame.Option1.TextLabel.Text ~= "Confirm" do 
+                    AI.btnClicker(v,BlxFrtVars.MainGUI)
+                    wait(0.25) 
+                end
+                break
+            end
+        end
+        wait(0.25)
+        for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
+            if (v:IsA("TextButton") and v.TextLabel.Text == "Confirm") then
+                while AI.GetDialogText() ~= "[Quest accepted.]" do 
+                    AI.btnClicker(v,BlxFrtVars.MainGUI)
+                    wait(0.25) 
+                end
+                break
+            end
+        end
+        while BlxFrtVars.DialogFrame.Visible do 
+            AI.Mouse1Click()
+            wait(0.25)
+        end
     end
 end
 local function autoFarm()
-    while wait() and BlxFrtVars.AutoFarm and (BlxFrtVars.Character:WaitForChild("Humanoid",5).Health > 0) do
-        if BlxFrtVars.AutoQuest then
-            if not BlxFrtVars.MainGUI.Quest.Visible then
-                autoQuest()
-            end
+    while wait() and BlxFrtVars.AutoFarm and BlxFrtVars.Humanoid.Health > 0 do
+        print("L0")
+        if BlxFrtVars.AutoQuest and not BlxFrtVars.MainGUI.Quest.Visible then
+            print("LQ")
+            autoQuest()
         end
+        print("L1")
         local v = nil
         while v == nil do
+            print("LV")
             v = AI.getNPC(npcNameBox.Text,"nearest")
             wait()
         end
-        while v ~= nil and (v.Humanoid.Health > 0) and v:FindFirstChild("HumanoidRootPart") ~= nil and v.Parent ~= nil do
+        print("L2")
+        while v ~= nil and (v.Humanoid.Health > 0) and v:FindFirstChild("HumanoidRootPart") ~= nil and v.Parent == game.Workspace.Enemies do
+            print("LLOOP0")
             print(v.Name)
             print(v.Parent.Name)
             print((v.HumanoidRootPart.Position - BlxFrtVars.Character.HumanoidRootPart.Position).Magnitude)
             print(v.Head.Transparency)
-            if v.Parent ~= game.Workspace.Enemies then  
-                break  
-            end
             if (v.HumanoidRootPart.Position - BlxFrtVars.Character.HumanoidRootPart.Position).Magnitude > 5 then
                 AI.SmartMove(v.HumanoidRootPart)
             end
+            print("LLOOP1")
             if (BlxFrtVars.WeaponHasKb) then sFLY() end
             AI.Mouse1Click()
             wait(0.2)
             if (BlxFrtVars.WeaponHasKb) then NOFLY() end
+            print("LLOOP2")
         end
     end
 end
@@ -726,7 +733,7 @@ local function autoLSD()
                 for i, v in pairs({colosseumPos,waterwayPos,petalPos,rockNearFujitoraLoc,graveyardHillLoc,usoppIslandLoc,facLoc}) do
                     unsafeTPVector3(v)
                     wait(3)
-                    local LGS = AI.getQuestNPC("Legendary Sword Dealer ") -- Gamer Robot, very well for make it with a " " so i have to debug that shit.
+                    local LGS = AI.getQuestNPC("Legendary Sword Dealer ") -- Bruh
                     if LGS ~= nil then
                         while AI.getQuestNPC("Legendary Sword Dealer ") ~= nil do
                             AI.SmartMove(LGS.Head)
