@@ -1,5 +1,5 @@
 {
-    "version" : "unstable-2020.17.11.2328",
+    "version" : "unstable-2020.19.11.2335",
     "notice": [
         "Welcome to ZeroFuruit!",
         "This GUI is designed for [a random game]",
@@ -9,7 +9,7 @@
         "+ Auto Click [VirtualUser + mouse1click()]",
         "+ Auto Use Skills [Bannable, read Note[1]]",
         "+ Anti-AFK Bypass (As every script has)",
-        "+ Auto Noob Sword Farm [TESTED + Bypass AC] (Requires mouse1click() + Maximized and Focused Roblox window)",
+        "+ Auto Noob Sword Farm [Bypass AC] (Requires mouse1click() + Maximized and Focused Roblox window)",
         "+ Respawn support + Auto Equip",
         "+ Crappy UI [Most Exclusive Feature]",
         "",
