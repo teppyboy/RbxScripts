@@ -1,5 +1,8 @@
 ## ZeroFuruit Changelog
-### unstable-2020.19.11.2335 [latest]
+### unstable-2020.21.11.1959 [master]
++ Fix [Auto Quest]
++ Update basic How-To use
+#### unstable-2020.19.11.2335 [https://github.com/teppyboy/RbxScripts/tree/f1fe6327eb8d428bc6b4aa63b35d5c6c4726b1d0]
 + Improve [Auto Farm]
 + Temporary workaround for moveTo()
 #### unstable-2020.17.11.2328 [[tree](https://github.com/teppyboy/RbxScripts/tree/9d402483222ac3b9e3a7dac95856f23338338b67)]
