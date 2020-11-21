@@ -2,10 +2,10 @@
 ### unstable-2020.21.11.1959 [master]
 + Fix [Auto Quest]
 + Update basic How-To use
-#### unstable-2020.19.11.2335 [https://github.com/teppyboy/RbxScripts/tree/f1fe6327eb8d428bc6b4aa63b35d5c6c4726b1d0]
+#### unstable-2020.19.11.2335 [[tree](https://github.com/teppyboy/RbxScripts/tree/f1fe6327eb8d428bc6b4aa63b35d5c6c4726b1d0/Misc/ZeroFuruit)]
 + Improve [Auto Farm]
 + Temporary workaround for moveTo()
-#### unstable-2020.17.11.2328 [[tree](https://github.com/teppyboy/RbxScripts/tree/9d402483222ac3b9e3a7dac95856f23338338b67)]
+#### unstable-2020.17.11.2328 [[tree](https://github.com/teppyboy/RbxScripts/tree/9d402483222ac3b9e3a7dac95856f23338338b67/Misc/ZeroFuruit)]
 + Update [Auto Farm], making it more stable
 #### unstable-2020.16.11.1753 [[tree](https://github.com/teppyboy/RbxScripts/tree/368a4af69a4b85688105358c699133822891770d/Misc/ZeroFuruit)]
 + Update [Auto Noob Sword Farm], fully tested.
