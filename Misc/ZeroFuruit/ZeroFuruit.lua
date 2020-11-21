@@ -599,31 +599,36 @@ local function autoQuest()
         local qnpc = AI.getQuestNPC(QnpcNameBox.Text)
         AI.SmartMove(qnpc.Head)
     end
-    wait(0.5)
+    wait(0.25)
     local qiuBtn
     while not BlxFrtVars.MainGUI.Quest.Visible do
         while not BlxFrtVars.DialogFrame.Visible do 
             AI.HWMouse1Click()
             wait(0.25)
         end
-        wait(0.25)
-        for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
-            if (v:IsA("TextButton") and v.TextLabel.Text == QNameBox.Text) then
-                while BlxFrtVars.DialogFrame.Option1.TextLabel.Text ~= "Confirm" do 
-                    AI.btnClicker(v,BlxFrtVars.MainGUI)
-                    wait(0.25) 
+        wait(0.5)
+        while string.match(AI.GetDialogText(),"Please select a quest.") do
+            for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
+                if (v:IsA("TextButton") and v.TextLabel.Text == QNameBox.Text) then
+                    while BlxFrtVars.DialogFrame.Option1.TextLabel.Text ~= "Confirm" do 
+                        AI.btnClicker(v,BlxFrtVars.MainGUI)
+                        wait(0.25) 
+                    end
+                    break
                 end
-                break
             end
+            wait()
         end
-        wait(0.25)
-        for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
-            if (v:IsA("TextButton") and v.TextLabel.Text == "Confirm") then
-                while AI.GetDialogText() ~= "[Quest accepted.]" do 
-                    AI.btnClicker(v,BlxFrtVars.MainGUI)
-                    wait(0.25) 
+        wait(0.5)
+        while string.match(AI.GetDialogText(),"Level Required:") do
+            for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
+                if (v:IsA("TextButton") and v.TextLabel.Text == "Confirm") then
+                    while AI.GetDialogText() ~= "[Quest accepted.]" do 
+                        AI.btnClicker(v,BlxFrtVars.MainGUI)
+                        wait(0.25) 
+                    end
+                    break
                 end
-                break
             end
         end
         while BlxFrtVars.DialogFrame.Visible do 
