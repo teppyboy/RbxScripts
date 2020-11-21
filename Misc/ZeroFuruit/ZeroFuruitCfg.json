@@ -1,5 +1,5 @@
 {
-    "version" : "unstable-2020.19.11.2335",
+    "version" : "unstable-2020.21.11.1959",
     "notice": [
         "Welcome to ZeroFuruit!",
         "This GUI is designed for [a random game]",
@@ -24,6 +24,9 @@
         "# I hope you enjoy using this GUI as much as i creating this :D",
         "## Please don't post this script on V3rm or any website, thanks :)",
         "",
+        "BASIC HOW-TO",
+        "1. The [NPC Loc (Vector3)] is where is Quest NPC is located, use the below button to get your current location.",
+        "2. TODO: Add more into this",
         "TODO:",
         "~ Skill spam using keypress() (better than VU)",
         "~ Simple Ken Auto Farm mode",
