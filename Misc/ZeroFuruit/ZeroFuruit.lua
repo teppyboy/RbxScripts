@@ -3,6 +3,8 @@ local VU = game:GetService("VirtualUser")
 local TS = game:GetService("TweenService")
 local RS = game:GetService('RunService')
 local BlxFrtVars = {}
+BlxFrtVars.ZeroFuruitVersion = "unstable-2020.24.11.2249"
+BlxFrtVars.NewInitalized = true
 BlxFrtVars.Players = game:GetService("Players")
 BlxFrtVars.LocalPlayer = BlxFrtVars.Players.LocalPlayer
 BlxFrtVars.Character = BlxFrtVars.LocalPlayer.Character
@@ -11,7 +13,8 @@ BlxFrtVars.WeaponHasKb = false
 BlxFrtVars.AutoQuest = false
 BlxFrtVars.AutoFarm = false
 BlxFrtVars.AutoQuest = false
-BlxFrtVars.EquipItemOnBoot = ""
+BlxFrtVars.AutoEquipItem = ""
+BlxFrtVars.SkillItem = ""
 BlxFrtVars.TeleportMode = "Auto" -- can be Auto/Unsafe/Safe (Auto = auto, Unsafe = always shamblesTo(), Safe = always moveTo())
 BlxFrtVars.AutoClick = false
 BlxFrtVars.HWAutoClick = false
@@ -20,15 +23,16 @@ BlxFrtVars.AntiAFKBypass = false
 BlxFrtVars.EquipAccesoryOnBoot = ""
 BlxFrtVars.EquipBusoOnBoot = false
 BlxFrtVars.AutoSprintOnBoot = false
+BlxFrtVars.HPToUseSkill = 0
 BlxFrtVars.MainGUI = BlxFrtVars.LocalPlayer.PlayerGui.Main
 BlxFrtVars.DialogFrame = BlxFrtVars.MainGUI.Dialogue
 BlxFrtVars.Buttons = {}
-BlxFrtVars.Buttons.Z = false
-BlxFrtVars.Buttons.X = false
-BlxFrtVars.Buttons.C = false
-BlxFrtVars.Buttons.V = false
-BlxFrtVars.Buttons.F = false
-BlxFrtVars.Buttons.T = false
+BlxFrtVars.Buttons.Z = {"Z", false}
+BlxFrtVars.Buttons.X = {"X", false}
+BlxFrtVars.Buttons.C = {"C", false}
+BlxFrtVars.Buttons.V = {"V", false}
+BlxFrtVars.Buttons.F = {"F", false}
+BlxFrtVars.Buttons.T = {"T", false}
 -- Unstable features variables
 BlxFrtVars.UAutoLSD = false
 BlxFrtVars.UBuddhaFix = false -- Not used by anything atm
@@ -86,8 +90,8 @@ else
     BlxFrtVars.LocalPlayer:Kick([[WeAreDevs API exploits based are NOT supported due to Memory Leaks 
     (instant Mem Leaks from 0.5GB -> 1.5GB when activate the Auto Farm)
     
-    If you can't find any exploit then use Krnl/Oxygen X/etc... (Even Proxo and EasyExploits API exploits based too
-    because EEAPI's dev is Electron's dev (Co) so it dosen't trash like your thought)
+    If you can't find any exploit then use Krnl/Oxygen X/etc... (Even Proxo and EasyExploits API exploits 
+    based too because EEAPI's dev is Electron's dev (Co) so it dosen't trash like your thought, just Filter trash)
     
     NOTE: Shadow works fine but you WILL expect Memory Leaks like WRD API
     NOTE2: Don't use Furk, Coco Z or any shady exploit in WRD.net]])
@@ -105,9 +109,9 @@ local TitleTxt = CreateInstance('TextLabel',{Font=Enum.Font.Ubuntu,FontSize=Enum
 local MainFrm = CreateInstance('Frame',{Style=Enum.FrameStyle.Custom,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.117647, 0.117647, 0.117647),BackgroundTransparency=0,BorderColor3=Color3.new(0.117647, 0.117647, 0.117647),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 0, 0, 20),Rotation=0,Selectable=false,Size=UDim2.new(0, 640, 0, 340),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name = 'MainFrm',Parent = TitleTxt})
 local MainTabBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Main',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.313726, 0.313726, 0.313726),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 0, 0, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 70, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='MainTabBtn',Parent = MainFrm})
 local MainTabBtnTF = CreateInstance('Frame',{Style=Enum.FrameStyle.Custom,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 0, 1, 0),Rotation=0,Selectable=false,Size=UDim2.new(0, 640, 0, 320),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name = 'MainTabBtnTF',Parent = MainTabBtn})
-local ScrollingFrame = CreateInstance('ScrollingFrame',{BottomImage='rbxasset://textures/ui/Scroll/scroll-bottom.png',CanvasPosition=Vector2.new(0, 0),CanvasSize=UDim2.new(1.25, 0, 1.25, 0),MidImage='rbxasset://textures/ui/Scroll/scroll-middle.png',ScrollBarThickness=12,ScrollingEnabled=true,TopImage='rbxasset://textures/ui/Scroll/scroll-top.png',Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=true,Draggable=false,Position=UDim2.new(0.015625, 0, 0.0281249993, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 620, 0, 300),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='ScrollingFrame',Parent = MainTabBtnTF})
+local ScrollingFrame = CreateInstance('ScrollingFrame',{BottomImage='rbxasset://textures/ui/Scroll/scroll-bottom.png',CanvasPosition=Vector2.new(0, 0),CanvasSize=UDim2.new(1.25, 0, 1.5, 0),MidImage='rbxasset://textures/ui/Scroll/scroll-middle.png',ScrollBarThickness=12,ScrollingEnabled=true,TopImage='rbxasset://textures/ui/Scroll/scroll-top.png',Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=true,Draggable=false,Position=UDim2.new(0.015625, 0, 0.0281249993, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 620, 0, 300),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='ScrollingFrame',Parent = MainTabBtnTF})
 
-local TextBox = CreateInstance('TextBox',{ClearTextOnFocus=false,Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,MultiLine=true,Text=noticeTxt,TextColor3=Color3.new(1, 1, 1), PlaceholderText='', PlaceholderColor3=Color3.new(0.7, 0.7, 0.7),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Left,TextYAlignment=Enum.TextYAlignment.Top,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(-0.000352822593, 0, 0, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 730, 0, 300),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='TextBox',Parent = ScrollingFrame})
+local TextBox = CreateInstance('TextBox',{ClearTextOnFocus=false,Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,MultiLine=true,Text=noticeTxt,TextColor3=Color3.new(1, 1, 1), PlaceholderText='', PlaceholderColor3=Color3.new(0.7, 0.7, 0.7),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Left,TextYAlignment=Enum.TextYAlignment.Top,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(-0.000455204136, 0, -0.000416629016, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 730, 0, 492),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='TextBox',Parent = ScrollingFrame})
 
 local AutoTabBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Auto',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.313726, 0.313726, 0.313726),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0.218750015, 0, 0, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 70, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='AutoTabBtn',Parent = MainFrm})
 local AutoTabBtnTF = CreateInstance('Frame',{Style=Enum.FrameStyle.Custom,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(-2, 0, 1, 0),Rotation=0,Selectable=false,Size=UDim2.new(0, 640, 0, 320),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=false,ZIndex=1,Name = 'AutoTabBtnTF',Parent = AutoTabBtn})
@@ -136,7 +140,7 @@ local LGSfarmBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=E
 local intervalTxt = CreateInstance('TextLabel',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Interval (ms):',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 329, 0, 255),Rotation=0,Selectable=false,Size=UDim2.new(0, 81, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='intervalTxt',Parent = AutoTabBtnTF})
 local intervalBox = CreateInstance('TextBox',{ClearTextOnFocus=false,Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,MultiLine=false,Text='',TextColor3=Color3.new(1, 1, 1), PlaceholderText='002016', PlaceholderColor3=Color3.new(0.7, 0.7, 0.7),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0392157, 0.0392157, 0.0392157),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 417, 0, 255),Rotation=0,Selectable=true,Size=UDim2.new(0, 216, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='intervalBox',Parent = AutoTabBtnTF})
 local Auto2TabBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Auto (2)',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.313726, 0.313726, 0.313726),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0.328125, 0, 0, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 70, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='Auto2TabBtn',Parent = MainFrm})
-local Auto2TabBtnTF = CreateInstance('Frame',{Style=Enum.FrameStyle.Custom,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(-3, 0, 0.949999988, 0),Rotation=0,Selectable=false,Size=UDim2.new(0, 640, 0, 320),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=false,ZIndex=1,Name = 'Auto2TabBtnTF',Parent = Auto2TabBtn})
+local Auto2TabBtnTF = CreateInstance('Frame',{Style=Enum.FrameStyle.Custom,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(-3, 0, 1, 0),Rotation=0,Selectable=false,Size=UDim2.new(0, 640, 0, 320),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=false,ZIndex=1,Name = 'Auto2TabBtnTF',Parent = Auto2TabBtn})
 local tpModeBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Teleport Bypass Mode: [AUTO]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 7),Rotation=0,Selectable=true,Size=UDim2.new(0, 308, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='tpModeBtn',Parent = Auto2TabBtnTF})
 local eqAccessoryBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Equip Accessory On Spawn: [FALSE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 64),Rotation=0,Selectable=true,Size=UDim2.new(0, 308, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='eqAccessoryBtn',Parent = Auto2TabBtnTF})
 local accesNameTxt = CreateInstance('TextLabel',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Item Name:',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 35),Rotation=0,Selectable=false,Size=UDim2.new(0, 70, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='accesNameTxt',Parent = Auto2TabBtnTF})
@@ -146,9 +150,9 @@ local eqSprintBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=
 local itemListSF = CreateInstance('ScrollingFrame',{BottomImage='rbxasset://textures/ui/Scroll/scroll-bottom.png',CanvasPosition=Vector2.new(0, 0),CanvasSize=UDim2.new(0, 0, 0.349999994, 0),MidImage='rbxasset://textures/ui/Scroll/scroll-middle.png',ScrollBarThickness=5,ScrollingEnabled=true,TopImage='rbxasset://textures/ui/Scroll/scroll-top.png',Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0392157, 0.0392157, 0.0392157),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=true,Draggable=false,Position=UDim2.new(0, 7, 0, 242),Rotation=0,Selectable=true,Size=UDim2.new(0, 308, 0, 49),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='itemListSF',Parent = Auto2TabBtnTF})
 local itemListRtb = CreateInstance('TextBox',{ClearTextOnFocus=false,Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,MultiLine=true,Text='',TextColor3=Color3.new(1, 1, 1), PlaceholderText='', PlaceholderColor3=Color3.new(0.7, 0.7, 0.7),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Left,TextYAlignment=Enum.TextYAlignment.Top,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0392157, 0.0392157, 0.0392157),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 0, 0, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 308, 0, 112),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='itemListRtb',Parent = itemListSF})
 local getItemsBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Get All Available Items On Inventory',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 210),Rotation=0,Selectable=true,Size=UDim2.new(0, 308, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='getItemsBtn',Parent = Auto2TabBtnTF})
-local itemNameBox = CreateInstance('TextBox',{ClearTextOnFocus=false,Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,MultiLine=false,Text='',TextColor3=Color3.new(1, 1, 1), PlaceholderText='Wooden Sword', PlaceholderColor3=Color3.new(0.7, 0.7, 0.7),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0392157, 0.0392157, 0.0392157),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 81, 0, 152),Rotation=0,Selectable=true,Size=UDim2.new(0, 234, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='itemNameBox',Parent = Auto2TabBtnTF})
-local itemNameTxt = CreateInstance('TextLabel',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Item Name:',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 152),Rotation=0,Selectable=false,Size=UDim2.new(0, 70, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='itemNameTxt',Parent = Auto2TabBtnTF})
-local equipItemBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Equip Item On Spawn [FALSE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 180),Rotation=0,Selectable=true,Size=UDim2.new(0, 308, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='equipItemBtn',Parent = Auto2TabBtnTF})
+local itemNameBox = CreateInstance('TextBox',{ClearTextOnFocus=false,Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,MultiLine=false,Text='',TextColor3=Color3.new(1, 1, 1), PlaceholderText='Wooden Sword', PlaceholderColor3=Color3.new(0.7, 0.7, 0.7),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0392157, 0.0392157, 0.0392157),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 140, 0, 152),Rotation=0,Selectable=true,Size=UDim2.new(0, 175, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='itemNameBox',Parent = Auto2TabBtnTF})
+local itemNameTxt = CreateInstance('TextLabel',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Physical Item Name:',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 152),Rotation=0,Selectable=false,Size=UDim2.new(0, 119, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='itemNameTxt',Parent = Auto2TabBtnTF})
+local equipItemBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Auto Equip Item [FALSE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 180),Rotation=0,Selectable=true,Size=UDim2.new(0, 308, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='equipItemBtn',Parent = Auto2TabBtnTF})
 local autoBtnTxt = CreateInstance('TextLabel',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='================= Auto Skill =================',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 323, 0, 7),Rotation=0,Selectable=false,Size=UDim2.new(0, 310, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='autoBtnTxt',Parent = Auto2TabBtnTF})
 local zBtnBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Z [FALSE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 323, 0, 35),Rotation=0,Selectable=true,Size=UDim2.new(0, 70, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='zBtnBtn',Parent = Auto2TabBtnTF})
 local xBtnBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='X [FALSE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 404, 0, 35),Rotation=0,Selectable=true,Size=UDim2.new(0, 70, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='xBtnBtn',Parent = Auto2TabBtnTF})
@@ -156,6 +160,12 @@ local cBtnBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum
 local vBtnBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='V [FALSE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 563, 0, 35),Rotation=0,Selectable=true,Size=UDim2.new(0, 70, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='vBtnBtn',Parent = Auto2TabBtnTF})
 local tBtnBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='T (Race Skill) [FALSE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 404, 0, 64),Rotation=0,Selectable=true,Size=UDim2.new(0, 150, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='tBtnBtn',Parent = Auto2TabBtnTF})
 local fBtnBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='F [FALSE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 323, 0, 64),Rotation=0,Selectable=true,Size=UDim2.new(0, 70, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='fBtnBtn',Parent = Auto2TabBtnTF})
+local hpBe4DieBox = CreateInstance('TextBox',{ClearTextOnFocus=false,Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,MultiLine=false,Text='',TextColor3=Color3.new(1, 1, 1), PlaceholderText='177013', PlaceholderColor3=Color3.new(0.7, 0.7, 0.7),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0392157, 0.0392157, 0.0392157),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 507, 0, 95),Rotation=0,Selectable=true,Size=UDim2.new(0, 89, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='hpBe4DieBox',Parent = Auto2TabBtnTF})
+local hpBe4DieTxt = CreateInstance('TextLabel',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='HP Before Die From Last Hit:',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 323, 0, 95),Rotation=0,Selectable=false,Size=UDim2.new(0, 176, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='hpBe4DieTxt',Parent = Auto2TabBtnTF})
+local setHPBe4DieBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Set',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 604, 0, 95),Rotation=0,Selectable=true,Size=UDim2.new(0, 29, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='setHPBe4DieBtn',Parent = Auto2TabBtnTF})
+local skillItemBox = CreateInstance('TextBox',{ClearTextOnFocus=false,Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,MultiLine=false,Text='',TextColor3=Color3.new(1, 1, 1), PlaceholderText='Requiem Arrow', PlaceholderColor3=Color3.new(0.7, 0.7, 0.7),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0392157, 0.0392157, 0.0392157),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 404, 0, 125),Rotation=0,Selectable=true,Size=UDim2.new(0, 192, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='skillItemBox',Parent = Auto2TabBtnTF})
+local skillItemTxt = CreateInstance('TextLabel',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Skill Item:',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 323, 0, 125),Rotation=0,Selectable=false,Size=UDim2.new(0, 70, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='skillItemTxt',Parent = Auto2TabBtnTF})
+local setSkillItemBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Set',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 604, 0, 125),Rotation=0,Selectable=true,Size=UDim2.new(0, 29, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='setSkillItemBtn',Parent = Auto2TabBtnTF})
 local StatusTabBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Status',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.313726, 0.313726, 0.313726),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0.109375, 0, 0, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 70, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='StatusTabBtn',Parent = MainFrm})
 local StatusTabBtnTF = CreateInstance('Frame',{Style=Enum.FrameStyle.Custom,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(-1, 0, 0.949999988, 0),Rotation=0,Selectable=false,Size=UDim2.new(0, 640, 0, 320),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=false,ZIndex=1,Name = 'StatusTabBtnTF',Parent = StatusTabBtn})
 local gameIdTxt = CreateInstance('TextLabel',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size18,Text='Game ID: 4206942069',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=16,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=true,TextXAlignment=Enum.TextXAlignment.Left,TextYAlignment=Enum.TextYAlignment.Center,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 8),Rotation=0,Selectable=false,Size=UDim2.new(0, 259, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='gameIdTxt',Parent = StatusTabBtnTF})
@@ -167,7 +177,7 @@ local jobIdCopyBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize
 local playTimeTxt = CreateInstance('TextLabel',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size18,Text='Play Time: 02:02:02',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=16,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Left,TextYAlignment=Enum.TextYAlignment.Center,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 122),Rotation=0,Selectable=false,Size=UDim2.new(0, 259, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='playTimeTxt',Parent = StatusTabBtnTF})
 local placeVerTxt = CreateInstance('TextLabel',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size18,Text='Place Version: NeroTheBird',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=16,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Left,TextYAlignment=Enum.TextYAlignment.Center,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 93),Rotation=0,Selectable=false,Size=UDim2.new(0, 259, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='placeVerTxt',Parent = StatusTabBtnTF})
 local placeVerCopyBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Copy',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 272, 0, 93),Rotation=0,Selectable=true,Size=UDim2.new(0, 35, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='placeVerCopyBtn',Parent = StatusTabBtnTF})
-local CloseBtn = CreateInstance('ImageButton',{Image='',ImageColor3=Color3.new(0.156863, 0.156863, 0.156863),ImageRectOffset=Vector2.new(0, 0),ImageRectSize=Vector2.new(0, 0),ImageTransparency=0,ScaleType=Enum.ScaleType.Stretch,SliceCenter=Rect.new(0, 0, 0, 0),AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(1, 0, 0),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 622, 0, 2),Rotation=0,Selectable=true,Size=UDim2.new(0, 15, 0, 15),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='CloseBtn',Parent = TitleTxt})
+local CloseBtn = CreateInstance('ImageButton',{Image='',ImageColor3=Color3.new(0.156863, 0.156863, 0.156863),ImageRectOffset=Vector2.new(0, 0),ImageRectSize=Vector2.new(0, 0),ImageTransparency=0,ScaleType=Enum.ScaleType.Stretch,SliceCenter=Rect.new(0, 0, 0, 0),AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(1, 0, 0.6),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 622, 0, 2),Rotation=0,Selectable=true,Size=UDim2.new(0, 15, 0, 15),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='CloseBtn',Parent = TitleTxt})
 local MinMaxBtn = CreateInstance('ImageButton',{Image='',ImageColor3=Color3.new(0.156863, 0.156863, 0.156863),ImageRectOffset=Vector2.new(0, 0),ImageRectSize=Vector2.new(0, 0),ImageTransparency=0,ScaleType=Enum.ScaleType.Stretch,SliceCenter=Rect.new(0, 0, 0, 0),AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0235294, 0.447059, 1),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 604, 0, 2),Rotation=0,Selectable=true,Size=UDim2.new(0, 15, 0, 15),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='MinMaxBtn',Parent = TitleTxt})
 
 -- Drag
@@ -409,13 +419,18 @@ function NOFLY()
 end
 -- END
 -- Teleport functions
+local function isReady()
+    if ((BlxFrtVars.Character.HumanoidRootPart.Position - Vector3.new(0, 100, 10)).Magnitude < 50) then return false else return true end
+end
 local function unsafeTP(X, Y, Z) -- THIS SHOULD NOT BE USED TO TELEPORT DIRECTLY TO NPCS/ENEMIES BECAUSE ITS 100% BANNABLE
     BlxFrtVars.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(X,Y,Z))
 end
 local function unsafeTPVector3(vector) -- THIS SHOULD NOT BE USED TO TELEPORT DIRECTLY TO NPCS/ENEMIES BECAUSE ITS 100% BANNABLE
     BlxFrtVars.Character.HumanoidRootPart.CFrame = CFrame.new(vector)
 end
+local tweeter = nil
 local function shamblesTo(part1, part2)
+    if not isReady() or not BlxFrtVars.NewInitalized then return end
     local selfTriggerNC = false
     if zeroClip == nil then 
         zeroClip = RS.Stepped:connect(NoclipLoop) 
@@ -425,17 +440,27 @@ local function shamblesTo(part1, part2)
     local tweeter = TS:Create(part1 ,TweenInfo.new(math.abs((part2.Position - part1.Position).Magnitude) / BlxFrtVars.Humanoid.WalkSpeed,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,false,0) ,{CFrame = CFreme})
     tweeter:Play()
     while (part1.Position - part2.Position).Magnitude > 5 do 
+        print("T check 1")
+        if tweeter == nil then break end
+        print("T check 2")
+        if not BlxFrtVars.Humanoid or (BlxFrtVars.Humanoid.Health == 0) then   
+            tweeter:Cancel()
+            break
+        end
+        print("T check 3")
         if (part2.Position - CFreme.Position).Magnitude > 5 then
             tweeter:Cancel()
             CFreme = part2.CFrame
             tweeter = TS:Create(part1 ,TweenInfo.new(math.abs((part2.Position - part1.Position).Magnitude) / BlxFrtVars.Humanoid.WalkSpeed,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,false,0) ,{CFrame = CFreme})
             tweeter:Play()
         end
-        wait(0.1) 
+        print("OK")
+        wait(0.01) 
     end
     if selfTriggerNC then deClip() end
 end
 local function moveTo(humanoid, targetPart)
+    if not isReady() or not BlxFrtVars.NewInitalized then return end
     local selfTriggerNC = false
     if zeroClip == nil then 
         zeroClip = RS.Stepped:connect(NoclipLoop) 
@@ -449,7 +474,7 @@ local function moveTo(humanoid, targetPart)
             if not (humanoid and humanoid.Parent) then
                 return 'break'
             end
-            if (targetPart.Position - targetPoint).Magnitude > 5 then
+            if (targetPart.Position - targetPoint).Magnitude > 10 then
                 targetPoint = targetPart.Position
             end
             -- refresh the timeout
@@ -457,7 +482,7 @@ local function moveTo(humanoid, targetPart)
         end
         wait(0.1)
     end
-    while (targetPoint - BlxFrtVars.Character.HumanoidRootPart.Position).Magnitude > 5 do
+    while (targetPoint - BlxFrtVars.Character.HumanoidRootPart.Position).Magnitude > 10 do
         if ababa() == 'break' then break end
     end
     -- Temporary workaround..
@@ -541,17 +566,18 @@ AI.HWMouse1Click = function()
         mouse1click()
     end
 end
-AI.KeyPress = function(keycode) -- https://developer.roblox.com/en-us/api-reference/enum/KeyCode
+AI.KeyPress = function(keycode, workaround) -- https://developer.roblox.com/en-us/api-reference/enum/KeyCode
     VU:CaptureController()
     VU:SetKeyDown(keycode)
     wait()
     VU:SetKeyUp(keycode)
-    -- Workaround
-    local item = BlxFrtVars.Character:FindFirstChildWhichIsA("Tool")
-    if item ~= nil then
-        BlxFrtVars.Humanoid:UnequipTools()
-        wait()
-        BlxFrtVars.Humanoid:EquipTool(item)
+    if workaround then  
+        local item = BlxFrtVars.Character:FindFirstChildWhichIsA("Tool")
+        if item ~= nil then
+            BlxFrtVars.Humanoid:UnequipTools()
+            wait()
+            BlxFrtVars.Humanoid:EquipTool(item)
+        end
     end
 end
 AI.btnClicker = function(btn,maingui)
@@ -583,6 +609,19 @@ AI.GetDialogText = function()
         end
     end
     return txt
+end
+AI.IsSkillInCooldown = function(toolName,skillBtn)
+    local SkillGUI = BlxFrtVars.MainGUI.Skills:FindFirstChild(toolName)
+    if SkillGUI ~= nil then
+        local SkillFrm = SkillGUI:FindFirstChild(skillBtn)
+        if SkillFrm ~= nil then 
+            if SkillFrm.Cooldown.AbsoluteSize.X > 0 then
+                return true
+            else
+                return false
+            end
+        end
+    end
 end
 -- Auto Farm/Quest related function.
 local function autoQuest()
@@ -638,7 +677,7 @@ local function autoQuest()
     end
 end
 local function autoFarm()
-    while wait() and BlxFrtVars.AutoFarm and BlxFrtVars.Humanoid.Health > 0 do
+    while wait() and BlxFrtVars.AutoFarm and BlxFrtVars.NewInitalized do
         print("L0")
         if BlxFrtVars.AutoQuest and not BlxFrtVars.MainGUI.Quest.Visible then
             print("LQ")
@@ -652,19 +691,44 @@ local function autoFarm()
             wait()
         end
         print("L2")
-        while v ~= nil and (v.Humanoid.Health > 0) and v:FindFirstChild("HumanoidRootPart") ~= nil and v.Parent == game.Workspace.Enemies do
+        while v ~= nil and (v.Humanoid.Health > 0) and v:FindFirstChild("HumanoidRootPart") ~= nil and v.Parent == game.Workspace.Enemies and BlxFrtVars.NewInitalized do
             print("LLOOP0")
-            print(v.Name)
-            print(v.Parent.Name)
-            print((v.HumanoidRootPart.Position - BlxFrtVars.Character.HumanoidRootPart.Position).Magnitude)
-            print(v.Head.Transparency)
-            if (v.HumanoidRootPart.Position - BlxFrtVars.Character.HumanoidRootPart.Position).Magnitude > 5 then
+            if (v.HumanoidRootPart.Position - BlxFrtVars.Character.HumanoidRootPart.Position).Magnitude > 5 and BlxFrtVars.NewInitalized then
                 AI.SmartMove(v.HumanoidRootPart)
             end
             print("LLOOP1")
             if (BlxFrtVars.WeaponHasKb) then sFLY() end
-            AI.Mouse1Click()
-            wait(0.2)
+            if v.Humanoid.Health <= BlxFrtVars.HPToUseSkill and v.Humanoid.Health > 0 and BlxFrtVars.SkillItem ~= "" and BlxFrtVars.Character:FindFirstChild(BlxFrtVars.SkillItem) == nil and BlxFrtVars.LocalPlayer.Backpack:FindFirstChild(BlxFrtVars.SkillItem) then   
+                print("LSLOOP1")
+                BlxFrtVars.Humanoid:EquipTool(BlxFrtVars.LocalPlayer.Backpack[BlxFrtVars.SkillItem])
+                for i, v in pairs(BlxFrtVars.Buttons) do
+                    if v[2] == true and not AI.IsSkillInCooldown(BlxFrtVars.SkillItem,v[1]) and BlxFrtVars.NewInitalized then
+                        if v[1] == "Z" then 
+                            AI.KeyPress(122, true)
+                        elseif v[1] == "X" then 
+                            AI.KeyPress(120, true)
+                        elseif v[1] == "C" then 
+                            AI.KeyPress("0x63", true)
+                        elseif v[1] == "V" then 
+                            AI.KeyPress(118, true)
+                        elseif v[1] == "F" then 
+                            AI.KeyPress(102, true)
+                        else
+                            break
+                        end
+                        wait(0.25)
+                        break
+                    end
+                end
+                print("LSLOOP2")
+            else
+                if BlxFrtVars.AutoEquipItem ~= "" and BlxFrtVars.Character:FindFirstChild(BlxFrtVars.AutoEquipItem) == nil and BlxFrtVars.LocalPlayer.Backpack:FindFirstChild(BlxFrtVars.AutoEquipItem) then
+                    BlxFrtVars.Humanoid:EquipTool(BlxFrtVars.LocalPlayer.Backpack[BlxFrtVars.AutoEquipItem])
+                end
+                print("LPLOOP")
+                AI.Mouse1Click()
+                wait(0.2) 
+            end
             if (BlxFrtVars.WeaponHasKb) then NOFLY() end
             print("LLOOP2")
         end
@@ -812,12 +876,12 @@ getItemsBtn.MouseButton1Click:Connect(function()
     end
 end)
 equipItemBtn.MouseButton1Click:Connect(function()
-    if BlxFrtVars.EquipItemOnBoot == "" then
-        BlxFrtVars.EquipItemOnBoot = itemNameBox.Text
-        equipItemBtn.Text = "Equip Item On Spawn [TRUE]"
+    if BlxFrtVars.AutoEquipItem == "" then
+        BlxFrtVars.AutoEquipItem = itemNameBox.Text
+        equipItemBtn.Text = "Auto Equip Item [TRUE]"
     else
-        BlxFrtVars.EquipItemOnBoot = ""
-        equipItemBtn.Text = "Equip Item On Spawn [FALSE]"
+        BlxFrtVars.AutoEquipItem = ""
+        equipItemBtn.Text = "Auto Equip Item [FALSE]"
     end
 end)
 eqAccessoryBtn.MouseButton1Click:Connect(function()
@@ -916,61 +980,65 @@ CloseBtn.MouseButton1Click:Connect(function()
     end)
 end)
 -- Auto Key Buttons (Auto expand function)
+tBtnBtn.MouseButton1Click:Connect(function()
+    BlxFrtVars.Buttons.T[2] = not BlxFrtVars.Buttons.T[2]
+    tBtnBtn.Text = string.gsub(v.Text,tostring(not BlxFrtVars.Buttons.T):upper(), tostring(BlxFrtVars.Buttons.T):upper())
+    if BlxFrtVars.Buttons.T then
+        coroutine.wrap(function()
+            while BlxFrtVars.Buttons.T and wait(math.random(1,3)) do
+                AI.KeyPress(116, false)
+            end
+        end)()
+    end
+end)
+setHPBe4DieBtn.MouseButton1Click:Connect(function()
+    BlxFrtVars.HPToUseSkill = tonumber(hpBe4DieBox.Text)
+end)
+setSkillItemBtn.MouseButton1Click:Connect(function()
+    BlxFrtVars.SkillItem = skillItemBox.Text
+end)
 for i, v in pairs({zBtnBtn, xBtnBtn, cBtnBtn, vBtnBtn, fBtnBtn, tBtnBtn}) do
     local fistChar = string.sub(v.Name, 1, 1):upper()
-    local keyCode = 0
-    if fistChar == "Z" then
-        keyCode = 122
-    elseif fistChar == "X" then
-        keyCode = 120
-    elseif fistChar == "C" then
-        keyCode = "0x63"
-    elseif fistChar == "V" then
-        keyCode = 118
-    elseif fistChar == "F" then
-        keyCode = 102
-    elseif fistChar == "T" then
-        keyCode = 116
-    end
     v.MouseButton1Click:Connect(function()
-        BlxFrtVars.Buttons[fistChar] = not BlxFrtVars.Buttons[fistChar]
-        v.Text = string.gsub(v.Text,tostring(not BlxFrtVars.Buttons[fistChar]):upper(), tostring(BlxFrtVars.Buttons[fistChar]):upper())
-        if BlxFrtVars.Buttons[fistChar] then
-            coroutine.wrap(function()
-                while BlxFrtVars.Buttons[fistChar] and wait(0.1) do
-                    AI.KeyPress(keyCode)
-                end
-            end)()
-        end
+        BlxFrtVars.Buttons[fistChar][2] = not BlxFrtVars.Buttons[fistChar][2]
+        v.Text = string.gsub(v.Text,tostring(not BlxFrtVars.Buttons[fistChar][2]):upper(), tostring(BlxFrtVars.Buttons[fistChar][2]):upper())
     end)
 end
 -- Events
+local function cleanUpWhenDie()
+    BlxFrtVars.NewInitalized = false
+    if tweeter ~= nil then  
+        tweeter:Cancel()
+        tweeter = nil
+    end
+end
+local HumanoidDed = BlxFrtVars.Humanoid.Died:Connect(cleanUpWhenDie)
 BlxFrtVars.LocalPlayer.CharacterAdded:Connect(function(character)
     BlxFrtVars.Character = character
     BlxFrtVars.Humanoid = BlxFrtVars.Character:WaitForChild("Humanoid")
+    BlxFrtVars.Humanoid.Died:Connect(cleanUpWhenDie)
+    while not isReady() do wait() end
+    wait(3)
     if (BlxFrtVars.EquipAccesoryOnBoot ~= "") then
         BlxFrtVars.Humanoid:EquipTool(BlxFrtVars.LocalPlayer.Backpack:WaitForChild(BlxFrtVars.EquipAccesoryOnBoot))
         AI.Mouse1Click()
     end
-    wait()
-    if (BlxFrtVars.EquipItemOnBoot ~= "") then
-        BlxFrtVars.Humanoid:EquipTool(BlxFrtVars.LocalPlayer.Backpack:WaitForChild(BlxFrtVars.EquipItemOnBoot))
-    end
-    wait(3)
     if (BlxFrtVars.EquipBusoOnBoot) then
-        AI.KeyPress(106)
+        AI.KeyPress(106, false)
     end
     if (BlxFrtVars.AutoSprintOnBoot) then
-        AI.KeyPress(306)
+        AI.KeyPress(306, false)
     end
+    BlxFrtVars.NewInitalized = true
     if (BlxFrtVars.AutoFarm) then
-        wait(3)
         coroutine.wrap(autoFarm)() -- coroutine threads use less memory than normal threads???
     end
 end)
 -- Finally, show the GUI
-TitleTxt:TweenPosition(UDim2.new(0.5, -320,0.5, -180),Enum.EasingDirection.Out,Enum.EasingStyle.Quart,1,true)
-local TMPPOS = UDim2.new(0, TitleTxt.AbsolutePosition.X, 0, TitleTxt.AbsolutePosition.Y)
-TitleTxt.AnchorPoint = Vector2.new(0,0)
-TitleTxt.Position = TMPPOS
-dragger.new(TitleTxt)
+TitleTxt.Text = "ZeroFuruit ["..BlxFrtVars.ZeroFuruitVersion.."]"
+TitleTxt:TweenPosition(UDim2.new(0.5, -320,0.5, -180),Enum.EasingDirection.Out,Enum.EasingStyle.Quart,1,true,function()
+    local TMPPOS = UDim2.new(0, TitleTxt.AbsolutePosition.X, 0, TitleTxt.AbsolutePosition.Y)
+    TitleTxt.AnchorPoint = Vector2.new(0,0)
+    TitleTxt.Position = TMPPOS
+    dragger.new(TitleTxt)
+end)
