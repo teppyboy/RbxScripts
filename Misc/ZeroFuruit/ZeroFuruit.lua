@@ -41,7 +41,7 @@ local EXPLOIT = nil
 local noticeTxt = ""
 if not WRDAPI then -- WTF? WeAreDevs can't even do some shit in blacklisting check???
     local jsCFG = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/teppyboy/RbxScripts/master/Misc/ZeroFuruit/ZeroFuruitCfg.json"))
-    print("ZeroFuruit version: "..jsCFG.version)
+    print("ZeroFuruit Configure Version: "..jsCFG.version)
     local function isStringInTable(tablee, stringg)
         for i, v in pairs(tablee) do
             if v == stringg then
@@ -443,7 +443,7 @@ local function shamblesTo(part1, part2)
         print("T check 1")
         if tweeter == nil then break end
         print("T check 2")
-        if not BlxFrtVars.Humanoid or (BlxFrtVars.Humanoid.Health == 0) then   
+        if not BlxFrtVars.NewInitalized then   
             tweeter:Cancel()
             break
         end
