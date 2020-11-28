@@ -1,5 +1,5 @@
 local Version = "1.0.0_test"
-print("Performance Optimizer Version: "..Version.." | This even works with Roblox Studio command bar!")
+print("Performance Optimizer Version: "..Version.." | This even works with OG LocalScript (Level 2)!")
 print("Initalizing...")
 local function mkDrag(gui) -- https://devforum.roblox.com/t/draggable-property-is-hidden-on-gui-objects/107689/5 Roblox Staff code :))))
     local UserInputService = game:GetService("UserInputService")
@@ -59,7 +59,7 @@ local function Optimize(v)
         v.Material = "SmoothPlastic"
         v.Reflectance = 0
         v.CastShadow = false
-        v.Color = Color3.new(Graycolor,Graycolor,Graycolor)
+        v.Color = Color3.new(Graycolor,Graycolor,Graycolor) -- Greyscale
         if v:IsA("MeshPart") then
             v.TextureID = NothingTexture
         end
@@ -96,7 +96,6 @@ local function Optimize(v)
     end
 end
 print("Initalized")
-
 local function CreateInstance(cls,props)
 local inst = Instance.new(cls)
 for i,v in pairs(props) do
@@ -104,9 +103,14 @@ for i,v in pairs(props) do
 end
 return inst
 end
-    
-local PO = CreateInstance('ScreenGui',{DisplayOrder=0,Enabled=true,ResetOnSpawn=true,Name='PO', Parent=game.CoreGui})
-local POF = CreateInstance('Frame',{Style=Enum.FrameStyle.Custom,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0, 0, 0),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0.0181818176, 0, 0.0434782617, 0),Rotation=0,Selectable=false,Size=UDim2.new(0.087272726, 0, 0.20869568, 0),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name = 'POF',Parent = PO})
+local PO = nil
+if not pcall(function() 
+    PO = CreateInstance('ScreenGui',{DisplayOrder=0,Enabled=true,ResetOnSpawn=true,Name='PO', Parent=game.CoreGui}) 
+    end) then
+    print("CoreGui is not accessible, using PlayerGui (Probably this is executed in level 2)")
+    PO = CreateInstance('ScreenGui',{DisplayOrder=0,Enabled=true,ResetOnSpawn=true,Name='PO', Parent=game.Players.LocalPlayer.PlayerGui}) 
+end
+local POF = CreateInstance('Frame',{Style=Enum.FrameStyle.Custom,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0, 0, 0),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0.0181818176, 0, 0.0434782468, 0),Rotation=0,Selectable=false,Size=UDim2.new(0.145454541, 0, 0.347826183, 0),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name = 'POF',Parent = PO})
 local Title = CreateInstance('TextLabel',{Font=Enum.Font.Code,FontSize=Enum.FontSize.Size14,Text='Performance Optimizer',TextColor3=Color3.new(1, 1, 1),TextScaled=true,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=true,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 0, 0, 0),Rotation=0,Selectable=false,Size=UDim2.new(1, 0, 0.0800440237, 0),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='Title',Parent = POF})
 local Description = CreateInstance('TextLabel',{Font=Enum.Font.Code,FontSize=Enum.FontSize.Size9,Text='Description',TextColor3=Color3.new(1, 1, 1),TextScaled=true,TextSize=9,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=true,TextXAlignment=Enum.TextXAlignment.Left,TextYAlignment=Enum.TextYAlignment.Top,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0, 0, 0),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0.0500000007, 0, 0.276977658, 0),Rotation=0,Selectable=false,Size=UDim2.new(0.899999976, 0, 0.304929525, 0),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='Description',Parent = POF})
 local CloseBtn = CreateInstance('TextButton',{Font=Enum.Font.Code,FontSize=Enum.FontSize.Size14,Text='X',TextColor3=Color3.new(1, 1, 1),TextScaled=true,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=true,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.117647, 0.117647, 0.117647),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0.875, 0, 0.644163668, 0),Rotation=0,Selectable=true,Size=UDim2.new(0.075000003, 0, 0.077502951, 0),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='CloseBtn',Parent = POF})
@@ -138,6 +142,7 @@ OptimizeBtn.MouseButton1Click:Connect(function()
     Lighting.FogEnd = 9e9
     Lighting.Brightness = 0
     if OptimizeMode == "Extreme" then
+        print("Extreme mode, using Fake Sky...")
         local FakeSky = Instance.new("Sky", Lighting)
         FakeSky.CelestialBodiesShown = false
         for i, v in pairs({"SunTextureId","MoonTextureId","SkyboxBk","SkyboxDn","SkyboxFt","SkyboxLf","SkyboxRt","SkyboxUp"}) do
@@ -157,7 +162,7 @@ OptimizeBtn.MouseButton1Click:Connect(function()
     for i, v in pairs(workspace:GetDescendants()) do
         coroutine.wrap(Optimize)(v)
     end
-    print("Optimizing Lighting...")
+    print("Optimizing Lighting[2]...")
     for i, v in pairs(Lighting:GetDescendants()) do
         coroutine.wrap(Optimize)(v)
     end
