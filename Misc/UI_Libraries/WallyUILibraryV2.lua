@@ -269,7 +269,7 @@ local defaults; do
                 end
             }
         end
-        function types:Label(text)
+        function types:Label(name)
             local check = library:Create('Frame', {
                 BackgroundTransparency = 1;
                 Size = UDim2.new(1, 0, 0, 25);
