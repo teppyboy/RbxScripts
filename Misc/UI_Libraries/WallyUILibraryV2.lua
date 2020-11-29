@@ -263,14 +263,34 @@ local defaults; do
             
             check:FindFirstChild(name).MouseButton1Click:connect(callback)
             self:Resize();
-
             return {
                 Fire = function()
                     callback();
                 end
             }
         end
-        
+        function types:Label(text)
+            local check = library:Create('Frame', {
+                BackgroundTransparency = 1;
+                Size = UDim2.new(1, 0, 0, 25);
+                LayoutOrder = self:GetOrder();
+                library:Create('TextLabel', {
+                    Name = name;
+                    Text = name;
+                    BackgroundTransparency = 1;
+                    TextStrokeTransparency = library.options.textstroke;
+                    TextStrokeColor3 = library.options.strokecolor;
+                    TextColor3 = library.options.textcolor;
+                    Position = UDim2.new(0, 5, 0, 5);
+                    Size     = UDim2.new(1, -10, 0, 20);
+                    Font = library.options.font;
+                    TextSize = library.options.fontsize;
+                });
+                Parent = self.container;
+            });
+            self:Resize();
+            return nil;
+        end
         function types:Box(name, options, callback) --type, default, data, location, flag)
             local type   = options.type or "";
             local default = options.default or "";
