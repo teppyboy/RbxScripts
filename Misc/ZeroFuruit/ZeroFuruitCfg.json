@@ -42,6 +42,13 @@
             "action": "warn",
             "reason": "This script isn't tested on this exploit, use other exploits or wait for the developer to fix. SirHurt support might get removed in the future."
         },
+        "elysianexecute": {
+            "name": "elysian",
+            "functions": ["elysianexecute"],
+            "fakefunctions": ["is_sirhurt_closure"],
+            "action": "warn",
+            "reason": "Good exploit you got there!"
+        },
         "synapse": {
             "name": "synapse",
             "functions": ["syn"],
