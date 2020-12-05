@@ -276,15 +276,16 @@ local defaults; do
                 LayoutOrder = self:GetOrder();
                 library:Create('TextLabel', {
                     Name = name;
-                    Text = name;
+                    Text = "\r" .. name;
                     BackgroundTransparency = 1;
-                    TextStrokeTransparency = library.options.textstroke;
-                    TextStrokeColor3 = library.options.strokecolor;
                     TextColor3 = library.options.textcolor;
-                    Position = UDim2.new(0, 5, 0, 5);
-                    Size     = UDim2.new(1, -10, 0, 20);
+                    Position = UDim2.new(0, 5, 0, 0);
+                    Size     = UDim2.new(1, -5, 1, 0);
+                    TextXAlignment = Enum.TextXAlignment.Left;
                     Font = library.options.font;
                     TextSize = library.options.fontsize;
+                    TextStrokeTransparency = library.options.textstroke;
+                    TextStrokeColor3 = library.options.strokecolor;
                 });
                 Parent = self.container;
             });
