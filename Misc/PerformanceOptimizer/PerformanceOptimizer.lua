@@ -1,4 +1,4 @@
-local Version = "1.0.2_rww"
+local Version = "1.0.3_rww"
 --[[
     For game developers, feel free to take everything in this script
     without credit, I don't mind :)
@@ -27,7 +27,7 @@ local function Grayscaler(color3)
     local Graycolor = (color3.R + color3.G + color3.B) / 3
     return Color3.new(Graycolor,Graycolor,Graycolor) -- Grayscale
 end
-local Wally = loadstring(game:HttpGet("https://raw.githubusercontent.com/teppyboy/RbxScripts/master/Misc/UI_Libraries/WallyUILibraryV2.lua", true))()
+local Wally = loadstring(game:HttpGet("https://raw.githubusercontent.com/teppyboy/RbxScripts/master/Misc/UI_Libraries/Wallys_UI_Library_V2/Library.lua", true))()
 local Window1 = Wally:CreateWindow('FPS Optimizer')
 Window1:Label("Select object(s) to optimize")
 Window1:Toggle('Part', {flag = "Part"})
@@ -155,5 +155,5 @@ local BeginTime = os.clock() -- Begin benchmark
     print("Optimized ("..tostring(math.floor((os.clock() - BeginTime) * 1000)).."ms)")
     print("The process is still working in background but you can play now.")
 end)
-Window1:Label("NOTE: You can't revert changes")
-Window1:Label("unless you rejoin the game.")
+Window1:Label("NOTE: You can't revert unless")
+Window1:Label("you rejoin the game.")
