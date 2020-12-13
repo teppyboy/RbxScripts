@@ -234,7 +234,7 @@ KleaverUI.CreateWindow = function(WindowName, KleavConfig)
 			return KBtn
 		end
 
-		KleaverTab.AddOption = function(Text, StringOptions)
+		KleaverTab.AddOption = function(Text, StringOptions, Callback)
 			local KOptionBtn = {}
 			local KOFrame = Instance.new("Frame", KTab)
 			KOFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
@@ -286,11 +286,66 @@ KleaverUI.CreateWindow = function(WindowName, KleavConfig)
 				end
 				KOBtn.Text = StringOptions[intOption]
 				KOptionBtn.Selected = StringOptions[intOption]
+				if Callback then
+					Callback(StringOptions[intOption])
+				end
 			end)
 			-- Post registering
 			KOptionBtn.Button = KOBtn
 			KleaverTab.AddWhitespace()
 			return KOptionBtn
+		end
+
+		KleaverTab.AddTextBox = function(Text, Callback)
+			local KOFrame = Instance.new("Frame", KTab)
+			KOFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
+			KOFrame.BackgroundTransparency = 1
+			KOFrame.Size = UDim2.new(0, KleavConfig.Width - 10, 0, 20)
+			KOFrame.LayoutOrder = #KTab:GetChildren() - 1
+			KOFrame.BorderSizePixel = 0
+			local KOFrameULL = Instance.new("UIListLayout", KOFrame)
+			KOFrameULL.FillDirection = Enum.FillDirection.Horizontal
+			KOFrameULL.SortOrder = Enum.SortOrder.LayoutOrder
+			local KOTxtX = 0
+			local KOLabel = nil
+			if Text then
+				KOLabel = Instance.new("TextLabel", KOFrame)
+				KOLabel.LayoutOrder = #KOFrame:GetChildren() - 1
+				KOLabel.BackgroundTransparency = 1
+				KOLabel.BorderSizePixel = 0
+				KOLabel.TextSize = 14
+				KOLabel.Text = Text
+				KOLabel.Size = UDim2.new(0, KOFrame.Size.X.Offset, 0, 20)
+				KOLabel.Font = KleavConfig.Font
+				KOLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+				KOLabel.TextXAlignment = Enum.TextXAlignment.Left
+				KOLabel.TextYAlignment = Enum.TextYAlignment.Center
+			end
+			local KOTBox = Instance.new("TextBox", KOFrame)
+			if KOLabel then -- Workaround
+				KOLabel.Size = UDim2.new(0, KOLabel.TextBounds.X + 5, 0, 20) 
+				KOTxtX = KOLabel.Size.X.Offset
+			end
+			KOTBox.ClearTextOnFocus = false
+			KOTBox.LayoutOrder = #KOFrame:GetChildren() - 1
+			KOTBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+			KOTBox.BorderColor3 = Color3.fromRGB(100,100,100)
+			KOTBox.BackgroundTransparency = 0
+			KOTBox.Size = UDim2.new(0, KOFrame.Size.X.Offset - KOTxtX, 0, 20)
+			KOTBox.Font = KleavConfig.Font
+			KOTBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+			KOTBox.TextSize = 14
+			KOTBox.Text = ""
+			KOTBox.TextXAlignment = Enum.TextXAlignment.Center
+			KOTBox.TextYAlignment = Enum.TextYAlignment.Center
+			if Callback then 
+				KOTBox.FocusLost:Connect(function()
+					Callback(KOTBox.Text)
+				end)
+			end
+			-- Post registering
+			KleaverTab.AddWhitespace()
+			return KOTBox
 		end
 		-- Post registering
 		KleaverTab.Tab = KTab
