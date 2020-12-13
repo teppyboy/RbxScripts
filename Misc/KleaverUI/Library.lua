@@ -273,11 +273,11 @@ KleaverUI.CreateWindow = function(WindowName, KleavConfig)
 			KOBtn.Font = KleavConfig.Font
 			KOBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 			KOBtn.TextSize = 14
+			KOBtn.Text = ""
 			KOBtn.TextXAlignment = Enum.TextXAlignment.Center
 			KOBtn.TextYAlignment = Enum.TextYAlignment.Center
-			local intOption = 1
-			KOptionBtn.Selected = StringOptions[intOption]
-			KOBtn.Text = KOptionBtn.Selected
+			local intOption = 0
+			KOptionBtn.Selected = nil
 			KOBtn.MouseButton1Click:Connect(function()
 				if intOption < #StringOptions then
 					intOption = intOption + 1
