@@ -78,6 +78,31 @@ KleaverUI.CreateWindow = function(WindowName, KleavConfig)
 	MinMaxBtn.BorderSizePixel = 0
 	MinMaxBtn.Position = UDim2.new(0, KleavConfig.Width - 40, 0, 0)
 	MinMaxBtn.Size = UDim2.new(0, 20, 0, 20)
+	local MMisWorking = false
+	MinMaxBtn.MouseButton1Click:Connect(function()
+		if not MMisWorking then
+			MMisWorking = true
+			if KWin.Size.Y.Offset == KleavConfig.Height then
+				for i,v in pairs(KWin:GetChildren()) do
+					if v.ClassName == "Frame" then
+						v.Visible = false
+					end
+				end
+				KWin:TweenSize(UDim2.new(0,KleavConfig.Width,0,20), "Out", "Sine", 0.1, true, function()
+					MMisWorking = false
+				end)
+			else
+				KWin:TweenSize(UDim2.new(0,KleavConfig.Width,0,KleavConfig.Height), "Out", "Sine", 0.1, true, function()
+					for i,v in pairs(KWin:GetChildren()) do
+						if v.ClassName == "Frame" then
+							v.Visible = true
+						end
+					end
+					MMisWorking = false
+				end)
+			end
+		end
+	end)
 
 	-- Dragging
 	local function DragWindow()
@@ -167,7 +192,7 @@ KleaverUI.CreateWindow = function(WindowName, KleavConfig)
 			local KOFrame = Instance.new("Frame", KTab)
 			KOFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
 			KOFrame.BackgroundTransparency = 1
-			KOFrame.Size = UDim2.new(0, KleavConfig.Width, 0, 3.5)
+			KOFrame.Size = UDim2.new(0, KleavConfig.Width, 0, 5)
 			KOFrame.LayoutOrder = #KTab:GetChildren() - 1
 			KOFrame.BorderSizePixel = 0
 			return KOFrame
@@ -252,6 +277,7 @@ KleaverUI.CreateWindow = function(WindowName, KleavConfig)
 			KOBtn.TextYAlignment = Enum.TextYAlignment.Center
 			local intOption = 1
 			KOptionBtn.Selected = StringOptions[intOption]
+			KOBtn.Text = KOptionBtn.Selected
 			KOBtn.MouseButton1Click:Connect(function()
 				if intOption < #StringOptions then
 					intOption = intOption + 1
