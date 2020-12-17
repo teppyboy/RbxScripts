@@ -234,7 +234,8 @@ local defaults; do
                     location[flag] = b;
                     callback(location[flag])
                     check:FindFirstChild(name).Checkmark.Text = location[flag] and utf8.char(10003) or "";
-                end
+                end,
+                Instance = check
             }
         end
         
@@ -266,7 +267,8 @@ local defaults; do
             return {
                 Fire = function()
                     callback();
-                end
+                end,
+                Instance = check
             }
         end
         function types:Label(name)
@@ -290,7 +292,7 @@ local defaults; do
                 Parent = self.container;
             });
             self:Resize();
-            return nil;
+            return check;
         end
         function types:Box(name, options, callback) --type, default, data, location, flag)
             local type   = options.type or "";
@@ -982,7 +984,7 @@ local defaults; do
         return obj
     end
     
-	default = {
+    default = {
         topcolor       = Color3.fromRGB(30, 30, 30);
         titlecolor     = Color3.fromRGB(255, 255, 255);
         
@@ -1011,9 +1013,9 @@ local defaults; do
         placeholdercolor = Color3.fromRGB(255, 255, 255);
         titlestrokecolor = Color3.fromRGB(0, 0, 0);
     }
-	
+    
     function library:CreateWindow(name, options)
-		
+        
         if (not library.container) then
             library.container = self:Create("ScreenGui", {
                 self:Create('Frame', {
@@ -1027,12 +1029,12 @@ local defaults; do
             }):FindFirstChild('Container');
         end
         if (not library.options) then
-			library.options = setmetatable(options or {}, {__index = defaults})
+            library.options = setmetatable(options or {}, {__index = defaults})
         end
-		if (options) then
-			library.options = setmetatable(options, {__index = default})
-		end
-		
+        if (options) then
+            library.options = setmetatable(options, {__index = default})
+        end
+        
         local window = types.window(name, library.options);
         dragger.new(window.object);
         return window
