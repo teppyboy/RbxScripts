@@ -35,6 +35,7 @@ Untitled.MakeWindow = function(WindowName)
 		Name = WindowName,
 		Text = WindowName,
 		Parent = UntitledGUI,
+		ZIndex = 0,
 		BackgroundColor3 = Color3.fromRGB(30, 30, 30),
 		BorderSizePixel = 0,
 		Size = UDim2.new(0,225,0,40),
@@ -46,6 +47,7 @@ Untitled.MakeWindow = function(WindowName)
 	local ColorBar = PrivUntitled.MkInstance("Frame", {
 		Name = "ColorBar",
 		Parent = Title,
+		ZIndex = 0,
 		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 		BorderSizePixel = 0,
 		Size = UDim2.new(0,225,0,2),
@@ -57,6 +59,7 @@ Untitled.MakeWindow = function(WindowName)
 	local MinMaxBtn = PrivUntitled.MkInstance("TextButton", {
 		Name = "MinMaxBtn",
 		Text = "-",
+		ZIndex = 0,
 		Parent = Title,
 		BackgroundColor3 = Color3.fromRGB(30, 30, 30),
 		BackgroundTransparency = 1,
@@ -72,6 +75,7 @@ Untitled.MakeWindow = function(WindowName)
 		Parent = Title,
 		BackgroundColor3 = Color3.fromRGB(40, 40, 40),
 		BorderSizePixel = 0,
+		ZIndex = 0,
 		Size = UDim2.new(0, 225, 0, 0),
 		Position = UDim2.new(0,0,1, 0)
 	})
@@ -357,7 +361,7 @@ Untitled.MakeWindow = function(WindowName)
 			BorderColor3 = Color3.fromRGB(100,100,100),
 			Position = UDim2.new(0,0,1,1),
 			Size = UDim2.new(0, 215, 0, 0),
-			ZIndex = 10,
+			ZIndex = 1,
 			CanvasSize = UDim2.new(0,0,0,#Selections * 20),
 			Visible = false,
 			ScrollBarThickness = 4,
@@ -415,7 +419,7 @@ Untitled.MakeWindow = function(WindowName)
 				Size = UDim2.new(0,215,0,20),
 				Font = Enum.Font.Ubuntu,
 				Text = Text,
-				ZIndex = 0,
+				ZIndex = 1,
 				TextColor3 = Color3.fromRGB(255,255,255),
 				TextSize = 16,
 				TextXAlignment = Enum.TextXAlignment.Center,
@@ -458,7 +462,6 @@ Untitled.MakeWindow = function(WindowName)
 			BackgroundTransparency = 1,
 			BorderSizePixel = 0,
 			ZIndex = 0,
-			ZIndex = 0,
 			Size = UDim2.new(0,215,0,YO),
 			LayoutOrder = #Contents:GetChildren()
 		})
@@ -492,7 +495,7 @@ Untitled.MakeWindow = function(WindowName)
 		})
 		if Function then Button.MouseButton1Click:Connect(Function) end
 		LabelBtnTbl.GetInstance = function()
-			 return LblBtn
+			return LblBtn
 		end
 		ContentsSize = ContentsSize + YO
 		UntitledWindow.AddWhitespace()
