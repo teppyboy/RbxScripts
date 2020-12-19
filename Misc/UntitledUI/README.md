@@ -35,11 +35,13 @@ local Untitled = loadstring(game:HttpGet("https://raw.githubusercontent.com/tepp
 + Add an UntitledCheckbox to the window's content and execute Function when user check/uncheck if specified.
 #### (UntitledDropdown) UntitledWindow.AddDropdown(table Selections, function(string Selection) Function = nil)
 + Add an UntitledDropdown to the window's content and execute Function when user select an item in item list if specified.
+#### (UntitledLabelButton) UntitledWindow.AddLabelButton(string LabelText, string ButtonText, function() Function = nil)
++ Add a UntitledLabelButton to the window's content and execute Function when user click the button if specified.
 
 ### UntitledCheckbox
 #### (bool) UntitledCheckbox.Checked
 + Return if checkbox is checked.
-#### (Frame) UntitledCheckbox.Instance
+#### (Frame) UntitledCheckbox.GetInstance()
 + Return the top GUI Instance that is used by UntitledCheckbox
 
 ### UntitledDropdown
@@ -49,7 +51,11 @@ local Untitled = loadstring(game:HttpGet("https://raw.githubusercontent.com/tepp
 + Add a selection to dropdown content
 #### (nil) UntitledDropdown.Update()
 + Update the Dropdown to match the latest values.
-#### (TextButton) UntitledDropdown.Instance
+#### (TextButton) UntitledDropdown.GetInstance()
 + Return the top GUI Instance that is used by UntitledDropdown
+
+### UntitledLabelButton
+#### (Frame) UntitledLabelButton.GetInstance()
++ Return the top GUI Instance that is used by UntitledLabelButton
 
 # More features will be added in the future, stay soon!
