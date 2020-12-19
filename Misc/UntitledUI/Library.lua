@@ -51,6 +51,9 @@ Untitled.MakeWindow = function(WindowName)
 		Size = UDim2.new(0,225,0,2),
 		Position = UDim2.new(0,0,0,38)
 	})
+	UntitledWindow.BarColor = function(Color)
+		ColorBar.BackgroundColor3 = Color
+	end
 	local MinMaxBtn = PrivUntitled.MkInstance("TextButton", {
 		Name = "MinMaxBtn",
 		Text = "-",
@@ -155,6 +158,7 @@ Untitled.MakeWindow = function(WindowName)
 		local YO = 3.5
 		local EmptyFrame = PrivUntitled.MkInstance("Frame", {
 			Parent = Contents,
+			ZIndex = 0,
 			BackgroundTransparency = 1,
 			BorderSizePixel = 0,
 			Size = UDim2.new(0,225,0,YO),
@@ -173,6 +177,7 @@ Untitled.MakeWindow = function(WindowName)
 			BackgroundTransparency = 1,
 			BorderSizePixel = 0,
 			Size = UDim2.new(0,215,0,YO),
+			ZIndex = 0,
 			Font = Enum.Font.Ubuntu,
 			Text = Text,
 			TextColor3 = Color3.fromRGB(255,255,255),
@@ -195,6 +200,7 @@ Untitled.MakeWindow = function(WindowName)
 			BorderColor3 = Color3.fromRGB(100,100,100),
 			BackgroundTransparency = 0,
 			BorderSizePixel = 1,
+			ZIndex = 0,
 			Size = UDim2.new(0,215,0,YO),
 			Font = Enum.Font.Ubuntu,
 			Text = Text,
@@ -220,6 +226,7 @@ Untitled.MakeWindow = function(WindowName)
 			BackgroundColor3 = Color3.fromRGB(30, 30, 30),
 			BorderColor3 = Color3.fromRGB(100,100,100),
 			BackgroundTransparency = 0,
+			ZIndex = 0,
 			ClearTextOnFocus = false,
 			PlaceholderColor3 = Color3.fromRGB(178, 178, 178),
 			PlaceholderText = Text,
@@ -254,6 +261,7 @@ Untitled.MakeWindow = function(WindowName)
 			Parent = Contents,
 			BackgroundTransparency = 1,
 			BorderSizePixel = 0,
+			ZIndex = 0,
 			Size = UDim2.new(0,215,0,YO),
 			LayoutOrder = #Contents:GetChildren()
 		})
@@ -265,6 +273,7 @@ Untitled.MakeWindow = function(WindowName)
 			Size = UDim2.new(0,195,0,YO),
 			Font = Enum.Font.Ubuntu,
 			Text = Text,
+			ZIndex = 0,
 			TextColor3 = Color3.fromRGB(255,255,255),
 			TextSize = 16,
 			TextXAlignment = Enum.TextXAlignment.Left,
@@ -278,6 +287,7 @@ Untitled.MakeWindow = function(WindowName)
 			Position = UDim2.new(0,195,0,0),
 			Size = UDim2.new(0,20,0,YO),
 			Text = "",
+			ZIndex = 0,
 			TextColor3 = Color3.fromRGB(255,255,255),
 			TextSize = 14,
 			TextXAlignment = Enum.TextXAlignment.Center,
@@ -293,7 +303,9 @@ Untitled.MakeWindow = function(WindowName)
 				Function(CheckboxTbl.Checked)
 			end
 		end)
-		CheckboxTbl.Instance = Checkbox
+		CheckboxTbl.GetInstance = function() 
+			return Checkbox
+		end
 		ContentsSize = ContentsSize + YO
 		UntitledWindow.AddWhitespace()
 		UntitledWindow.Rerender()
@@ -312,6 +324,7 @@ Untitled.MakeWindow = function(WindowName)
 			BorderColor3 = Color3.fromRGB(100,100,100),
 			BackgroundTransparency = 0,
 			BorderSizePixel = 1,
+			ZIndex = 0,
 			Size = UDim2.new(0,215,0,YO),
 			Font = Enum.Font.Ubuntu,
 			Text = "",
@@ -326,6 +339,7 @@ Untitled.MakeWindow = function(WindowName)
 			BorderSizePixel = 0,
 			Position = UDim2.new(0,195,0,0),
 			Size = UDim2.new(0,20,0,20),
+			ZIndex = 0,
 			Font = Enum.Font.SourceSans,
 			Text = "↓",
 			TextColor3 = Color3.fromRGB(255,255,255),
@@ -343,6 +357,7 @@ Untitled.MakeWindow = function(WindowName)
 			BorderColor3 = Color3.fromRGB(100,100,100),
 			Position = UDim2.new(0,0,1,1),
 			Size = UDim2.new(0, 215, 0, 0),
+			ZIndex = 10,
 			CanvasSize = UDim2.new(0,0,0,#Selections * 20),
 			Visible = false,
 			ScrollBarThickness = 4,
@@ -400,6 +415,7 @@ Untitled.MakeWindow = function(WindowName)
 				Size = UDim2.new(0,215,0,20),
 				Font = Enum.Font.Ubuntu,
 				Text = Text,
+				ZIndex = 0,
 				TextColor3 = Color3.fromRGB(255,255,255),
 				TextSize = 16,
 				TextXAlignment = Enum.TextXAlignment.Center,
@@ -424,11 +440,64 @@ Untitled.MakeWindow = function(WindowName)
 		for i, v in pairs(Selections) do
 			DropdownTbl.AddSelection(v)
 		end
-		DropdownTbl.Instance = ToggleBtn
+		DropdownTbl.GetInstance = function() 
+			return ToggleBtn
+		end
 		ContentsSize = ContentsSize + YO
 		UntitledWindow.AddWhitespace()
 		UntitledWindow.Rerender()
 		return DropdownTbl
+	end
+
+	UntitledWindow.AddLabelButton = function(LabelText, ButtonText, Function)
+		UntitledWindow.AddWhitespace()
+		local LabelBtnTbl = {}
+		local YO = 20
+		local LblBtn = PrivUntitled.MkInstance("Frame", {
+			Parent = Contents,
+			BackgroundTransparency = 1,
+			BorderSizePixel = 0,
+			ZIndex = 0,
+			ZIndex = 0,
+			Size = UDim2.new(0,215,0,YO),
+			LayoutOrder = #Contents:GetChildren()
+		})
+		local Label = PrivUntitled.MkInstance("TextLabel",{
+			Parent = LblBtn,
+			BackgroundTransparency = 1,
+			BorderSizePixel = 0,
+			Position = UDim2.new(0,0,0,0),
+			Size = UDim2.new(0,107.5,0,YO),
+			Font = Enum.Font.Ubuntu,
+			Text = LabelText,
+			ZIndex = 0,
+			TextColor3 = Color3.fromRGB(255,255,255),
+			TextSize = 16,
+			TextXAlignment = Enum.TextXAlignment.Left,
+		})
+		local Button = PrivUntitled.MkInstance("TextButton",{
+			Parent = LblBtn,
+			BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+			BorderColor3 = Color3.fromRGB(100,100,100),
+			BackgroundTransparency = 0,
+			BorderSizePixel = 1,
+			Position = UDim2.new(0,107.5,0,0),
+			Size = UDim2.new(0,107.5,0,YO),
+			ZIndex = 0,
+			Font = Enum.Font.Ubuntu,
+			Text = ButtonText,
+			TextColor3 = Color3.fromRGB(255,255,255),
+			TextSize = 16,
+			TextXAlignment = Enum.TextXAlignment.Center,
+		})
+		if Function then Button.MouseButton1Click:Connect(Function) end
+		LabelBtnTbl.GetInstance = function()
+			 return LblBtn
+		end
+		ContentsSize = ContentsSize + YO
+		UntitledWindow.AddWhitespace()
+		UntitledWindow.Rerender()
+		return LabelBtnTbl
 	end
 	return UntitledWindow
 end
