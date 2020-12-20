@@ -29,7 +29,7 @@ Untitled.MakeWindow = function(WindowName)
 	local UntitledWindow = {}
 	local TitlePosition = (#UntitledGUI:GetChildren() + 1) * 25
 	if (#UntitledGUI:GetChildren() > 0) then
-		TitlePosition = TitlePosition + 225
+		TitlePosition = TitlePosition + #UntitledGUI:GetChildren() * 225
 	end
 	local Title = PrivUntitled.MkInstance("TextLabel", {
 		Name = WindowName,
