@@ -195,6 +195,29 @@ Untitled.MakeWindow = function(WindowName)
 		return Label
 	end
 
+	UntitledWindow.AddSection = function(Text) -- Add a section
+		UntitledWindow.AddWhitespace()
+		local YO = 20
+		local Label = PrivUntitled.MkInstance("TextLabel",{
+			Parent = Contents,
+			BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+			BackgroundTransparency = 0,
+			BorderSizePixel = 0,
+			Size = UDim2.new(0,215,0,YO),
+			ZIndex = 0,
+			Font = Enum.Font.Ubuntu,
+			Text = Text,
+			TextColor3 = Color3.fromRGB(255,255,255),
+			TextSize = 16,
+			TextXAlignment = Enum.TextXAlignment.Center,
+			LayoutOrder = #Contents:GetChildren()
+		})
+		ContentsSize = ContentsSize + YO
+		UntitledWindow.AddWhitespace()
+		UntitledWindow.Rerender()
+		return Label
+	end
+
 	UntitledWindow.AddButton = function(Text, Function)
 		UntitledWindow.AddWhitespace()
 		local YO = 20
