@@ -10,6 +10,7 @@ local Wnd1Txt = Window1.AddButton("Welcome to UntitledUI!", function() print("Wo
 local Wnd1Tb = Window1.AddTextbox("Waifuverse", function(Text) print("UwU: "..Text) end)
 local Wnd2Checkbox = Window2.AddCheckbox("Select me!",function(Checked) print("Selected: "..tostring(Checked)) end)
 local Wnd2Dropdown = Window2.AddDropdown({"Patreon","Only(real)fans","Rubberroad","Pixiv #1", "Trash Pinterest"},function(Selected) print("Selected Value: "..Selected) end)
+local Wnd2HybridBtn = Window1.LabelButton("UwU", "Button", function() print("WuW") end)
 ```
 # Documentation
 + We'll use the variable listed in here as example:
@@ -20,6 +21,8 @@ local Untitled = loadstring(game:HttpGet("https://raw.githubusercontent.com/tepp
 ### Untitled
 #### (UntitledWindow) Untitled.MakeWindow(string WindowName)
 + Make a new window and return the window
+#### (nil) Untitled.BindToggleKey(KeyCode NewKey)
++ Bind a new KeyCode to toggle the GUI
 ### UntitledWindow
 #### (nil) UntitledWindow.Rerender()
 + Re-render the window created by MakeWindow.
@@ -37,6 +40,8 @@ local Untitled = loadstring(game:HttpGet("https://raw.githubusercontent.com/tepp
 + Add an UntitledDropdown to the window's content and execute Function when user select an item in item list if specified.
 #### (UntitledLabelButton) UntitledWindow.AddLabelButton(string LabelText, string ButtonText, function() Function = nil)
 + Add a UntitledLabelButton to the window's content and execute Function when user click the button if specified.
+#### (UntitledLabelTextBox) UntitledWindow.AddLabelTextBox(string LabelText, string TextBoxText, function(string Text) Function = nil)
++ Add a UntitledLabelTextBox to the window's content and execute Function when user lost focus if specified.
 
 ### UntitledCheckbox
 #### (bool) UntitledCheckbox.Checked
@@ -57,5 +62,9 @@ local Untitled = loadstring(game:HttpGet("https://raw.githubusercontent.com/tepp
 ### UntitledLabelButton
 #### (Frame) UntitledLabelButton.GetInstance()
 + Return the top GUI Instance that is used by UntitledLabelButton
+
+### UntitledLabelTextBox
+#### (Frame) UntitledLabelTextBox.GetInstance()
++ Return the top GUI Instance that is used by UntitledLabelTextBox
 
 # More features will be added in the future, stay soon!
