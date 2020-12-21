@@ -10,7 +10,7 @@ local Wnd1Txt = Window1.AddButton("Welcome to UntitledUI!", function() print("Wo
 local Wnd1Tb = Window1.AddTextbox("Waifuverse", function(Text) print("UwU: "..Text) end)
 local Wnd2Checkbox = Window2.AddCheckbox("Select me!",function(Checked) print("Selected: "..tostring(Checked)) end)
 local Wnd2Dropdown = Window2.AddDropdown({"Patreon","Only(real)fans","Rubberroad","Pixiv #1", "Trash Pinterest"},function(Selected) print("Selected Value: "..Selected) end)
-local Wnd2HybridBtn = Window1.LabelButton("UwU", "Button", function() print("WuW") end)
+local Wnd2HybridBtn = Window1.AddLabelButton("UwU", "Button", function() print("WuW") end)
 ```
 # Documentation
 + We'll use the variable listed in here as example:
