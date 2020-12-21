@@ -24,7 +24,54 @@ else
 	GuiFolder = game:GetService("CoreGui")
 end 
 local UntitledGUI = GuiFolder:FindFirstChild("UntitledGUI") or PrivUntitled.MkInstance("ScreenGui", {Parent = GuiFolder,ResetOnSpawn = false, Name = "UntitledGUI"})
-
+local MinimizedWindowes = {}
+local HoveringWindowes = {}
+local KeyCode, Hidding, Dragging, MouseOffset = Enum.KeyCode.RightAlt, false, false, nil
+local function DragWindow(Title)
+	while Dragging and MouseOffset and not Hidding do
+		if Title then
+			Title:TweenPosition(UDim2.new(0, Mouse.X - MouseOffset.X, 0, Mouse.Y - MouseOffset.Y), "Out", "Sine", 0.1, true)
+		end
+		wait()
+	end
+	MouseOffset = nil
+end
+UserInputService.InputBegan:Connect(function(Input, GameProcessedEvent)
+	if not GameProcessedEvent then
+		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+			for i, v in pairs(UntitledGUI:GetChildren()) do
+				if HoveringWindowes[v.Name][1] then
+					MouseOffset = {
+						X = Mouse.X - v.AbsolutePosition.X,
+						Y = Mouse.Y - v.AbsolutePosition.Y
+					}
+					Dragging = true
+					DragWindow(v)
+					break
+				end
+			end
+		elseif Input.KeyCode == KeyCode and not Hidding then
+			Hidding = true
+			for i, v in pairs(UntitledGUI:GetChildren()) do
+				if MinimizedWindowes[v.Name][1] then
+					MinimizedWindowes[v.Name][1] = false
+					v:TweenPosition(MinimizedWindowes[v.Name][2], Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 0.25, true, nil)
+				else
+					MinimizedWindowes[v.Name][1] = true
+					MinimizedWindowes[v.Name][2] = v.Position
+					v:TweenPosition(UDim2.new(0,-250,0,-250), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.25, true, nil)
+				end
+			end
+			wait(0.25)
+			Hidding = false
+		end
+	end
+end)
+UserInputService.InputEnded:Connect(function(Input)
+	if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+		Dragging = false
+	end
+end)
 Untitled.MakeWindow = function(WindowName)
 	local UntitledWindow = {}
 	local TitlePosition = (#UntitledGUI:GetChildren() + 1) * 25
@@ -44,6 +91,8 @@ Untitled.MakeWindow = function(WindowName)
 		TextSize = 22,
 		Position = UDim2.new(0,TitlePosition,0, 25)
 	})
+	MinimizedWindowes[Title.Name] = { false }
+	HoveringWindowes[Title.Name] = { false }
 	local ColorBar = PrivUntitled.MkInstance("Frame", {
 		Name = "ColorBar",
 		Parent = Title,
@@ -86,7 +135,7 @@ Untitled.MakeWindow = function(WindowName)
 			Tweening = true
 			if Contents.Size == UDim2.new(0,225,0,0) then
 				MinMaxBtn.Text = "-"
-				Contents:TweenSize(UDim2.new(0,225,0,ContentsSize), Enum.EasingDirection.Out, Enum.EasingStyle.Sine, ContentsSize / 500, false, function()
+				Contents:TweenSize(UDim2.new(0,225,0,ContentsSize), Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 0.15 , false, function()
 					for i, v in pairs(Contents:GetChildren()) do
 						if v.ClassName ~= "UIListLayout" then
 							v.Visible = true
@@ -101,52 +150,21 @@ Untitled.MakeWindow = function(WindowName)
 						v.Visible = false
 					end
 				end
-				Contents:TweenSize(UDim2.new(0,225,0,0), Enum.EasingDirection.In, Enum.EasingStyle.Sine, ContentsSize / 500, false, function()
+				Contents:TweenSize(UDim2.new(0,225,0,0), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.15 , false, function()
 					Tweening = false
 				end)	
 			end
 		end
 	end)
 	-- Drag (from Finity V2 (MIT))
-	local HoveringTopbar, Dragging, MouseOffset = false, false, nil
 	Title.MouseEnter:Connect(function()
-		HoveringTopbar = true
+		HoveringWindowes[Title.Name][1] = true
 	end)
 
 	Title.MouseLeave:Connect(function()
-		HoveringTopbar = false
+		HoveringWindowes[Title.Name][1] = false
 	end)
-	local function DragWindow()
-		spawn(function()
-			while Dragging and MouseOffset do
-				if Title then
-					Title:TweenPosition(UDim2.new(0, Mouse.X - MouseOffset.X, 0, Mouse.Y - MouseOffset.Y), "Out", "Sine", 0.1, true)
-				end
-				wait()
-			end
-			if Title then
-				Title:TweenPosition(UDim2.new(0, Mouse.X - MouseOffset.X, 0, Mouse.Y - MouseOffset.Y), "Out", "Sine", 0.1, true)
-			end
-			MouseOffset = nil
-		end)
-	end
-	UserInputService.InputBegan:Connect(function(Input)
-		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-			if HoveringTopbar then
-				MouseOffset = {
-					X = Mouse.X - Title.AbsolutePosition.X,
-					Y = Mouse.Y - Title.AbsolutePosition.Y
-				}
-				Dragging = true
-				DragWindow()
-			end
-		end
-	end)
-	UserInputService.InputEnded:Connect(function(Input)
-		if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-			Dragging = false
-		end
-	end)
+
 	local ContentsULL = PrivUntitled.MkInstance("UIListLayout", {
 		Parent = Contents,
 		HorizontalAlignment = Enum.HorizontalAlignment.Center,
@@ -525,6 +543,66 @@ Untitled.MakeWindow = function(WindowName)
 		UntitledWindow.Rerender()
 		return LabelBtnTbl
 	end
+
+	UntitledWindow.AddLabelTextBox = function(LabelText, TextBoxText, Function)
+		UntitledWindow.AddWhitespace()
+		local LabelTbTbl = {}
+		local YO = 20
+		local LblTb = PrivUntitled.MkInstance("Frame", {
+			Parent = Contents,
+			BackgroundTransparency = 1,
+			BorderSizePixel = 0,
+			ZIndex = 0,
+			Size = UDim2.new(0,215,0,YO),
+			LayoutOrder = #Contents:GetChildren()
+		})
+		local Label = PrivUntitled.MkInstance("TextLabel",{
+			Parent = LblTb,
+			BackgroundTransparency = 1,
+			BorderSizePixel = 0,
+			Position = UDim2.new(0,0,0,0),
+			Size = UDim2.new(0,107.5,0,YO),
+			Font = Enum.Font.Ubuntu,
+			Text = LabelText,
+			ZIndex = 0,
+			TextColor3 = Color3.fromRGB(255,255,255),
+			TextSize = 16,
+			TextXAlignment = Enum.TextXAlignment.Left,
+		})
+		local Textbox = PrivUntitled.MkInstance("TextBox",{
+			Parent = LblTb,
+			BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+			BorderColor3 = Color3.fromRGB(100,100,100),
+			BackgroundTransparency = 0,
+			BorderSizePixel = 1,
+			ClearTextOnFocus = false,
+			PlaceholderColor3 = Color3.fromRGB(178, 178, 178),
+			PlaceholderText = TextBoxText,
+			Position = UDim2.new(0,107.5,0,0),
+			Size = UDim2.new(0,107.5,0,YO),
+			ZIndex = 0,
+			Font = Enum.Font.Ubuntu,
+			Text = "",
+			TextColor3 = Color3.fromRGB(255,255,255),
+			TextSize = 16,
+			TextXAlignment = Enum.TextXAlignment.Center,
+		})
+		if Function then
+			Textbox.FocusLost:Connect(function()
+				Function(Textbox.Text)
+			end)
+		end
+		LabelTbTbl.GetInstance = function()
+			return LblTb
+		end
+		ContentsSize = ContentsSize + YO
+		UntitledWindow.AddWhitespace()
+		UntitledWindow.Rerender()
+		return LabelTbTbl
+	end
 	return UntitledWindow
+end
+Untitled.BindToggleKey = function(NewKey)
+	KeyCode = NewKey
 end
 return Untitled
