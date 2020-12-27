@@ -90,7 +90,7 @@ if RunService:IsStudio() then
 else
 	GuiFolder = game:GetService("CoreGui")
 end 
-local UntitledGUI = GuiFolder:FindFirstChild("UntitledGUI") or PrivUntitled.MkInstance("ScreenGui", {Parent = GuiFolder,ResetOnSpawn = false, Name = "UntitledGUI"})
+local UntitledGUI
 local MinimizedWindowes = {}
 local HoveringWindowes = {}
 local KeyCode, Hidding, Dragging, MouseOffset = Enum.KeyCode.RightAlt, false, false, nil
@@ -142,11 +142,18 @@ end)
 Untitled.BindToggleKey = function(NewKey)
 	KeyCode = NewKey
 end
-
-
+Untitled.SetGUIName = function(Name)
+	UntitledGUI = GuiFolder:FindFirstChild(Name) or PrivUntitled.MkInstance("ScreenGui", {Parent = GuiFolder,ResetOnSpawn = false, Name = Name})
+end
+Untitled.GetInstance = function()
+	return UntitledGUI
+end
 -- VERSION 1 OF THE LIBRARY (MINECRAFT CHEAT STYLED)
 Untitled.V1 = {}
 Untitled.V1.MakeWindow = function(WindowName)
+	if not UntitledGUI then
+		Untitled.SetGUIName(tostring(math.random(0, 177013420)))
+	end
 	local UntitledWindow = {}
 	local TitlePosition = (#UntitledGUI:GetChildren() + 1) * 25
 	if (#UntitledGUI:GetChildren() > 0) then
@@ -202,6 +209,9 @@ Untitled.V1.MakeWindow = function(WindowName)
 		Size = UDim2.new(0, 225, 0, 0),
 		Position = UDim2.new(0,0,1, 0)
 	})
+	UntitledWindow.GetInstance = function()
+		return Contents
+	end
 	local Tweening = false
 	local ContentsSize = 0
 	MinMaxBtn.MouseButton1Click:Connect(function()
