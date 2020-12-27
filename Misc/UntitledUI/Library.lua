@@ -10,6 +10,73 @@ PrivUntitled.MkInstance = function(ClassName, Properties)
 	return Object
 end
 
+PrivUntitled.MkFrm = function(X, Parent)
+	return PrivUntitled.MkInstance("Frame", {
+		Parent = Parent,
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		ZIndex = 0,
+		Size = UDim2.new(0,X,0,20),
+		LayoutOrder = #Parent:GetChildren()
+	})
+end
+
+PrivUntitled.MkLbl = function(Text, X, Parent)
+	return PrivUntitled.MkInstance("TextLabel",{
+		Parent = Parent,
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		Size = UDim2.new(0,X,0,20),
+		ZIndex = 0,
+		Font = Enum.Font.Ubuntu,
+		Text = Text,
+		TextColor3 = Color3.fromRGB(255,255,255),
+		TextSize = 16,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		LayoutOrder = #Parent:GetChildren()
+	})
+end
+
+PrivUntitled.MkBtn = function(Text, X, Parent)
+	return PrivUntitled.MkInstance("TextButton",{
+		Parent = Parent,
+		BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+		BorderColor3 = Color3.fromRGB(100,100,100),
+		BackgroundTransparency = 0,
+		BorderSizePixel = 1,
+		ZIndex = 0,
+		Size = UDim2.new(0,X,0,20),
+		Font = Enum.Font.Ubuntu,
+		Text = Text,
+		TextColor3 = Color3.fromRGB(255,255,255),
+		TextSize = 16,
+		TextXAlignment = Enum.TextXAlignment.Center,
+		LayoutOrder = #Parent:GetChildren()
+	})
+end
+
+PrivUntitled.MkTb = function(PText, X, Parent)
+	return PrivUntitled.MkInstance("TextBox",{
+		Parent = Parent,
+		BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+		BorderColor3 = Color3.fromRGB(100,100,100),
+		BackgroundTransparency = 0,
+		ZIndex = 0,
+		ClearTextOnFocus = false,
+		PlaceholderColor3 = Color3.fromRGB(178, 178, 178),
+		PlaceholderText = PText,
+		BorderSizePixel = 1,
+		Size = UDim2.new(0,X,0,20),
+		Font = Enum.Font.Ubuntu,
+		Text = "",
+		TextColor3 = Color3.fromRGB(255,255,255),
+		TextSize = 16,
+		TextWrapped = true,
+		TextTruncate = Enum.TextTruncate.AtEnd,
+		TextXAlignment = Enum.TextXAlignment.Center,
+		LayoutOrder = #Parent:GetChildren()
+	})
+end
 -- Variables
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
@@ -46,7 +113,7 @@ UserInputService.InputBegan:Connect(function(Input, GameProcessedEvent)
 						Y = Mouse.Y - v.AbsolutePosition.Y
 					}
 					Dragging = true
-					DragWindow(v)
+					coroutine.wrap(DragWindow)(v)
 					break
 				end
 			end
@@ -72,7 +139,14 @@ UserInputService.InputEnded:Connect(function(Input)
 		Dragging = false
 	end
 end)
-Untitled.MakeWindow = function(WindowName)
+Untitled.BindToggleKey = function(NewKey)
+	KeyCode = NewKey
+end
+
+
+-- VERSION 1 OF THE LIBRARY (MINECRAFT CHEAT STYLED)
+Untitled.V1 = {}
+Untitled.V1.MakeWindow = function(WindowName)
 	local UntitledWindow = {}
 	local TitlePosition = (#UntitledGUI:GetChildren() + 1) * 25
 	if (#UntitledGUI:GetChildren() > 0) then
@@ -194,19 +268,7 @@ Untitled.MakeWindow = function(WindowName)
 	UntitledWindow.AddLabel = function(Text) -- Add a label
 		UntitledWindow.AddWhitespace()
 		local YO = 20
-		local Label = PrivUntitled.MkInstance("TextLabel",{
-			Parent = Contents,
-			BackgroundTransparency = 1,
-			BorderSizePixel = 0,
-			Size = UDim2.new(0,215,0,YO),
-			ZIndex = 0,
-			Font = Enum.Font.Ubuntu,
-			Text = Text,
-			TextColor3 = Color3.fromRGB(255,255,255),
-			TextSize = 16,
-			TextXAlignment = Enum.TextXAlignment.Left,
-			LayoutOrder = #Contents:GetChildren()
-		})
+		local Label = PrivUntitled.MkLbl(Text, 215, Contents)
 		ContentsSize = ContentsSize + YO
 		UntitledWindow.AddWhitespace()
 		UntitledWindow.Rerender()
@@ -216,20 +278,10 @@ Untitled.MakeWindow = function(WindowName)
 	UntitledWindow.AddSection = function(Text) -- Add a section
 		UntitledWindow.AddWhitespace()
 		local YO = 20
-		local Label = PrivUntitled.MkInstance("TextLabel",{
-			Parent = Contents,
-			BackgroundColor3 = Color3.fromRGB(30, 30, 30),
-			BackgroundTransparency = 0,
-			BorderSizePixel = 0,
-			Size = UDim2.new(0,215,0,YO),
-			ZIndex = 0,
-			Font = Enum.Font.Ubuntu,
-			Text = Text,
-			TextColor3 = Color3.fromRGB(255,255,255),
-			TextSize = 16,
-			TextXAlignment = Enum.TextXAlignment.Center,
-			LayoutOrder = #Contents:GetChildren()
-		})
+		local Label = PrivUntitled.MkLbl(Text, 215, Contents)
+		Label.TextXAlignment = Enum.TextXAlignment.Center
+		Label.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+		Label.BackgroundTransparency = 0
 		ContentsSize = ContentsSize + YO
 		UntitledWindow.AddWhitespace()
 		UntitledWindow.Rerender()
@@ -239,21 +291,7 @@ Untitled.MakeWindow = function(WindowName)
 	UntitledWindow.AddButton = function(Text, Function)
 		UntitledWindow.AddWhitespace()
 		local YO = 20
-		local Button = PrivUntitled.MkInstance("TextButton",{
-			Parent = Contents,
-			BackgroundColor3 = Color3.fromRGB(30, 30, 30),
-			BorderColor3 = Color3.fromRGB(100,100,100),
-			BackgroundTransparency = 0,
-			BorderSizePixel = 1,
-			ZIndex = 0,
-			Size = UDim2.new(0,215,0,YO),
-			Font = Enum.Font.Ubuntu,
-			Text = Text,
-			TextColor3 = Color3.fromRGB(255,255,255),
-			TextSize = 16,
-			TextXAlignment = Enum.TextXAlignment.Center,
-			LayoutOrder = #Contents:GetChildren()
-		})
+		local Button = PrivUntitled.MkBtn(Text, 215, Contents)
 		if Function then
 			Button.MouseButton1Click:Connect(Function)
 		end
@@ -266,25 +304,7 @@ Untitled.MakeWindow = function(WindowName)
 	UntitledWindow.AddTextbox = function(Text, Function)
 		UntitledWindow.AddWhitespace()
 		local YO = 20
-		local Textbox = PrivUntitled.MkInstance("TextBox",{
-			Parent = Contents,
-			BackgroundColor3 = Color3.fromRGB(30, 30, 30),
-			BorderColor3 = Color3.fromRGB(100,100,100),
-			BackgroundTransparency = 0,
-			ZIndex = 0,
-			ClearTextOnFocus = false,
-			PlaceholderColor3 = Color3.fromRGB(178, 178, 178),
-			PlaceholderText = Text,
-			BorderSizePixel = 1,
-			Size = UDim2.new(0,215,0,YO),
-			Font = Enum.Font.Ubuntu,
-			Text = "",
-			TextColor3 = Color3.fromRGB(255,255,255),
-			TextSize = 16,
-			TextWrapped = true,
-			TextXAlignment = Enum.TextXAlignment.Center,
-			LayoutOrder = #Contents:GetChildren()
-		})
+		local Textbox = PrivUntitled.MkTb(Text, 215, Contents)
 		if Function then
 			Textbox.FocusLost:Connect(function()
 				Function(Textbox.Text)
@@ -302,41 +322,12 @@ Untitled.MakeWindow = function(WindowName)
 			Checked = false
 		}
 		local YO = 20
-		local Checkbox = PrivUntitled.MkInstance("Frame", {
-			Parent = Contents,
-			BackgroundTransparency = 1,
-			BorderSizePixel = 0,
-			ZIndex = 0,
-			Size = UDim2.new(0,215,0,YO),
-			LayoutOrder = #Contents:GetChildren()
-		})
-		local Label = PrivUntitled.MkInstance("TextLabel",{
-			Parent = Checkbox,
-			BackgroundTransparency = 1,
-			BorderSizePixel = 0,
-			Position = UDim2.new(0,0,0,0),
-			Size = UDim2.new(0,195,0,YO),
-			Font = Enum.Font.Ubuntu,
-			Text = Text,
-			ZIndex = 0,
-			TextColor3 = Color3.fromRGB(255,255,255),
-			TextSize = 16,
-			TextXAlignment = Enum.TextXAlignment.Left,
-		})
-		local Button = PrivUntitled.MkInstance("TextButton",{
-			Parent = Checkbox,
-			BackgroundColor3 = Color3.fromRGB(30, 30, 30),
-			BorderColor3 = Color3.fromRGB(100,100,100),
-			BackgroundTransparency = 0,
-			BorderSizePixel = 1,
-			Position = UDim2.new(0,195,0,0),
-			Size = UDim2.new(0,20,0,YO),
-			Text = "",
-			ZIndex = 0,
-			TextColor3 = Color3.fromRGB(255,255,255),
-			TextSize = 14,
-			TextXAlignment = Enum.TextXAlignment.Center,
-		})
+		local Checkbox = PrivUntitled.MkFrm(215, Contents)
+		local Label = PrivUntitled.MkLbl(Text, 195, Checkbox)
+		Label.TextXAlignment = Enum.TextXAlignment.Left
+		local Button = PrivUntitled.MkBtn("", 20, Checkbox)
+		Button.Position = UDim2.new(0,195,0,0)
+		Button.TextSize = 14
 		Button.MouseButton1Click:Connect(function()
 			CheckboxTbl.Checked = not CheckboxTbl.Checked
 			if CheckboxTbl.Checked then
@@ -363,33 +354,10 @@ Untitled.MakeWindow = function(WindowName)
 		local DropdownTbl = {
 			Selected = nil
 		}
-		local ToggleBtn = PrivUntitled.MkInstance("TextButton",{
-			Parent = Contents,
-			BackgroundColor3 = Color3.fromRGB(30, 30, 30),
-			BorderColor3 = Color3.fromRGB(100,100,100),
-			BackgroundTransparency = 0,
-			BorderSizePixel = 1,
-			ZIndex = 0,
-			Size = UDim2.new(0,215,0,YO),
-			Font = Enum.Font.Ubuntu,
-			Text = "",
-			TextColor3 = Color3.fromRGB(255,255,255),
-			TextSize = 16,
-			TextXAlignment = Enum.TextXAlignment.Center,
-			LayoutOrder = #Contents:GetChildren()
-		})
-		local Label = PrivUntitled.MkInstance("TextLabel",{
-			Parent = ToggleBtn,
-			BackgroundTransparency = 1,
-			BorderSizePixel = 0,
-			Position = UDim2.new(0,195,0,0),
-			Size = UDim2.new(0,20,0,20),
-			ZIndex = 0,
-			Font = Enum.Font.SourceSans,
-			Text = "↓",
-			TextColor3 = Color3.fromRGB(255,255,255),
-			TextSize = 16
-		})
+		local ToggleBtn = PrivUntitled.MkBtn("", 215, Contents)
+		local Label = PrivUntitled.MkLbl("↓", 20, ToggleBtn)
+		Label.Position = UDim2.new(0,195,0,0)
+		Label.Font = Enum.Font.SourceSans
 		local DropdownHSize = 60
 		if #Selections < 3 then
 			DropdownHSize = #Selections * 20
@@ -451,21 +419,8 @@ Untitled.MakeWindow = function(WindowName)
 		end
 		-- Function
 		DropdownTbl.AddSelection = function(Text)
-			local SelectionBtn = PrivUntitled.MkInstance("TextButton",{
-				Parent = DropdownContents,
-				BackgroundColor3 = Color3.fromRGB(30, 30, 30),
-				BorderColor3 = Color3.fromRGB(100,100,100),
-				BackgroundTransparency = 0,
-				BorderSizePixel = 1,
-				Size = UDim2.new(0,215,0,20),
-				Font = Enum.Font.Ubuntu,
-				Text = Text,
-				ZIndex = 1,
-				TextColor3 = Color3.fromRGB(255,255,255),
-				TextSize = 16,
-				TextXAlignment = Enum.TextXAlignment.Center,
-				LayoutOrder = #DropdownContents:GetChildren()
-			})
+			local SelectionBtn = PrivUntitled.MkBtn(Text, 215, DropdownContents)
+			SelectionBtn.ZIndex = 1
 			SelectionBtn.MouseButton1Click:Connect(function()
 				if SelectionBtn.Text ~= DropdownTbl.Selected then
 					DropdownTbl.Selected = SelectionBtn.Text
@@ -498,42 +453,10 @@ Untitled.MakeWindow = function(WindowName)
 		UntitledWindow.AddWhitespace()
 		local LabelBtnTbl = {}
 		local YO = 20
-		local LblBtn = PrivUntitled.MkInstance("Frame", {
-			Parent = Contents,
-			BackgroundTransparency = 1,
-			BorderSizePixel = 0,
-			ZIndex = 0,
-			Size = UDim2.new(0,215,0,YO),
-			LayoutOrder = #Contents:GetChildren()
-		})
-		local Label = PrivUntitled.MkInstance("TextLabel",{
-			Parent = LblBtn,
-			BackgroundTransparency = 1,
-			BorderSizePixel = 0,
-			Position = UDim2.new(0,0,0,0),
-			Size = UDim2.new(0,107.5,0,YO),
-			Font = Enum.Font.Ubuntu,
-			Text = LabelText,
-			ZIndex = 0,
-			TextColor3 = Color3.fromRGB(255,255,255),
-			TextSize = 16,
-			TextXAlignment = Enum.TextXAlignment.Left,
-		})
-		local Button = PrivUntitled.MkInstance("TextButton",{
-			Parent = LblBtn,
-			BackgroundColor3 = Color3.fromRGB(30, 30, 30),
-			BorderColor3 = Color3.fromRGB(100,100,100),
-			BackgroundTransparency = 0,
-			BorderSizePixel = 1,
-			Position = UDim2.new(0,107.5,0,0),
-			Size = UDim2.new(0,107.5,0,YO),
-			ZIndex = 0,
-			Font = Enum.Font.Ubuntu,
-			Text = ButtonText,
-			TextColor3 = Color3.fromRGB(255,255,255),
-			TextSize = 16,
-			TextXAlignment = Enum.TextXAlignment.Center,
-		})
+		local LblBtn = PrivUntitled.MkFrm(215, Contents)
+		local Label = PrivUntitled.MkLbl(LabelText, 108, LblBtn)
+		local Button = PrivUntitled.MkBtn(ButtonText, 107, LblBtn)
+		Button.Position = UDim2.new(0,108,0,0)
 		if Function then Button.MouseButton1Click:Connect(Function) end
 		LabelBtnTbl.GetInstance = function()
 			return LblBtn
@@ -544,49 +467,14 @@ Untitled.MakeWindow = function(WindowName)
 		return LabelBtnTbl
 	end
 
-	UntitledWindow.AddLabelTextBox = function(LabelText, TextBoxText, Function)
+	UntitledWindow.AddLabelTextbox = function(LabelText, TextBoxText, Function)
 		UntitledWindow.AddWhitespace()
 		local LabelTbTbl = {}
 		local YO = 20
-		local LblTb = PrivUntitled.MkInstance("Frame", {
-			Parent = Contents,
-			BackgroundTransparency = 1,
-			BorderSizePixel = 0,
-			ZIndex = 0,
-			Size = UDim2.new(0,215,0,YO),
-			LayoutOrder = #Contents:GetChildren()
-		})
-		local Label = PrivUntitled.MkInstance("TextLabel",{
-			Parent = LblTb,
-			BackgroundTransparency = 1,
-			BorderSizePixel = 0,
-			Position = UDim2.new(0,0,0,0),
-			Size = UDim2.new(0,107.5,0,YO),
-			Font = Enum.Font.Ubuntu,
-			Text = LabelText,
-			ZIndex = 0,
-			TextColor3 = Color3.fromRGB(255,255,255),
-			TextSize = 16,
-			TextXAlignment = Enum.TextXAlignment.Left,
-		})
-		local Textbox = PrivUntitled.MkInstance("TextBox",{
-			Parent = LblTb,
-			BackgroundColor3 = Color3.fromRGB(30, 30, 30),
-			BorderColor3 = Color3.fromRGB(100,100,100),
-			BackgroundTransparency = 0,
-			BorderSizePixel = 1,
-			ClearTextOnFocus = false,
-			PlaceholderColor3 = Color3.fromRGB(178, 178, 178),
-			PlaceholderText = TextBoxText,
-			Position = UDim2.new(0,107.5,0,0),
-			Size = UDim2.new(0,107.5,0,YO),
-			ZIndex = 0,
-			Font = Enum.Font.Ubuntu,
-			Text = "",
-			TextColor3 = Color3.fromRGB(255,255,255),
-			TextSize = 16,
-			TextXAlignment = Enum.TextXAlignment.Center,
-		})
+		local LblTb = PrivUntitled.MkFrm(215, Contents)
+		local Label = PrivUntitled.MkLbl(LabelText, 108, LblTb)
+		local Textbox = PrivUntitled.MkTb(TextBoxText, 107, LblTb)
+		Textbox.Position = UDim2.new(0,108,0,0)
 		if Function then
 			Textbox.FocusLost:Connect(function()
 				Function(Textbox.Text)
@@ -601,8 +489,5 @@ Untitled.MakeWindow = function(WindowName)
 		return LabelTbTbl
 	end
 	return UntitledWindow
-end
-Untitled.BindToggleKey = function(NewKey)
-	KeyCode = NewKey
 end
 return Untitled
