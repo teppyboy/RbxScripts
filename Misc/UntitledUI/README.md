@@ -14,7 +14,7 @@ local Wnd2Dropdown = Window2.AddDropdown({"Patreon","Only(real)fans","Rubberroad
 local Wnd2HybridBtn = Window1.AddLabelButton("UwU", "Button", function() print("WuW") end)
 ```
 # Documentation
-+ **UntitledV1 classes ARE diffirent from UntitledV2 classes (Ex: UntitledV1.UntitledWindow =/= UntitledV2.UntitledWindow)
++ **UntitledV1 classes ARE diffirent from UntitledV2 classes (Ex: UntitledV1.UntitledWindow =/= UntitledV2.UntitledWindow)**
 + We'll use the variable listed in here as example:
 ```lua
 local Untitled = loadstring(game:HttpGet("https://raw.githubusercontent.com/teppyboy/RbxScripts/master/Misc/UntitledUI/Library.lua"))()
@@ -49,8 +49,8 @@ local Untitled = loadstring(game:HttpGet("https://raw.githubusercontent.com/tepp
 + Add an UntitledDropdown to the window's content and execute Function when user select an item in item list if specified.
 #### (UntitledLabelButton) UntitledWindow.AddLabelButton(string LabelText, string ButtonText, function() Function = nil)
 + Add a UntitledLabelButton to the window's content and execute Function when user click the button if specified.
-#### (UntitledLabelTextBox) UntitledWindow.AddLabelTextBox(string LabelText, string TextBoxText, function(string Text) Function = nil)
-+ Add a UntitledLabelTextBox to the window's content and execute Function when user lost focus if specified.
+#### (UntitledLabelTextbox) UntitledWindow.AddLabelTextbox(string LabelText, string TextBoxText, function(string Text) Function = nil)
++ Add a UntitledLabelTextbox to the window's content and execute Function when user lost focus if specified.
 
 ### UntitledCheckbox
 #### (bool) UntitledCheckbox.Checked
@@ -72,8 +72,8 @@ local Untitled = loadstring(game:HttpGet("https://raw.githubusercontent.com/tepp
 #### (Frame) UntitledLabelButton.GetInstance()
 + Return the top GUI Instance that is used by UntitledLabelButton
 
-### UntitledLabelTextBox
-#### (Frame) UntitledLabelTextBox.GetInstance()
-+ Return the top GUI Instance that is used by UntitledLabelTextBox
+### UntitledLabelTextbox
+#### (Frame) UntitledLabelTextbox.GetInstance()
++ Return the top GUI Instance that is used by UntitledLabelTextbox
 
 # More features will be added in the future, stay soon!
