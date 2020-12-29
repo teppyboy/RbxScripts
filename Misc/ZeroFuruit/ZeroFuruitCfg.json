@@ -1,7 +1,7 @@
 {
     "version": "config-2020.29.12.2020",
     "notice": [
-        "!! Final Update, I'm rewritng the script from scratch which works way better like ZeroAcademia !!",
+        "!!!! Final Update, I'm rewritng the script from scratch which works way better like ZeroAcademia !!!!",
         "Welcome to ZeroFuruit!",
         "This GUI is designed for [a random game]",
         "",
@@ -38,7 +38,7 @@
             "functions": ["is_sirhurt_closure", "XPROTECT", "LUAPROTECT"],
             "fakefunctions": [],
             "action": "warn",
-            "reason": "This script isn't tested on this exploit, use other exploits or wait for the developer to fix. SirHurt support might get removed in the future."
+            "reason": "This script isn't tested on this exploit, use other exploits or wait for the developer to fix. SirHurt support WILL get removed in the future."
         },
         "elysianexecute": {
             "name": "elysian",
