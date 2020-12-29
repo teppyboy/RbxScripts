@@ -1,6 +1,7 @@
 {
-    "version": "config-2020.24.11.2315",
+    "version": "config-2020.29.12.2020",
     "notice": [
+        "!! Final Update, I'm rewritng the script from scratch which works way better like ZeroAcademia !!"
         "Welcome to ZeroFuruit!",
         "This GUI is designed for [a random game]",
         "",
@@ -28,10 +29,7 @@
         "2. The [HP Before Die From Last Hit] is the HP of NPC when it's low enough to use 1 skill in Item to kill it.",
         "",
         "TODO:",
-        "~ Auto Ken when Spawn",
-        "~ Simple Ken Auto Farm mode",
-        "~ Add more info to Basic How-To",
-        "~ Improve the script (forever)"
+        "+ SCRIPT REWRITING."
     ],
     "exploits": 
     {
