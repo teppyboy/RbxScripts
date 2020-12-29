@@ -1,9 +1,12 @@
+local ZeroAuth = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/teppyboy/RbxScripts/master/ZeroScripts/Authentication.lua"))()
+ZeroAuth.Authenticate("ZeroFuruit")
+
 -- Variables
 local VU = game:GetService("VirtualUser")
 local TS = game:GetService("TweenService")
 local RS = game:GetService('RunService')
 local BlxFrtVars = {}
-BlxFrtVars.ZeroFuruitVersion = "unstable-2020.24.11.2249"
+BlxFrtVars.ZeroFuruitVersion = "unstable-2020.28.12.2130"
 BlxFrtVars.NewInitalized = true
 BlxFrtVars.Players = game:GetService("Players")
 BlxFrtVars.LocalPlayer = BlxFrtVars.Players.LocalPlayer
@@ -15,17 +18,21 @@ BlxFrtVars.AutoFarm = false
 BlxFrtVars.AutoQuest = false
 BlxFrtVars.AutoEquipItem = ""
 BlxFrtVars.SkillItem = ""
-BlxFrtVars.TeleportMode = "Auto" -- can be Auto/Unsafe/Safe (Auto = auto, Unsafe = always shamblesTo(), Safe = always moveTo())
+BlxFrtVars.TeleportMode = "Auto" -- can be Auto/MoveTo/Tween (Auto = auto, Tween = always shamblesTo(), MoveTo = always moveTo())
 BlxFrtVars.AutoClick = false
 BlxFrtVars.HWAutoClick = false
 BlxFrtVars.ACInterval = 0.1
 BlxFrtVars.AntiAFKBypass = false
-BlxFrtVars.EquipAccesoryOnBoot = ""
-BlxFrtVars.EquipBusoOnBoot = false
-BlxFrtVars.AutoSprintOnBoot = false
+BlxFrtVars.OnBoot = {}
+BlxFrtVars.OnBoot.EquipAccesory = ""
+BlxFrtVars.OnBoot.EquipBuso = false
+BlxFrtVars.OnBoot.AutoSprint = false
+BlxFrtVars.OnBoot.EquipKen = false
+BlxFrtVars.GUIs = {}
+BlxFrtVars.GUIs.Main = BlxFrtVars.LocalPlayer.PlayerGui.Main
+BlxFrtVars.GUIs.DialogFrame = BlxFrtVars.GUIs.Main.Dialogue
+BlxFrtVars.GUIs.Chat = BlxFrtVars.LocalPlayer.PlayerGui.Chat.Frame.ChatChannelParentFrame.Frame_MessageLogDisplay.Scroller
 BlxFrtVars.HPToUseSkill = 0
-BlxFrtVars.MainGUI = BlxFrtVars.LocalPlayer.PlayerGui.Main
-BlxFrtVars.DialogFrame = BlxFrtVars.MainGUI.Dialogue
 BlxFrtVars.Buttons = {}
 BlxFrtVars.Buttons.Z = {"Z", false}
 BlxFrtVars.Buttons.X = {"X", false}
@@ -33,6 +40,12 @@ BlxFrtVars.Buttons.C = {"C", false}
 BlxFrtVars.Buttons.V = {"V", false}
 BlxFrtVars.Buttons.F = {"F", false}
 BlxFrtVars.Buttons.T = {"T", false}
+BlxFrtVars.AutoFactory = {}
+BlxFrtVars.AutoFactory.Enabled = false
+BlxFrtVars.AutoFactory.Mode = "Standalone" -- Standalone/AutoFarm (Standalone = standalone| AutoFarm = intergated with Auto Farm)
+BlxFrtVars.AutoR41d = {
+    Enabled = false
+}
 -- Unstable features variables
 BlxFrtVars.UAutoLSD = false
 BlxFrtVars.UBuddhaFix = false -- Not used by anything atm
@@ -40,8 +53,11 @@ BlxFrtVars.UBuddhaFix = false -- Not used by anything atm
 local EXPLOIT = nil
 local noticeTxt = ""
 if not WRDAPI then -- WTF? WeAreDevs can't even do some shit in blacklisting check???
+    if string.match(BlxFrtVars.ZeroFuruitVersion, "nfp") then
+        warn("THIS VERSION IS NOT READY FOR PRODUCTION USE, IT MAY NOT PASS THE ANTICHEAT AND LEAD TO BAN AND VERY UNSTABLE OR UNTESTED FEATURES, USE IT AT YOUR OWN RISK.")
+    end
     local jsCFG = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://raw.githubusercontent.com/teppyboy/RbxScripts/master/Misc/ZeroFuruit/ZeroFuruitCfg.json"))
-    print("ZeroFuruit Configure Version: "..jsCFG.version)
+    print("ZeroFuruit Configuration Version: "..jsCFG.version)
     local function isStringInTable(tablee, stringg)
         for i, v in pairs(tablee) do
             if v == stringg then
@@ -91,7 +107,7 @@ else
     (instant Mem Leaks from 0.5GB -> 1.5GB when activate the Auto Farm)
     
     If you can't find any exploit then use Krnl/Oxygen X/etc... (Even Proxo and EasyExploits API exploits 
-    based too because EEAPI's dev is Electron's dev (Co) so it dosen't trash like your thought, just Filter trash)
+    based too because EEAPI's dev is Electron's dev (Co) so it dosen't trash like your thought, just Filter)
     
     NOTE: Shadow works fine but you WILL expect Memory Leaks like WRD API
     NOTE2: Don't use Furk, Coco Z or any shady exploit in WRD.net]])
@@ -142,11 +158,11 @@ local intervalBox = CreateInstance('TextBox',{ClearTextOnFocus=false,Font=Enum.F
 local Auto2TabBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Auto (2)',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.313726, 0.313726, 0.313726),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0.328125, 0, 0, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 70, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='Auto2TabBtn',Parent = MainFrm})
 local Auto2TabBtnTF = CreateInstance('Frame',{Style=Enum.FrameStyle.Custom,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(-3, 0, 1, 0),Rotation=0,Selectable=false,Size=UDim2.new(0, 640, 0, 320),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=false,ZIndex=1,Name = 'Auto2TabBtnTF',Parent = Auto2TabBtn})
 local tpModeBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Teleport Bypass Mode: [AUTO]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 7),Rotation=0,Selectable=true,Size=UDim2.new(0, 308, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='tpModeBtn',Parent = Auto2TabBtnTF})
-local eqAccessoryBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Equip Accessory On Spawn: [FALSE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 64),Rotation=0,Selectable=true,Size=UDim2.new(0, 308, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='eqAccessoryBtn',Parent = Auto2TabBtnTF})
-local accesNameTxt = CreateInstance('TextLabel',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Item Name:',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 35),Rotation=0,Selectable=false,Size=UDim2.new(0, 70, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='accesNameTxt',Parent = Auto2TabBtnTF})
-local accessoryNameBox = CreateInstance('TextBox',{ClearTextOnFocus=false,Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,MultiLine=false,Text='',TextColor3=Color3.new(1, 1, 1), PlaceholderText='Purple Heart\'s Sword', PlaceholderColor3=Color3.new(0.7, 0.7, 0.7),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0392157, 0.0392157, 0.0392157),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 81, 0, 35),Rotation=0,Selectable=true,Size=UDim2.new(0, 234, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='accessoryNameBox',Parent = Auto2TabBtnTF})
-local eqBusoBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Equip Buso Haki On Spawn: [FALSE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 95),Rotation=0,Selectable=true,Size=UDim2.new(0, 308, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='eqBusoBtn',Parent = Auto2TabBtnTF})
-local eqSprintBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Auto Sprint On Spawn: [FALSE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 125),Rotation=0,Selectable=true,Size=UDim2.new(0, 308, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='eqSprintBtn',Parent = Auto2TabBtnTF})
+local eqAccessoryBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Equip Accessory On Spawn: [FALSE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 94),Rotation=0,Selectable=true,Size=UDim2.new(0, 308, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='eqAccessoryBtn',Parent = Auto2TabBtnTF})
+local accesNameTxt = CreateInstance('TextLabel',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Item Name:',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 65),Rotation=0,Selectable=false,Size=UDim2.new(0, 70, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='accesNameTxt',Parent = Auto2TabBtnTF})
+local accessoryNameBox = CreateInstance('TextBox',{ClearTextOnFocus=false,Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,MultiLine=false,Text='',TextColor3=Color3.new(1, 1, 1), PlaceholderText='Purple Heart\'s Sword', PlaceholderColor3=Color3.new(0.7, 0.7, 0.7),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0392157, 0.0392157, 0.0392157),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 81, 0, 65),Rotation=0,Selectable=true,Size=UDim2.new(0, 234, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='accessoryNameBox',Parent = Auto2TabBtnTF})
+local eqBusoBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Equip Buso Haki On Spawn: [FALSE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 125),Rotation=0,Selectable=true,Size=UDim2.new(0, 308, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='eqBusoBtn',Parent = Auto2TabBtnTF})
+local eqSprintBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Auto Sprint On Spawn: [FALSE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 323, 0, 242),Rotation=0,Selectable=true,Size=UDim2.new(0, 310, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='eqSprintBtn',Parent = Auto2TabBtnTF})
 local itemListSF = CreateInstance('ScrollingFrame',{BottomImage='rbxasset://textures/ui/Scroll/scroll-bottom.png',CanvasPosition=Vector2.new(0, 0),CanvasSize=UDim2.new(0, 0, 0.349999994, 0),MidImage='rbxasset://textures/ui/Scroll/scroll-middle.png',ScrollBarThickness=5,ScrollingEnabled=true,TopImage='rbxasset://textures/ui/Scroll/scroll-top.png',Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0392157, 0.0392157, 0.0392157),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=true,Draggable=false,Position=UDim2.new(0, 7, 0, 242),Rotation=0,Selectable=true,Size=UDim2.new(0, 308, 0, 49),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='itemListSF',Parent = Auto2TabBtnTF})
 local itemListRtb = CreateInstance('TextBox',{ClearTextOnFocus=false,Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,MultiLine=true,Text='',TextColor3=Color3.new(1, 1, 1), PlaceholderText='', PlaceholderColor3=Color3.new(0.7, 0.7, 0.7),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Left,TextYAlignment=Enum.TextYAlignment.Top,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0392157, 0.0392157, 0.0392157),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 0, 0, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 308, 0, 112),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='itemListRtb',Parent = itemListSF})
 local getItemsBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Get All Available Items On Inventory',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 210),Rotation=0,Selectable=true,Size=UDim2.new(0, 308, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='getItemsBtn',Parent = Auto2TabBtnTF})
@@ -166,6 +182,14 @@ local setHPBe4DieBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSi
 local skillItemBox = CreateInstance('TextBox',{ClearTextOnFocus=false,Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,MultiLine=false,Text='',TextColor3=Color3.new(1, 1, 1), PlaceholderText='Requiem Arrow', PlaceholderColor3=Color3.new(0.7, 0.7, 0.7),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0392157, 0.0392157, 0.0392157),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 404, 0, 125),Rotation=0,Selectable=true,Size=UDim2.new(0, 192, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='skillItemBox',Parent = Auto2TabBtnTF})
 local skillItemTxt = CreateInstance('TextLabel',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Skill Item:',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 323, 0, 125),Rotation=0,Selectable=false,Size=UDim2.new(0, 70, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='skillItemTxt',Parent = Auto2TabBtnTF})
 local setSkillItemBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Set',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 604, 0, 125),Rotation=0,Selectable=true,Size=UDim2.new(0, 29, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='setSkillItemBtn',Parent = Auto2TabBtnTF})
+local autoFacToggleBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='FALSE',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 588, 0, 152),Rotation=0,Selectable=true,Size=UDim2.new(0, 45, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='autoFacToggleBtn',Parent = Auto2TabBtnTF})
+local autoFacTxt = CreateInstance('TextLabel',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Auto Workshop',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 323, 0, 152),Rotation=0,Selectable=false,Size=UDim2.new(0, 105, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='autoFacTxt',Parent = Auto2TabBtnTF})
+local autoFacModeBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Mode: [STANDALONE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 429, 0, 152),Rotation=0,Selectable=true,Size=UDim2.new(0, 150, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='autoFacModeBtn',Parent = Auto2TabBtnTF})
+local equipItemBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Auto Equip Item [FALSE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 180),Rotation=0,Selectable=true,Size=UDim2.new(0, 308, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='equipItemBtn',Parent = Auto2TabBtnTF})
+local eqKenBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Equip Ken Haki On Spawn: [FALSE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 323, 0, 180),Rotation=0,Selectable=true,Size=UDim2.new(0, 310, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='eqKenBtn',Parent = Auto2TabBtnTF})
+local autoRaidBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Auto Dungeon: [FALSE]',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 323, 0, 210),Rotation=0,Selectable=true,Size=UDim2.new(0, 310, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='autoRaidBtn',Parent = Auto2TabBtnTF})
+local xyzOffsetTxt = CreateInstance('TextLabel',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='X, Y, Z Offset:',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 10, 0, 35),Rotation=0,Selectable=false,Size=UDim2.new(0, 74, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='xyzOffsetTxt',Parent = Auto2TabBtnTF})
+local xyzOffset = CreateInstance('TextBox',{ClearTextOnFocus=false,Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,MultiLine=false,Text='',TextColor3=Color3.new(1, 1, 1), PlaceholderText='0,0,0', PlaceholderColor3=Color3.new(0.7, 0.7, 0.7),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0392157, 0.0392157, 0.0392157),BackgroundTransparency=0,BorderColor3=Color3.new(0.352941, 0.352941, 0.352941),BorderSizePixel=1,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 93, 0, 35),Rotation=0,Selectable=true,Size=UDim2.new(0, 222, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='xyzOffset',Parent = Auto2TabBtnTF})
 local StatusTabBtn = CreateInstance('TextButton',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size14,Text='Status',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=14,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=false,TextXAlignment=Enum.TextXAlignment.Center,TextYAlignment=Enum.TextYAlignment.Center,AutoButtonColor=true,Modal=false,Selected=false,Style=Enum.ButtonStyle.Custom,Active=true,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.313726, 0.313726, 0.313726),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0.109375, 0, 0, 0),Rotation=0,Selectable=true,Size=UDim2.new(0, 70, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='StatusTabBtn',Parent = MainFrm})
 local StatusTabBtnTF = CreateInstance('Frame',{Style=Enum.FrameStyle.Custom,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(-1, 0, 0.949999988, 0),Rotation=0,Selectable=false,Size=UDim2.new(0, 640, 0, 320),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=false,ZIndex=1,Name = 'StatusTabBtnTF',Parent = StatusTabBtn})
 local gameIdTxt = CreateInstance('TextLabel',{Font=Enum.Font.Ubuntu,FontSize=Enum.FontSize.Size18,Text='Game ID: 4206942069',TextColor3=Color3.new(1, 1, 1),TextScaled=false,TextSize=16,TextStrokeColor3=Color3.new(0, 0, 0),TextStrokeTransparency=1,TextTransparency=0,TextWrapped=true,TextXAlignment=Enum.TextXAlignment.Left,TextYAlignment=Enum.TextYAlignment.Center,Active=false,AnchorPoint=Vector2.new(0, 0),BackgroundColor3=Color3.new(0.0784314, 0.0784314, 0.0784314),BackgroundTransparency=0,BorderColor3=Color3.new(0.105882, 0.164706, 0.207843),BorderSizePixel=0,ClipsDescendants=false,Draggable=false,Position=UDim2.new(0, 7, 0, 8),Rotation=0,Selectable=false,Size=UDim2.new(0, 259, 0, 20),SizeConstraint=Enum.SizeConstraint.RelativeXY,Visible=true,ZIndex=1,Name='gameIdTxt',Parent = StatusTabBtnTF})
@@ -440,21 +464,18 @@ local function shamblesTo(part1, part2)
     local tweeter = TS:Create(part1 ,TweenInfo.new(math.abs((part2.Position - part1.Position).Magnitude) / BlxFrtVars.Humanoid.WalkSpeed,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,false,0) ,{CFrame = CFreme})
     tweeter:Play()
     while (part1.Position - part2.Position).Magnitude > 5 do 
-        print("T check 1")
         if tweeter == nil then break end
-        print("T check 2")
         if not BlxFrtVars.NewInitalized then   
             tweeter:Cancel()
             break
         end
-        print("T check 3")
         if (part2.Position - CFreme.Position).Magnitude > 5 then
             tweeter:Cancel()
             CFreme = part2.CFrame
             tweeter = TS:Create(part1 ,TweenInfo.new(math.abs((part2.Position - part1.Position).Magnitude) / BlxFrtVars.Humanoid.WalkSpeed,Enum.EasingStyle.Linear,Enum.EasingDirection.Out,0,false,0) ,{CFrame = CFreme})
             tweeter:Play()
         end
-        print("OK")
+        BlxFrtVars.Humanoid:MoveTo(CFreme.Position, part2)
         wait(0.01) 
     end
     if selfTriggerNC then deClip() end
@@ -466,6 +487,10 @@ local function moveTo(humanoid, targetPart)
         zeroClip = RS.Stepped:connect(NoclipLoop) 
         selfTriggerNC = true
     end
+    local tool = BlxFrtVars.Character:FindFirstChildWhichIsA("Tool")
+    if tool ~= nil then
+        BlxFrtVars.Humanoid:UnequipTools()
+    end
     local targetPoint = targetPart.Position
     humanoid:MoveTo(targetPoint, targetPart)
     local function ababa()
@@ -474,7 +499,7 @@ local function moveTo(humanoid, targetPart)
             if not (humanoid and humanoid.Parent) then
                 return 'break'
             end
-            if (targetPart.Position - targetPoint).Magnitude > 10 then
+            if (targetPart.Position - targetPoint).Magnitude > 5 then
                 targetPoint = targetPart.Position
             end
             -- refresh the timeout
@@ -482,11 +507,14 @@ local function moveTo(humanoid, targetPart)
         end
         wait(0.1)
     end
-    while (targetPoint - BlxFrtVars.Character.HumanoidRootPart.Position).Magnitude > 10 do
+    while (targetPoint - BlxFrtVars.Character.HumanoidRootPart.Position).Magnitude > 5 do
         if ababa() == 'break' then break end
     end
     -- Temporary workaround..
     shamblesTo(BlxFrtVars.Character.HumanoidRootPart, targetPart)
+    if tool then
+        BlxFrtVars.Humanoid:EquipTool(tool)
+    end
     if selfTriggerNC then deClip() end
 end
 -- string extended table
@@ -513,12 +541,12 @@ stringext.split = function(str, pat)
 local AI = {}
 AI.SmartMove = function(targetPart)
     local hrp = BlxFrtVars.Character.HumanoidRootPart
-    if BlxFrtVars.TeleportMode == "Safe" then
+    if BlxFrtVars.TeleportMode == "MoveTo" then
         moveTo(BlxFrtVars.Humanoid, targetPart)
-    elseif BlxFrtVars.TeleportMode == "Unsafe" then
+    elseif BlxFrtVars.TeleportMode == "Tween" then
         shamblesTo(hrp, targetPart)
     else -- Your "Auto" mode.
-        if math.abs((targetPart.Position - hrp.Position).Y) <= 10 then
+        if math.abs((targetPart.Position - hrp.Position).Y) <= 7.5 then
             moveTo(BlxFrtVars.Humanoid, targetPart)
         else
             shamblesTo(hrp, targetPart)
@@ -528,7 +556,7 @@ end
 AI.getNPC = function(name, mode)
     local newcctable = {}
     for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
-        if (v.Name == name) and (v:FindFirstChild("HumanoidRootPart") ~= nil) and (v:FindFirstChild("Humanoid") ~= nil) and (v.Humanoid.Health > 0) then
+        if (v.Name == name or name == "") and (v:FindFirstChild("HumanoidRootPart") ~= nil) and (v:FindFirstChild("Humanoid") ~= nil) and (v.Humanoid.Health > 0) then
             table.insert(newcctable, v)
         end
     end
@@ -560,7 +588,7 @@ AI.Mouse1Click = function()
 end
 AI.HWMouse1Click = function()
     if EXPLOIT == "sirhurt" then
-        -- sirhurt retard, leftclick ISNT mouse1click smh...
+        -- sirhurt retard, leftclick isnt mouse1click smh...
         leftclick()
     else
         mouse1click()
@@ -591,12 +619,12 @@ AI.btnClicker = function(btn,maingui)
     btn.Parent = ocP
     btn.Position = ocPo
 end
-AI.GetVector3FromString = function(str)
+AI.GetVector3FromString = function(str) -- Convert string to Vector3
     local splitedStr = stringext.split(str,",")
     return Vector3.new(tonumber(splitedStr[1]),tonumber(splitedStr[2]),tonumber(splitedStr[3]))
 end
-AI.GetDialogText = function()
-    local txtFrm = BlxFrtVars.DialogFrame.TextFrame
+AI.GetDialogText = function() -- Reading dialog text frame
+    local txtFrm = BlxFrtVars.GUIs.DialogFrame.TextFrame
     local txt = ""
     for i, v in pairs(txtFrm:GetChildren()) do
         if v.ClassName == "Frame" then
@@ -610,8 +638,8 @@ AI.GetDialogText = function()
     end
     return txt
 end
-AI.IsSkillInCooldown = function(toolName,skillBtn)
-    local SkillGUI = BlxFrtVars.MainGUI.Skills:FindFirstChild(toolName)
+AI.IsSkillInCooldown = function(toolName,skillBtn) -- Raed skill cooldown in skill frame
+    local SkillGUI = BlxFrtVars.GUIs.Main.Skills:FindFirstChild(toolName)
     if SkillGUI ~= nil then
         local SkillFrm = SkillGUI:FindFirstChild(skillBtn)
         if SkillFrm ~= nil then 
@@ -621,6 +649,60 @@ AI.IsSkillInCooldown = function(toolName,skillBtn)
                 return false
             end
         end
+    end
+end
+AI.SysChatMsgAvailable = function(message, excludes, mode) -- Read the message from Chat UI
+    local beginChkExc = false
+    local desiredreturn = false
+    for i, v in pairs(BlxFrtVars.GUIs.Chat:GetChildren()) do
+        if v.ClassName == "Frame" then 
+            if string.match(v.TextLabel.Text,message) and v.TextLabel.TextColor3 == Color3.fromRGB(255, 0, 0) then  
+                desiredreturn = true
+                if mode == "LowerLine" and not beginChkExc then
+                    beginChkExc = true
+                end
+            end
+            if beginChkExc then
+                for ba, ka in pairs(excludes) do
+                    if string.match(v.TextLabel.Text, ka) then  
+                        desiredreturn = false
+                    end
+                end
+            end
+        end
+    end
+    return desiredreturn
+end
+AI.Hit = function(v)
+    if v.Humanoid.Health <= BlxFrtVars.HPToUseSkill and v.Humanoid.Health > 0 and BlxFrtVars.SkillItem ~= "" and BlxFrtVars.Character:FindFirstChild(BlxFrtVars.SkillItem) == nil and BlxFrtVars.LocalPlayer.Backpack:FindFirstChild(BlxFrtVars.SkillItem) then   
+        BlxFrtVars.Humanoid:EquipTool(BlxFrtVars.LocalPlayer.Backpack[BlxFrtVars.SkillItem])
+        for i, v in pairs(BlxFrtVars.Buttons) do
+            if v[2] == true and not AI.IsSkillInCooldown(BlxFrtVars.SkillItem,v[1]) and BlxFrtVars.NewInitalized then
+                if v[1] == "Z" then 
+                    AI.KeyPress(122, true)
+                elseif v[1] == "X" then 
+                    AI.KeyPress(120, true)
+                elseif v[1] == "C" then 
+                    AI.KeyPress("0x63", true)
+                elseif v[1] == "V" then 
+                    AI.KeyPress(118, true)
+                elseif v[1] == "F" then 
+                    AI.KeyPress(102, true)
+                else
+                    break
+                end
+                wait(0.25)
+                break
+            end
+        end
+    else
+        print("A")
+        if BlxFrtVars.AutoEquipItem ~= "" and BlxFrtVars.LocalPlayer.Backpack:FindFirstChild(BlxFrtVars.AutoEquipItem) then
+            print("PASS")
+            BlxFrtVars.Humanoid:EquipTool(BlxFrtVars.LocalPlayer.Backpack[BlxFrtVars.AutoEquipItem])
+        end
+        AI.Mouse1Click()
+        wait(0.2) 
     end
 end
 -- Auto Farm/Quest related function.
@@ -640,17 +722,17 @@ local function autoQuest()
     end
     wait(0.25)
     local qiuBtn
-    while not BlxFrtVars.MainGUI.Quest.Visible do
-        while not BlxFrtVars.DialogFrame.Visible do 
+    while not BlxFrtVars.GUIs.Main.Quest.Visible do
+        while not BlxFrtVars.GUIs.DialogFrame.Visible do 
             AI.HWMouse1Click()
             wait(0.25)
         end
         wait(0.5)
         while string.match(AI.GetDialogText(),"Please select a quest.") do
-            for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
+            for i, v in pairs(BlxFrtVars.GUIs.DialogFrame:GetChildren()) do
                 if (v:IsA("TextButton") and v.TextLabel.Text == QNameBox.Text) then
-                    while BlxFrtVars.DialogFrame.Option1.TextLabel.Text ~= "Confirm" do 
-                        AI.btnClicker(v,BlxFrtVars.MainGUI)
+                    while BlxFrtVars.GUIs.DialogFrame.Option1.TextLabel.Text ~= "Confirm" do 
+                        AI.btnClicker(v,BlxFrtVars.GUIs.Main)
                         wait(0.25) 
                     end
                     break
@@ -660,85 +742,167 @@ local function autoQuest()
         end
         wait(0.5)
         while string.match(AI.GetDialogText(),"Level Required:") do
-            for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
+            for i, v in pairs(BlxFrtVars.GUIs.DialogFrame:GetChildren()) do
                 if (v:IsA("TextButton") and v.TextLabel.Text == "Confirm") then
                     while AI.GetDialogText() ~= "[Quest accepted.]" do 
-                        AI.btnClicker(v,BlxFrtVars.MainGUI)
+                        AI.btnClicker(v,BlxFrtVars.GUIs.Main)
                         wait(0.25) 
                     end
                     break
                 end
             end
         end
-        while BlxFrtVars.DialogFrame.Visible do 
+        while BlxFrtVars.GUIs.DialogFrame.Visible do 
             AI.Mouse1Click()
             wait(0.25)
         end
     end
 end
-local function autoFarm()
-    while wait() and BlxFrtVars.AutoFarm and BlxFrtVars.NewInitalized do
-        print("L0")
-        if BlxFrtVars.AutoQuest and not BlxFrtVars.MainGUI.Quest.Visible then
-            print("LQ")
-            autoQuest()
-        end
-        print("L1")
+local function autoR41d()
+    RS:BindToRenderStep("hoax",0,function()
+        BlxFrtVars.Humanoid:ChangeState(11)
+    end)
+    while BlxFrtVars.AutoR41d.Enabled and wait() and BlxFrtVars.NewInitalized do
         local v = nil
         while v == nil do
-            print("LV")
-            v = AI.getNPC(npcNameBox.Text,"nearest")
+            v = AI.getNPC("","nearest")
             wait()
         end
-        print("L2")
+        v.HumanoidRootPart.Transparency = 0.5
+        v.HumanoidRootPart.Size = Vector3.new(40, 50, 35)
+        v.HumanoidRootPart.CanCollide = false
+        local pork = Instance.new("Part",workspace)
+        pork.Anchored = true
+        pork.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(0,25,0))
+        pork.Position = v.HumanoidRootPart.Position + Vector3.new(0,25,0)
+        pork.CanCollide = false
+        shamblesTo(pork)
         while v ~= nil and (v.Humanoid.Health > 0) and v:FindFirstChild("HumanoidRootPart") ~= nil and v.Parent == game.Workspace.Enemies and BlxFrtVars.NewInitalized do
-            print("LLOOP0")
+            if (v.HumanoidRootPart.Position - BlxFrtVars.Character.HumanoidRootPart.Position + Vector3.new(0,45,0)).Magnitude > 5 and BlxFrtVars.NewInitalized then
+                pork = Instance.new("Part",workspace)
+                pork.Anchored = true
+                pork.CFrame = CFrame.new(v.HumanoidRootPart.Position + Vector3.new(0,25,0))
+                pork.Position = v.HumanoidRootPart.Position + Vector3.new(0,25,0)
+                pork.CanCollide = false
+                shamblesTo(pork)
+            end
+            if (BlxFrtVars.WeaponHasKb) then sFLY() end
+            AI.Hit(v)
+            if (BlxFrtVars.WeaponHasKb) then NOFLY() end
+        end
+    end
+    RS:UnbindFromRenderStep("hoax")
+end
+local function autoFactoryStandalone()
+    while BlxFrtVars.AutoFactory.Enabled and wait() and BlxFrtVars.NewInitalized and BlxFrtVars.AutoFactory.Mode == "Standalone" do
+        if AI.SysChatMsgAvailable("We are breaching", {"POISON CONTROL ACTIVATED", "101"}, "LowerLine") then
+            print("Factory mode")
+            print("Backuping location...")
+            local FactoryMode = BlxFrtVars.LocalPlayer.Character.HumanoidRootPart.Position
+            unsafeTP(-385.250916, 73.4547501, 280.388641)
+            print("Telepored to Tea")
+            local pork = Instance.new("Part",workspace)
+            pork.Anchored = true
+            pork.CFrame = CFrame.new(Vector3.new(266.972931, 73.4250412, -269.547943))
+            pork.Position = Vector3.new(266.972931, 73.4250412, -269.547943)
+            pork.CanCollide = false
+            AI.SmartMove(pork)
+            print("Moved to door")
+            pork:Destroy()
+            print("Waiting for Factory to start")
+            while not AI.SysChatMsgAvailable("ALERT: THE FACTORY", {"POISON CONTROL ACTIVATED", "101"}, "LowerLine") do wait(0.1) end
+            print("Finding Core NPC")
+            while v == nil do
+                v = AI.getNPC("Core","nearest")
+                print(v)
+                wait()
+            end
+            print("Got the NPC")
+            local selfTriggerNC = false
+            if zeroClip == nil then 
+                zeroClip = RS.Stepped:connect(NoclipLoop) 
+                selfTriggerNC = true
+            end
+            while v ~= nil and (v.Humanoid.Health > 0) and v:FindFirstChild("HumanoidRootPart") ~= nil and v.Parent == game.Workspace.Enemies and BlxFrtVars.NewInitalized do
+                if (v.HumanoidRootPart.Position - BlxFrtVars.Character.HumanoidRootPart.Position).Magnitude > 5 and BlxFrtVars.NewInitalized then
+                    AI.SmartMove(v.HumanoidRootPart)
+                end
+                if (BlxFrtVars.WeaponHasKb) then sFLY() end
+                AI.Hit(v)
+                if (BlxFrtVars.WeaponHasKb) then NOFLY() end
+            end
+            if selfTriggerNC then deClip() end
+            wait(1)
+            unsafeTPVector3(FactoryMode)
+        end
+    end
+end
+local function autoFarm()
+    while wait() and BlxFrtVars.AutoFarm and BlxFrtVars.NewInitalized do
+        local v = nil
+        local FactoryMode = nil
+        if BlxFrtVars.AutoFactory.Mode == "AutoFarm" and BlxFrtVars.AutoFactory.Enabled and AI.SysChatMsgAvailable("We are breaching", {"POISON CONTROL ACTIVATED", "101"}, "LowerLine") then
+            print("Factory mode")
+            print("Backuping location...")
+            FactoryMode = {}
+            FactoryMode.Location = BlxFrtVars.LocalPlayer.Character.HumanoidRootPart.Position
+            FactoryMode.SelfNC = false
+            unsafeTP(-385.250916, 73.4547501, 280.388641)
+            print("Telepored to Tea")
+            local pork = Instance.new("Part",workspace)
+            pork.Anchored = true
+            pork.CFrame = CFrame.new(Vector3.new(266.972931, 73.4250412, -269.547943))
+            pork.Position = Vector3.new(266.972931, 73.4250412, -269.547943)
+            pork.CanCollide = false
+            AI.SmartMove(pork)
+            print("Moved to door")
+            pork:Destroy()
+            print("Waiting for Factory to start")
+            while not AI.SysChatMsgAvailable("ALERT: THE FACTORY", {"POISON CONTROL ACTIVATED", "101"}, "LowerLine") do wait(0.1) end
+            print("Finding Core NPC")
+            while v == nil do
+                v = AI.getNPC("Core","nearest")
+                print(v)
+                wait()
+            end
+            print("Got the NPC")
+            if zeroClip == nil then 
+                zeroClip = RS.Stepped:connect(NoclipLoop) 
+                FactoryMode.SelfNC = true
+            end
+        else
+            print("Normal mode")
+            if BlxFrtVars.AutoQuest and not BlxFrtVars.GUIs.Main.Quest.Visible then
+                autoQuest()
+            end
+            while v == nil do
+                v = AI.getNPC(npcNameBox.Text,"nearest")
+                wait()
+            end
+        end
+        while v ~= nil and (v.Humanoid.Health > 0) and v:FindFirstChild("HumanoidRootPart") ~= nil and v.Parent == game.Workspace.Enemies and BlxFrtVars.NewInitalized do
             if (v.HumanoidRootPart.Position - BlxFrtVars.Character.HumanoidRootPart.Position).Magnitude > 5 and BlxFrtVars.NewInitalized then
+                print("Moving to NPC")
                 AI.SmartMove(v.HumanoidRootPart)
             end
-            print("LLOOP1")
             if (BlxFrtVars.WeaponHasKb) then sFLY() end
-            if v.Humanoid.Health <= BlxFrtVars.HPToUseSkill and v.Humanoid.Health > 0 and BlxFrtVars.SkillItem ~= "" and BlxFrtVars.Character:FindFirstChild(BlxFrtVars.SkillItem) == nil and BlxFrtVars.LocalPlayer.Backpack:FindFirstChild(BlxFrtVars.SkillItem) then   
-                print("LSLOOP1")
-                BlxFrtVars.Humanoid:EquipTool(BlxFrtVars.LocalPlayer.Backpack[BlxFrtVars.SkillItem])
-                for i, v in pairs(BlxFrtVars.Buttons) do
-                    if v[2] == true and not AI.IsSkillInCooldown(BlxFrtVars.SkillItem,v[1]) and BlxFrtVars.NewInitalized then
-                        if v[1] == "Z" then 
-                            AI.KeyPress(122, true)
-                        elseif v[1] == "X" then 
-                            AI.KeyPress(120, true)
-                        elseif v[1] == "C" then 
-                            AI.KeyPress("0x63", true)
-                        elseif v[1] == "V" then 
-                            AI.KeyPress(118, true)
-                        elseif v[1] == "F" then 
-                            AI.KeyPress(102, true)
-                        else
-                            break
-                        end
-                        wait(0.25)
-                        break
-                    end
-                end
-                print("LSLOOP2")
-            else
-                if BlxFrtVars.AutoEquipItem ~= "" and BlxFrtVars.Character:FindFirstChild(BlxFrtVars.AutoEquipItem) == nil and BlxFrtVars.LocalPlayer.Backpack:FindFirstChild(BlxFrtVars.AutoEquipItem) then
-                    BlxFrtVars.Humanoid:EquipTool(BlxFrtVars.LocalPlayer.Backpack[BlxFrtVars.AutoEquipItem])
-                end
-                print("LPLOOP")
-                AI.Mouse1Click()
-                wait(0.2) 
-            end
+            print("Hitting NPC")
+            AI.Hit(v)
+            print("OK")
             if (BlxFrtVars.WeaponHasKb) then NOFLY() end
-            print("LLOOP2")
+        end
+        if FactoryMode ~= nil then 
+            if FactoryMode.SelfNC then deClip() end
+            wait(1)
+            unsafeTPVector3(FactoryMode.Location) 
         end
     end
 end
 local function autoLSD()
-    while wait() and BlxFrtVars.UAutoLSD do
+    while wait() and BlxFrtVars.UAutoLSD and BlxFrtVars.NewInitalized do
         print("State 1")
         local managerNPC = AI.getQuestNPC("Manager")
-        while (managerNPC == nil) do
+        while (managerNPC == nil) and BlxFrtVars.NewInitalized do
             unsafeTP(-356.424713, 16.4147243, 362.088989)
             managerNPC = AI.getQuestNPC("Manager")
             wait(0.1)
@@ -746,14 +910,14 @@ local function autoLSD()
         print("State 2")
         AI.SmartMove(managerNPC.Head)
         print("State 3")
-        while not BlxFrtVars.DialogFrame.Visible do 
+        while not BlxFrtVars.GUIs.DialogFrame.Visible do 
             AI.HWMouse1Click()
             wait(0.25)
         end
         wait(0.5)
-        for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
+        for i, v in pairs(BlxFrtVars.GUIs.DialogFrame:GetChildren()) do
             if (v:IsA("TextButton") and v.TextLabel.Text == "Talk") then
-                AI.btnClicker(v,BlxFrtVars.MainGUI)
+                AI.btnClicker(v,BlxFrtVars.GUIs.Main)
                 break
             end
         end
@@ -765,9 +929,9 @@ local function autoLSD()
             print("Case 1-1")
             AI.Mouse1Click()
             wait(0.5)
-            for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
+            for i, v in pairs(BlxFrtVars.GUIs.DialogFrame:GetChildren()) do
                 if (v:IsA("TextButton") and v.TextLabel.Text == "Yeah") then
-                    AI.btnClicker(v,BlxFrtVars.MainGUI)
+                    AI.btnClicker(v,BlxFrtVars.GUIs.Main)
                     break
                 end
             end
@@ -786,7 +950,7 @@ local function autoLSD()
                 AI.Mouse1Click()
             elseif string.match(AI.GetDialogText(),"Good luck!") then
                 print("Case 2-5 [LSD came]")
-                while BlxFrtVars.DialogFrame.Visible do 
+                while BlxFrtVars.GUIs.DialogFrame.Visible do 
                     AI.Mouse1Click()
                     wait(0.25)
                 end
@@ -803,29 +967,29 @@ local function autoLSD()
                     unsafeTPVector3(v)
                     wait(3)
                     local LGS = AI.getQuestNPC("Legendary Sword Dealer ") -- Bruh
-                    if LGS ~= nil then
-                        while AI.getQuestNPC("Legendary Sword Dealer ") ~= nil do
+                    if LGS ~= nil and BlxFrtVars.NewInitalized then
+                        while AI.getQuestNPC("Legendary Sword Dealer ") ~= nil and BlxFrtVars.NewInitalized do
                             AI.SmartMove(LGS.Head)
-                            while not BlxFrtVars.DialogFrame.Visible do 
+                            while not BlxFrtVars.GUIs.DialogFrame.Visible do 
                                 AI.HWMouse1Click()
                                 wait(0.25)
                             end
                             wait(0.5)
-                            for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
+                            for i, v in pairs(BlxFrtVars.GUIs.DialogFrame:GetChildren()) do
                                 if (v:IsA("TextButton") and v.TextLabel.Text == "Talk") then
-                                    AI.btnClicker(v,BlxFrtVars.MainGUI)
+                                    AI.btnClicker(v,BlxFrtVars.GUIs.Main)
                                     break
                                 end
                             end
                             wait(1)
-                            for i, v in pairs(BlxFrtVars.DialogFrame:GetChildren()) do
+                            for i, v in pairs(BlxFrtVars.GUIs.DialogFrame:GetChildren()) do
                                 if (v:IsA("TextButton") and v.TextLabel.Text == "Purchase") then
-                                    AI.btnClicker(v,BlxFrtVars.MainGUI)
+                                    AI.btnClicker(v,BlxFrtVars.GUIs.Main)
                                     break
                                 end
                             end
                             wait(0.5)
-                            while BlxFrtVars.DialogFrame.Visible do 
+                            while BlxFrtVars.GUIs.DialogFrame.Visible do 
                                 AI.Mouse1Click()
                                 wait(0.25)
                             end
@@ -885,22 +1049,27 @@ equipItemBtn.MouseButton1Click:Connect(function()
     end
 end)
 eqAccessoryBtn.MouseButton1Click:Connect(function()
-    if BlxFrtVars.EquipAccesoryOnBoot == "" then
-        BlxFrtVars.EquipAccesoryOnBoot = accessoryNameBox.Text
+    if BlxFrtVars.OnBoot.EquipAccesory == "" then
+        BlxFrtVars.OnBoot.EquipAccesory = accessoryNameBox.Text
         eqAccessoryBtn.Text = "Equip Accessory On Spawn [TRUE]"
     else
-        BlxFrtVars.EquipAccesoryOnBoot = ""
+        BlxFrtVars.OnBoot.EquipAccesory = ""
         eqAccessoryBtn.Text = "Equip Accessory On Spawn [FALSE]"
     end
 end)
 eqBusoBtn.MouseButton1Click:Connect(function()
-    BlxFrtVars.EquipBusoOnBoot = not BlxFrtVars.EquipBusoOnBoot
-    eqBusoBtn.Text = "Equip Buso Haki On Spawn: ["..tostring(BlxFrtVars.EquipBusoOnBoot):upper().."]"
+    BlxFrtVars.OnBoot.EquipBuso = not BlxFrtVars.OnBoot.EquipBuso
+    eqBusoBtn.Text = "Equip Buso Haki On Spawn: ["..tostring(BlxFrtVars.OnBoot.EquipBuso):upper().."]"
+end)
+eqKenBtn.MouseButton1Click:Connect(function()
+    BlxFrtVars.OnBoot.EquipKen = not BlxFrtVars.OnBoot.EquipKen
+    eqKenBtn.Text = "Equip Ken Haki On Spawn: ["..tostring(BlxFrtVars.OnBoot.EquipKen):upper().."]"
 end)
 eqSprintBtn.MouseButton1Click:Connect(function()
-    BlxFrtVars.AutoSprintOnBoot = not BlxFrtVars.AutoSprintOnBoot
-    eqSprintBtn.Text = "Auto Sprint On Spawn: ["..tostring(BlxFrtVars.AutoSprintOnBoot):upper().."]"
+    BlxFrtVars.OnBoot.AutoSprint = not BlxFrtVars.OnBoot.AutoSprint
+    eqSprintBtn.Text = "Auto Sprint On Spawn: ["..tostring(BlxFrtVars.OnBoot.AutoSprint):upper().."]"
 end)
+-- Auto buttons
 autoFrmBtn.MouseButton1Click:Connect(function()
     BlxFrtVars.AutoFarm = not BlxFrtVars.AutoFarm
     autoFrmBtn.Text = "Auto Farm ["..tostring(BlxFrtVars.AutoFarm):upper().."]"
@@ -917,6 +1086,7 @@ LGSfarmBtn.MouseButton1Click:Connect(function()
         coroutine.wrap(autoLSD)() -- coroutine threads use less memory than normal threads???
     end
 end)
+
 autoClickBtn.MouseButton1Click:Connect(function()
     BlxFrtVars.AutoClick = not BlxFrtVars.AutoClick
     autoClickBtn.Text = "Auto Click ["..tostring(BlxFrtVars.AutoClick):upper().."]"
@@ -941,6 +1111,31 @@ HWautoClickBtn.MouseButton1Click:Connect(function()
         end)() -- coroutine threads use less memory than normal threads???
     end
 end)
+autoFacModeBtn.MouseButton1Click:Connect(function()
+    if BlxFrtVars.AutoFactory.Mode == "Standalone" then
+        BlxFrtVars.AutoFactory.Mode = "AutoFarm"
+    else
+        BlxFrtVars.AutoFactory.Mode = "Standalone"
+        if BlxFrtVars.AutoFactory.Enabled then
+            coroutine.wrap(autoFactoryStandalone)()
+        end
+    end
+    autoFacModeBtn.Text = "Mode: ["..BlxFrtVars.AutoFactory.Mode:upper().."]"
+end)
+autoFacToggleBtn.MouseButton1Click:Connect(function()
+    BlxFrtVars.AutoFactory.Enabled = not BlxFrtVars.AutoFactory.Enabled
+    autoFacToggleBtn.Text = tostring(BlxFrtVars.AutoFactory.Enabled):upper()
+    if BlxFrtVars.AutoFactory.Enabled and BlxFrtVars.AutoFactory.Mode == "Standalone" then 
+        coroutine.wrap(autoFactoryStandalone)()
+    end
+end)
+autoRaidBtn.MouseButton1Click:Connect(function()
+    BlxFrtVars.AutoR41d.Enabled = not BlxFrtVars.AutoR41d.Enabled
+    autoRaidBtn.Text = "Auto Dungeon ["..tostring(BlxFrtVars.AutoR41d.Enabled):upper().."]"
+    if BlxFrtVars.AutoFactory.Enabled and BlxFrtVars.AutoFactory.Mode == "Standalone" then 
+        coroutine.wrap(autoR41d)()
+    end
+end)
 antiAFKBtn.MouseButton1Click:Connect(function()
     BlxFrtVars.AntiAFKBypass = not BlxFrtVars.AntiAFKBypass
     antiAFKBtn.Text = "Anti-AFK Bypass ["..tostring(BlxFrtVars.AntiAFKBypass):upper().."]"
@@ -950,11 +1145,12 @@ autoQuestBtn.MouseButton1Click:Connect(function()
     BlxFrtVars.AutoQuest = not BlxFrtVars.AutoQuest
     autoQuestBtn.Text = "Auto Quest ["..tostring(BlxFrtVars.AutoQuest):upper().."]"
 end)
+
 tpModeBtn.MouseButton1Click:Connect(function()
     if BlxFrtVars.TeleportMode == "Auto" then
-        BlxFrtVars.TeleportMode = "Unsafe"
-    elseif BlxFrtVars.TeleportMode == "Unsafe" then
-        BlxFrtVars.TeleportMode = "Safe"
+        BlxFrtVars.TeleportMode = "Tween"
+    elseif BlxFrtVars.TeleportMode == "Tween" then
+        BlxFrtVars.TeleportMode = "MoveTo"
     else
         BlxFrtVars.TeleportMode = "Auto"
     end
@@ -979,13 +1175,13 @@ CloseBtn.MouseButton1Click:Connect(function()
         ZeroFuruit:Destroy() 
     end)
 end)
--- Auto Key Buttons (Auto expand function)
+-- Auto SKill button
 tBtnBtn.MouseButton1Click:Connect(function()
     BlxFrtVars.Buttons.T[2] = not BlxFrtVars.Buttons.T[2]
-    tBtnBtn.Text = string.gsub(v.Text,tostring(not BlxFrtVars.Buttons.T):upper(), tostring(BlxFrtVars.Buttons.T):upper())
-    if BlxFrtVars.Buttons.T then
+    tBtnBtn.Text = "T (Race Skill) ["..tostring(BlxFrtVars.Buttons.T[2]):upper().."]"
+    if BlxFrtVars.Buttons.T[2] then
         coroutine.wrap(function()
-            while BlxFrtVars.Buttons.T and wait(math.random(1,3)) do
+            while BlxFrtVars.Buttons.T[2] and wait(math.random(1,3)) do
                 AI.KeyPress(116, false)
             end
         end)()
@@ -1018,27 +1214,35 @@ BlxFrtVars.LocalPlayer.CharacterAdded:Connect(function(character)
     BlxFrtVars.Humanoid = BlxFrtVars.Character:WaitForChild("Humanoid")
     BlxFrtVars.Humanoid.Died:Connect(cleanUpWhenDie)
     while not isReady() do wait() end
-    wait(3)
-    if (BlxFrtVars.EquipAccesoryOnBoot ~= "") then
-        BlxFrtVars.Humanoid:EquipTool(BlxFrtVars.LocalPlayer.Backpack:WaitForChild(BlxFrtVars.EquipAccesoryOnBoot))
+    wait(2)
+    if (BlxFrtVars.OnBoot.EquipAccesory ~= "") then
+        BlxFrtVars.Humanoid:EquipTool(BlxFrtVars.LocalPlayer.Backpack:WaitForChild(BlxFrtVars.OnBoot.EquipAccesory))
         AI.Mouse1Click()
     end
-    if (BlxFrtVars.EquipBusoOnBoot) then
+    if (BlxFrtVars.OnBoot.EquipBuso) then
         AI.KeyPress(106, false)
     end
-    if (BlxFrtVars.AutoSprintOnBoot) then
+    if (BlxFrtVars.OnBoot.AutoSprint) then
         AI.KeyPress(306, false)
+    end
+    if (BlxFrtVars.OnBoot.EquipKen) then
+        AI.KeyPress(101, false)
     end
     BlxFrtVars.NewInitalized = true
     if (BlxFrtVars.AutoFarm) then
         coroutine.wrap(autoFarm)() -- coroutine threads use less memory than normal threads???
     end
+    if (BlxFrtVars.UAutoLSD) then
+        coroutine.wrap(autoLSD)() -- coroutine threads use less memory than normal threads???
+    end
+    if BlxFrtVars.AutoFactory.Enabled and BlxFrtVars.AutoFactory.Mode == "Standalone" then 
+        coroutine.wrap(autoFactoryStandalone)()
+    end
 end)
 -- Finally, show the GUI
 TitleTxt.Text = "ZeroFuruit ["..BlxFrtVars.ZeroFuruitVersion.."]"
-TitleTxt:TweenPosition(UDim2.new(0.5, -320,0.5, -180),Enum.EasingDirection.Out,Enum.EasingStyle.Quart,1,true,function()
-    local TMPPOS = UDim2.new(0, TitleTxt.AbsolutePosition.X, 0, TitleTxt.AbsolutePosition.Y)
-    TitleTxt.AnchorPoint = Vector2.new(0,0)
-    TitleTxt.Position = TMPPOS
-    dragger.new(TitleTxt)
-end)
+TitleTxt:TweenPosition(UDim2.new(0.5, -320,0.5, -180),Enum.EasingDirection.Out,Enum.EasingStyle.Quart,1,true)
+local TMPPOS = UDim2.new(0, TitleTxt.AbsolutePosition.X, 0, TitleTxt.AbsolutePosition.Y)
+TitleTxt.AnchorPoint = Vector2.new(0,0)
+TitleTxt.Position = TMPPOS
+dragger.new(TitleTxt)
