@@ -42,7 +42,7 @@ local Untitled = loadstring(game:HttpGet("https://raw.githubusercontent.com/tepp
 + Add a TextButton to the window's content and execute Function when user click the button if specified.
 #### (TextBox) Window.AddTextbox(string PlaceholderText, function(string Text) Function = nil)
 + Add a TextBox to the window's content and execute Function when user lost focus if specified.
-#### (heckbox) Window.AddCheckbox(string Text, function(bool Checked) Function = nil)
+#### (Checkbox) Window.AddCheckbox(string Text, function(bool Checked) Function = nil)
 + Add a Checkbox to the window's content and execute Function when user check/uncheck if specified.
 #### (Dropdown) Window.AddDropdown(table Selections, function(string Selection) Function = nil)
 + Add a Dropdown to the window's content and execute Function when user select an item in item list if specified.
