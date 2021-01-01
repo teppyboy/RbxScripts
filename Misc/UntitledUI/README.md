@@ -14,66 +14,65 @@ local Wnd2Dropdown = Window2.AddDropdown({"Patreon","Only(real)fans","Rubberroad
 local Wnd2HybridBtn = Window1.AddLabelButton("UwU", "Button", function() print("WuW") end)
 ```
 # Documentation
-+ **UntitledV1 classes ARE diffirent from UntitledV2 classes (Ex: UntitledV1.UntitledWindow =/= UntitledV2.UntitledWindow)**
 + We'll use the variable listed in here as example:
 ```lua
 local Untitled = loadstring(game:HttpGet("https://raw.githubusercontent.com/teppyboy/RbxScripts/master/Misc/UntitledUI/Library.lua"))()
 ```
-## Classes
-### Untitled
+# Classes
+## Untitled
 #### (nil) Untitled.BindToggleKey(KeyCode NewKey)
 + Bind a new KeyCode to toggle the GUI
-#### (UntitledV1) Untitled.V1
+#### (V1) Untitled.V1
 + Access the V1 version of UntitledUI
 #### (nil) Untitled.SetGUIName(string Name)
 + Set the GUI instance used by Untitled to [Name]
 #### (ScreenGui?) Untitled.GetInstance()
 + Return the top GUI instance that is used by Untitled
-### UntitledV1
-#### (UntitledWindow) UntitledV1.MakeWindow(string WindowName)
+## V1
+#### [V1] (Window) UntitledV1.MakeWindow(string WindowName)
 + Make a new window and return the window
-### UntitledWindow
-#### (nil) UntitledWindow.Rerender()
+## Window
+#### (nil) Window.Update()
 + Re-render the window created by MakeWindow.
-#### (Frame) UntitledWindow.AddWhitespace()
+#### (Frame) Window.AddWhitespace()
 + Add a whitespace to the window's content.
-#### (TextLabel) UntitledWindow.AddLabel(string Text)
+#### (TextLabel) Window.AddLabel(string Text)
 + Add a TextLabel to the window's content.
-#### (TextButton) UntitledWindow.AddButton(string Text, function() Function = nil)
+#### (TextButton) Window.AddButton(string Text, function() Function = nil)
 + Add a TextButton to the window's content and execute Function when user click the button if specified.
-#### (TextBox) UntitledWindow.AddTextbox(string PlaceholderText, function(string Text) Function = nil)
+#### (TextBox) Window.AddTextbox(string PlaceholderText, function(string Text) Function = nil)
 + Add a TextBox to the window's content and execute Function when user lost focus if specified.
-#### (UntitledCheckbox) UntitledWindow.AddCheckbox(string Text, function(bool Checked) Function = nil)
-+ Add an UntitledCheckbox to the window's content and execute Function when user check/uncheck if specified.
-#### (UntitledDropdown) UntitledWindow.AddDropdown(table Selections, function(string Selection) Function = nil)
-+ Add an UntitledDropdown to the window's content and execute Function when user select an item in item list if specified.
-#### (UntitledLabelButton) UntitledWindow.AddLabelButton(string LabelText, string ButtonText, function() Function = nil)
-+ Add a UntitledLabelButton to the window's content and execute Function when user click the button if specified.
-#### (UntitledLabelTextbox) UntitledWindow.AddLabelTextbox(string LabelText, string TextBoxText, function(string Text) Function = nil)
-+ Add a UntitledLabelTextbox to the window's content and execute Function when user lost focus if specified.
+#### (heckbox) Window.AddCheckbox(string Text, function(bool Checked) Function = nil)
++ Add a Checkbox to the window's content and execute Function when user check/uncheck if specified.
+#### (Dropdown) Window.AddDropdown(table Selections, function(string Selection) Function = nil)
++ Add a Dropdown to the window's content and execute Function when user select an item in item list if specified.
+#### (LabelButton) Window.AddLabelButton(string LabelText, string ButtonText, function() Function = nil)
++ Add a LabelButton to the window's content and execute Function when user click the button if specified.
+#### (LabelTextbox) Window.AddLabelTextbox(string LabelText, string TextBoxText, function(string Text) Function = nil)
++ Add a LabelTextbox to the window's content and execute Function when user lost focus if specified.
 
-### UntitledCheckbox
-#### (bool) UntitledCheckbox.Checked
+## Checkbox
+#### (bool) Checkbox.Checked
 + Return if checkbox is checked.
-#### (Frame) UntitledCheckbox.GetInstance()
-+ Return the top GUI Instance that is used by UntitledCheckbox
+#### (Frame) Checkbox.GetInstance()
++ Return the top GUI Instance that is used by Checkbox
 
-### UntitledDropdown
-#### (string) UntitledDropdown.Selected
+## Dropdown
+#### (string) Dropdown.Selected
 + Return selected content.
-#### (TextButton) UntitledDropdown.AddSelection(string Text)
+#### (TextButton) Dropdown.AddSelection(string Text)
 + Add a selection to dropdown content
-#### (nil) UntitledDropdown.Update()
+#### (nil) Dropdown.Update()
 + Update the Dropdown to match the latest values.
-#### (TextButton) UntitledDropdown.GetInstance()
-+ Return the top GUI Instance that is used by UntitledDropdown
+#### (TextButton) Dropdown.GetInstance()
++ Return the top GUI Instance that is used by Dropdown
 
-### UntitledLabelButton
-#### (Frame) UntitledLabelButton.GetInstance()
-+ Return the top GUI Instance that is used by UntitledLabelButton
+## LabelButton
+#### (Frame) LabelButton.GetInstance()
++ Return the top GUI Instance that is used by LabelButton
 
-### UntitledLabelTextbox
-#### (Frame) UntitledLabelTextbox.GetInstance()
-+ Return the top GUI Instance that is used by UntitledLabelTextbox
+## LabelTextbox
+#### (Frame) LabelTextbox.GetInstance()
++ Return the top GUI Instance that is used by LabelTextbox
 
 # More features will be added in the future, stay soon!
