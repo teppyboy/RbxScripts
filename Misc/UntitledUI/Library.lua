@@ -202,26 +202,35 @@ Untitled.V1 = {
 			TextSize = 26,
 			Position = UDim2.new(0,185,0, 0)
 		})
-		local Contents = PrivUntitled.MkInstance("Frame", {
+		local Contents = PrivUntitled.MkInstance("ScrollingFrame", {
 			Name = "Contents",
 			Parent = Title,
 			BackgroundColor3 = Color3.fromRGB(40, 40, 40),
 			BorderSizePixel = 0,
 			ZIndex = 0,
 			Size = UDim2.new(0, 225, 0, 0),
-			Position = UDim2.new(0,0,1, 0)
+			Position = UDim2.new(0,0,1, 0),
+			CanvasSize = UDim2.new(0,215,0,0),
+			ScrollBarThickness = 2,
 		})
 		UntitledWindow.GetInstance = function()
 			return Contents
 		end
 		local Tweening = false
 		local ContentsSize = 5
+		local function GetSize()
+			if ContentsSize < workspace.CurrentCamera.ViewportSize.Y - 175 then
+				return UDim2.new(0, 225, 0, ContentsSize)
+			else
+				return UDim2.new(0, 225, 0, workspace.CurrentCamera.ViewportSize.Y - 175)
+			end
+		end
 		MinMaxBtn.MouseButton1Click:Connect(function()
 			if not Tweening then
 				Tweening = true
 				if Contents.Size == UDim2.new(0,225,0,0) then
 					MinMaxBtn.Text = "-"
-					Contents:TweenSize(UDim2.new(0,225,0,ContentsSize), Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 0.15 , false, function()
+					Contents:TweenSize(GetSize(), Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 0.15 , false, function()
 						for i, v in pairs(Contents:GetChildren()) do
 							if v.ClassName ~= "UIListLayout" then
 								v.Visible = true
@@ -259,9 +268,14 @@ Untitled.V1 = {
 
 		-- Functions
 		UntitledWindow.Update = function() -- Re-render the UI
-			Contents.Size = UDim2.new(0, 225, 0, ContentsSize)
+			Contents.Size = GetSize()
+			Contents.CanvasSize = UDim2.new(0, 215, 0, ContentsSize)
 		end
-
+		workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(function()
+			if Contents.Size ~= UDim2.new(0,225,0,0) then
+				UntitledWindow.Update()
+			end
+		end)
 		UntitledWindow.AddWhitespace = function() -- ADd empty frame to Contents
 			local YO = 5
 			local EmptyFrame = PrivUntitled.MkInstance("Frame", {
@@ -783,6 +797,7 @@ Untitled.V2 = {
 				local FrmSeperator = PrivUntitled.MkInstance("Frame", {
 					Parent = Contents,
 					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+					BackgroundTransparency = 0.5,
 					BorderSizePixel = 0,
 					Position = UDim2.new(0, HContentXSz - 1, 0, 0),
 					Size = UDim2.new(0, 2, 0, ContentYSz)
