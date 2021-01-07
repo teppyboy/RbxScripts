@@ -212,6 +212,7 @@ Untitled.V1 = {
 			Position = UDim2.new(0,0,1, 0),
 			CanvasSize = UDim2.new(0,215,0,0),
 			ScrollBarThickness = 2,
+			ScrollingDirection = Enum.ScrollingDirection.Y
 		})
 		UntitledWindow.GetInstance = function()
 			return Contents
@@ -401,10 +402,19 @@ Untitled.V1 = {
 			local CloseOpnDropdown = function(bool)
 				if (not Tweening) or bool then
 					Tweening = true
+					print(string.format("TB: %d CGC: %d",ToggleBtn.LayoutOrder, #Contents:GetChildren()))
 					if not DropdownContents.Visible then
 						Label.Text = "↑"
 						DropdownContents.Visible = true
-						Contents.CanvasSize = UDim2.new(0, 225, 0, ContentsSize + DropdownHSize)
+						for i, v in pairs({1,2,3,4,5,6}) do
+							if ToggleBtn.LayoutOrder > (#Contents:GetChildren() - v) then
+								Contents.CanvasSize = UDim2.new(0, 215, 0, ContentsSize + (DropdownHSize / v))
+								break
+							end
+						end
+						if ToggleBtn.LayoutOrder > (#Contents:GetChildren() - 4) then
+							Contents.CanvasSize = UDim2.new(0, 215, 0, ContentsSize + DropdownHSize)
+						end
 						DropdownContents:TweenSize(DropdownSize, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.1, false, function()
 							Tweening = false
 						end)
@@ -413,7 +423,9 @@ Untitled.V1 = {
 						DropdownContents:TweenSize(UDim2.new(0,215,0,0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.1, false, function()
 							DropdownContents.Visible = false
 							Tweening = false
-							Contents.CanvasSize = UDim2.new(0, 225, 0, ContentsSize)
+							if ToggleBtn.LayoutOrder > (#Contents:GetChildren() - 6) then
+								Contents.CanvasSize = UDim2.new(0, 215, 0, ContentsSize)
+							end
 						end)
 					end
 				end
