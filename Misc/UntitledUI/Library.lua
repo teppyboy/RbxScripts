@@ -402,7 +402,6 @@ Untitled.V1 = {
 			local CloseOpnDropdown = function(bool)
 				if (not Tweening) or bool then
 					Tweening = true
-					print(string.format("TB: %d CGC: %d",ToggleBtn.LayoutOrder, #Contents:GetChildren()))
 					if not DropdownContents.Visible then
 						Label.Text = "↑"
 						DropdownContents.Visible = true
