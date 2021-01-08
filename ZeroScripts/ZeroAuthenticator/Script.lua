@@ -251,4 +251,4 @@ ZeroAuthenticator.Authenticate = function(ZeroScriptName)
 	end	
 	return ReturnCode, ReturnMessage
 end
-return ZeroAuthentication
+return ZeroAuthenticator
