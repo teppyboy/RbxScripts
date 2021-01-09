@@ -3,6 +3,7 @@
 ```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/teppyboy/RbxScripts/master/ZeroScripts/ZeroAcademia/Script.lua"))()
 ```
++ Exploits I don't list here are **not tested**
 + Working exploits:
   + [Krnl](https://krnl.rocks/) - 100% Working (I only use Krnl btw)
   + [SirHurt](https://www.google.com/search?q=pedophilia) - Semi-work (My friend tested, not me)
@@ -12,7 +13,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/teppyboy/RbxScripts/m
   + [WeAreDevs API](https://wearedevs.net/d/Exploit%20API) - A lot of functions are missing/crappy made and it has memory leaks.
   + [Proxo](https://www.google.com/search?q=Linkvertise%20*%20math.huge%20+%20Adware) - no
   + [Shadow](https://wearedevs.net/d/Shadow) - Memory leaks + missing functions
-  + and All others exploits in WRD/any site.
+  + and All others exploits in WRD/any free exploits site.
 ## Instructions (Tabs)
 > Because this was coded by an Arch Linux user, the customization are a lot but hard for new user.
 ### Main
