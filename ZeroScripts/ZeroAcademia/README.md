@@ -1,4 +1,18 @@
 # ZeroAcademia
+## Script
+```lua
+loadstring(game:HttpGet("https://raw.githubusercontent.com/teppyboy/RbxScripts/master/ZeroScripts/ZeroAcademia/Script.lua"))()
+```
++ Working exploits:
+  + [Krnl](https://krnl.rocks/) - 100% Working (I only use Krnl btw)
+  + [SirHurt](https://www.google.com/search?q=pedophilia) - Semi-work (My friend tested, not me)
+  + [Synapse X](https://x.synapse.to/) - Not tested (This was coded by looking at Synapse X documentation)
++ Non-working exploits:
+  + [Oxygen U](https://oxygenu.xyz/) - Authentication not working, everything else does. (WILL FIX)
+  + [WeAreDevs API](https://wearedevs.net/d/Exploit%20API) - A lot of functions are missing/crappy made and it has memory leaks.
+  + [Proxo](https://www.google.com/search?q=Linkvertise%20*%20math.huge%20+%20Adware) - no
+  + [Shadow](https://wearedevs.net/d/Shadow) - Memory leaks + missing functions
+  + and All others exploits in WRD/any site.
 ## Instructions (Tabs)
 > Because this was coded by an Arch Linux user, the customization are a lot but hard for new user.
 ### Main
@@ -31,3 +45,7 @@
 + Auto Spin is auto spin until you get the quirk(s) you put in the box.
 #### Weapons
 + Pretty much useless, use game's GUI to equip the weapons are easier.
+
+## Credits
++ [UntitledUI](https://github.com/teppyboy/RbxScripts/tree/master/Misc/UntitledUI) v1 for UI Library.
++ [PSU](https://psu.dev/) for their obfuscator.
