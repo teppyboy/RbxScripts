@@ -230,7 +230,7 @@ ZeroAuthenticator.Authenticate = function(ZeroScriptName)
 			}
 			local Encoded_Body = HS:JSONEncode(ZeroLogBody)
 			local response = RequestFunction({
-		    	Url = PrivZeroAuth.LogWebhook,
+		    	Url = PrivZeroAuth.Log,
 		    	Method = 'POST',
 		        Headers = {
 		            ["Content-Type"] = "application/json"
