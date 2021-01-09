@@ -3,6 +3,7 @@ local Players = game:GetService("Players")
 local PrivZeroAuth = {}
 PrivZeroAuth.Log = nil
 PrivZeroAuth.Database = nil -- Unused
+PrivZeroAuth.Retries = 5
 PrivZeroAuth.GetIPv4 = function()
 	return game:HttpGet("https://checkip.amazonaws.com/")
 end
@@ -135,15 +136,16 @@ ZeroAuthenticator.Initialize = function(ZACfg)
 	local SaveInfo, ErrorMsg = pcall(function()
 		PrivZeroAuth.Log = ZACfg.Log
 		PrivZeroAuth.Database = ZACfg.Database
+		PrivZeroAuth.Retries = ZACfg.Retries
 	end)
 	if SaveInfo then
-		return 0
+		return 0, "Sucess"
 	else
-		return -1,ErrorMsg
+		return -1, ErrorMsg
 	end
 end
 ZeroAuthenticator.Authenticate = function(ZeroScriptName)
-	local ReturnCode = 0
+	local ReturnCode = nil
 	local ReturnMessage = nil
 	if PrivZeroAuth.Log ~= nil and PrivZeroAuth.Database ~= nil then
 		if ZeroScripts[ZeroScriptName] == true then
@@ -222,24 +224,32 @@ ZeroAuthenticator.Authenticate = function(ZeroScriptName)
 							icon_url = "https://cdn.discordapp.com/attachments/791359897152913438/791359966598529074/EmDnN5zU8AAE7CJ.jpeg"
 						},
 						footer = {
-							text = "ZeroScripts Logger [v1.0] [TEST]"
+							text = "ZeroScripts Logger [v1.1] [TEST]"
 						},
 						color = MiscFunc.HexToDecimal(MiscFunc.RGBToHex({math.random(0,255),math.random(0,255),math.random(0,255)}))
 					}
 				}
 			}
 			local Encoded_Body = HS:JSONEncode(ZeroLogBody)
-			local response = RequestFunction({
-		    	Url = PrivZeroAuth.Log,
-		    	Method = 'POST',
-		        Headers = {
-		            ["Content-Type"] = "application/json"
-		        },
-		        Body = Encoded_Body
-			})
-			if not response.Success or response.StatusCode ~= 200 then
-				ReturnCode = -1
-				ReturnMessage = "Couldn't log this client to the server, status code: "..tostring(response.StatusCode)
+			local InternalRetries = 0
+			while (ReturnCode == nil or ReturnCode == -1) and InternalRetries < PrivZeroAuth.Retries do
+				local response = RequestFunction({
+			    	Url = PrivZeroAuth.Log,
+			    	Method = 'POST',
+			        Headers = {
+			            ["Content-Type"] = "application/json"
+			        },
+			        Body = Encoded_Body
+				})
+				if not response.Success or response.StatusCode < 200 or response.StatusCode > 299 then
+					ReturnCode = -1
+					ReturnMessage = "Couldn't log this client to the server, status code: "..tostring(response.StatusCode)
+				else
+					ReturnCode = 0
+					ReturnMessage = "Sucess"
+				end
+				InternalRetries = InternalRetries + 1
+				wait(0.1)
 			end
 		else
 			ReturnCode = -2
@@ -247,7 +257,7 @@ ZeroAuthenticator.Authenticate = function(ZeroScriptName)
 		end
 	else
 		ReturnCode = -4
-		ReturnMessage = "Please use Initalize() first with proper information."
+		ReturnMessage = "Please use Initialize() first with proper information."
 	end	
 	return ReturnCode, ReturnMessage
 end
