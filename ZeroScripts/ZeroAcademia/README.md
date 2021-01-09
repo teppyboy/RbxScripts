@@ -29,7 +29,9 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/teppyboy/RbxScripts/m
 + Verify NPC **before** use anything related to that (It'll verify the NPC with name you typed exists)
   + Ex: I put 100 in it so it'll find the NPC with the name 100 times, if it found then verify will be sucessed
   + Tips:
-    + Earth Beast name is **Forest Beast**, Slidin Go, Electoplant and Crust name is **Pro Hero**
+    + Earth Beast name is **Forest Beast**
+    + Slidin Go, Electoplant and Crust name is **Pro Hero**
+    + Weak Nomu name is **Weak Nomu 1,Weak Nomu 2,Weak Nomu 3,Weak Nomu 4**
 + Vector3: Vector3 from NPC to You 
   + To change Height like old version does, do 0,HEIGHT,0
   + Ex: 0,-200,0 means you're lower than the NPC 200 aka you're underground
