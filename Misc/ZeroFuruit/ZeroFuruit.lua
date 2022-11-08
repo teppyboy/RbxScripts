@@ -1,12 +1,12 @@
-local ZeroAuth = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/teppyboy/RbxScripts/master/ZeroScripts/Authentication.lua"))()
-ZeroAuth.Authenticate("ZeroFuruit")
+-- local ZeroAuth = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/teppyboy/RbxScripts/master/ZeroScripts/Authentication.lua"))()
+-- ZeroAuth.Authenticate("ZeroFuruit")
 
 -- Variables
 local VU = game:GetService("VirtualUser")
 local TS = game:GetService("TweenService")
 local RS = game:GetService('RunService')
 local BlxFrtVars = {}
-BlxFrtVars.ZeroFuruitVersion = "unstable-2020.28.12.2130"
+BlxFrtVars.ZeroFuruitVersion = "unstable-2022.08.11.2108"
 BlxFrtVars.NewInitalized = true
 BlxFrtVars.Players = game:GetService("Players")
 BlxFrtVars.LocalPlayer = BlxFrtVars.Players.LocalPlayer
@@ -555,7 +555,12 @@ AI.SmartMove = function(targetPart)
 end
 AI.getNPC = function(name, mode)
     local newcctable = {}
-    for i,v in pairs(game.Workspace.Enemies:GetChildren()) do
+    for _, v in pairs(game.Workspace.Enemies:GetChildren()) do
+        if (v.Name == name or name == "") and (v:FindFirstChild("HumanoidRootPart") ~= nil) and (v:FindFirstChild("Humanoid") ~= nil) and (v.Humanoid.Health > 0) then
+            table.insert(newcctable, v)
+        end
+    end
+    for _, v in pairs(game.ReplicatedStorage:GetChildren()) do
         if (v.Name == name or name == "") and (v:FindFirstChild("HumanoidRootPart") ~= nil) and (v:FindFirstChild("Humanoid") ~= nil) and (v.Humanoid.Health > 0) then
             table.insert(newcctable, v)
         end
@@ -565,7 +570,7 @@ AI.getNPC = function(name, mode)
     elseif mode == "nearest" then --nearest so it wont waste the time.
         local nearestnpc
         local nearestnpcmag = math.huge
-        for i, v in pairs(newcctable) do 
+        for _, v in pairs(newcctable) do 
             local abctmp = (v.HumanoidRootPart.Position - BlxFrtVars.Character.HumanoidRootPart.Position).Magnitude
             if abctmp < nearestnpcmag then
                 nearestnpcmag = abctmp
@@ -576,8 +581,13 @@ AI.getNPC = function(name, mode)
     end
 end
 AI.getQuestNPC = function(name)
-    for i,v in pairs(game.Workspace.NPCs:GetChildren()) do
-        if (v.Name == name) then
+    for _, v in pairs(game.Workspace.NPCs:GetChildren()) do
+        if v.Name == name then
+            return v
+        end
+    end
+    for _, v in pairs(game.ReplicatedStorage:GetChildren()) do
+        if typeof(v) == "Instance" and v:FindFirstChild("Humanoid") ~= nil and v.Name == name then
             return v
         end
     end
