@@ -597,12 +597,7 @@ AI.Mouse1Click = function()
     VU:ClickButton1(Vector2.new(0,0))
 end
 AI.HWMouse1Click = function()
-    if EXPLOIT == "sirhurt" then
-        -- sirhurt retard, leftclick isnt mouse1click smh...
-        leftclick()
-    else
-        mouse1click()
-    end
+    mouse1click()
 end
 AI.KeyPress = function(keycode, workaround) -- https://developer.roblox.com/en-us/api-reference/enum/KeyCode
     VU:CaptureController()
